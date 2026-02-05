@@ -1,0 +1,25 @@
+# Terraform local state and modules
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform.lock.hcl
+
+# Java/Maven Build artifacts
+target/
+*.war
+*.jar
+*.class
+
+# IDE settings (VS Code / IntelliJ)
+.idea/
+.vscode/
+*.swp
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# SSH Keys (Safety first!)
+*.pem
+*.pub
