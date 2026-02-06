@@ -59,7 +59,7 @@ module "ec2_instance_rabbitmq" {
 
   instance_type               = "t2.micro"
   associate_public_ip_address = true
-  ami                         = "ami-0532be01f26a3de55" # eu-central-1 AWS Linux 2
+  ami                         = "ami-0191d47ba10441f0b" # eu-central-1 AWS Linux 2
   vpc_security_group_ids      = [aws_security_group.Data-SG.id]
   key_name                    = aws_key_pair.EC2_Key_Pair.key_name
   monitoring                  = false
@@ -83,7 +83,7 @@ module "ec2_instance_memcache" {
 
   instance_type               = "t2.micro"
   associate_public_ip_address = true
-  ami                         = "ami-0532be01f26a3de55" # eu-central-1 AWS Linux 2
+  ami                         = "ami-0191d47ba10441f0b" # eu-central-1 AWS Linux 2
   vpc_security_group_ids      = [aws_security_group.Data-SG.id]
   key_name                    = aws_key_pair.EC2_Key_Pair.key_name
   monitoring                  = false
@@ -108,7 +108,7 @@ module "ec2_instance_mysql" {
 
   instance_type               = "t2.micro"
   associate_public_ip_address = true
-  ami                         = "ami-0532be01f26a3de55" # eu-central-1 AWS Linux 2
+  ami                         = "ami-0191d47ba10441f0b" # eu-central-1 AWS Linux 2
   vpc_security_group_ids      = [aws_security_group.Data-SG.id]
   key_name                    = aws_key_pair.EC2_Key_Pair.key_name
   monitoring                  = false
