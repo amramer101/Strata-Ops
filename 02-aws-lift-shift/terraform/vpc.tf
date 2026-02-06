@@ -32,6 +32,7 @@ resource "aws_route53_zone" "private_zone" {
 
 }
 
+## 2. Create Record for Database
 resource "aws_route53_record" "db" {
   zone_id = aws_route53_zone.private_zone.zone_id
   name    = "db01.vprofile.in"
@@ -56,5 +57,14 @@ resource "aws_route53_record" "rmq" {
   type    = "A"
   ttl     = "300"
   records = [module.ec2_instance_rabbitmq.private_ip]
+}
+
+# 5. Create Record for Tomcat
+resource "aws_route53_record" "tomcat" {
+  zone_id = aws_route53_zone.private_zone.zone_id
+  name    = "app01.vprofile.in"
+  type    = "A"
+  ttl     = "300"
+  records = [module.ec2_instance_tomcat.private_ip]
 }
 

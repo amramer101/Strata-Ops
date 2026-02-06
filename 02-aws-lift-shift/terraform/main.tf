@@ -43,7 +43,7 @@ module "ec2_instance_tomcat" {
     Environment = "dev"
   }
 
-  user_data = file("../../01-local-setup/Automated-Setup/tomcat_ubuntu.sh")
+  user_data = file("../02-aws-lift-shift/userdata-EC2/nginx.sh")
 
 }
 
