@@ -36,7 +36,7 @@ module "ec2_instance_tomcat" {
   vpc_security_group_ids      = [aws_security_group.Tomcat-SG.id]
   key_name                    = aws_key_pair.EC2_Key_Pair.key_name
   monitoring                  = false
-  subnet_id                   = module.vpc.private_subnets[0]
+  subnet_id                   = module.vpc.public_subnets[1]
 
   tags = {
     Terraform   = "true"
@@ -56,7 +56,6 @@ module "ec2_instance_rabbitmq" {
   name = "RabbitMQ-instance"
 
   instance_type               = "t2.micro"
-  associate_public_ip_address = true
   ami                         = "ami-0191d47ba10441f0b" # eu-central-1 AWS Linux 2
   vpc_security_group_ids      = [aws_security_group.Data-SG.id]
   key_name                    = aws_key_pair.EC2_Key_Pair.key_name
@@ -80,7 +79,6 @@ module "ec2_instance_memcache" {
   name = "Memcache-instance"
 
   instance_type               = "t2.micro"
-  associate_public_ip_address = true
   ami                         = "ami-0191d47ba10441f0b" # eu-central-1 AWS Linux 2
   vpc_security_group_ids      = [aws_security_group.Data-SG.id]
   key_name                    = aws_key_pair.EC2_Key_Pair.key_name
@@ -105,7 +103,6 @@ module "ec2_instance_mysql" {
   name = "MySQL-instance"
 
   instance_type               = "t2.micro"
-  associate_public_ip_address = true
   ami                         = "ami-0191d47ba10441f0b" # eu-central-1 AWS Linux 2
   vpc_security_group_ids      = [aws_security_group.Data-SG.id]
   key_name                    = aws_key_pair.EC2_Key_Pair.key_name

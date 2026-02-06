@@ -7,6 +7,7 @@ module "vpc" {
   azs             = [var.AWS_Zone-a, var.AWS_Zone-b, var.AWS_Zone-c]
   private_subnets = var.Private_Subnet_CIDR
   public_subnets  = var.Public_Subnet_CIDR
+  
 
   enable_nat_gateway      = false
   enable_vpn_gateway      = false
@@ -35,7 +36,7 @@ resource "aws_route53_zone" "private_zone" {
 ## 2. Create Record for Database
 resource "aws_route53_record" "db" {
   zone_id = aws_route53_zone.private_zone.zone_id
-  name    = "db01.vprofile.in"
+  name    = "db01.eprofile.in"
   type    = "A"
   ttl     = "300"
   records = [module.ec2_instance_mysql.private_ip]
@@ -44,7 +45,7 @@ resource "aws_route53_record" "db" {
 # 3. Create Record for Memcached
 resource "aws_route53_record" "mc" {
   zone_id = aws_route53_zone.private_zone.zone_id
-  name    = "mc01.vprofile.in"
+  name    = "mc01.eprofile.in"
   type    = "A"
   ttl     = "300"
   records = [module.ec2_instance_memcache.private_ip]
@@ -53,7 +54,7 @@ resource "aws_route53_record" "mc" {
 # 4. Create Record for RabbitMQ
 resource "aws_route53_record" "rmq" {
   zone_id = aws_route53_zone.private_zone.zone_id
-  name    = "rmq01.vprofile.in"
+  name    = "rmq01.eprofile.in"
   type    = "A"
   ttl     = "300"
   records = [module.ec2_instance_rabbitmq.private_ip]
@@ -62,7 +63,7 @@ resource "aws_route53_record" "rmq" {
 # 5. Create Record for Tomcat
 resource "aws_route53_record" "tomcat" {
   zone_id = aws_route53_zone.private_zone.zone_id
-  name    = "app01.vprofile.in"
+  name    = "app01.eprofile.in"
   type    = "A"
   ttl     = "300"
   records = [module.ec2_instance_tomcat.private_ip]
