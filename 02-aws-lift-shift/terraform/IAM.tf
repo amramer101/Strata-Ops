@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "s3_access_policy" {
     ]
     resources = [
       aws_s3_bucket.Atifact-Bucket.arn,
-      "${aws_s3_bucket.Atifact-Bucket.arn}/*", # Policy requires both bucket and object ARNs
+      "${aws_s3_bucket.Artifact-Bucket.arn}/*", # Policy requires both bucket and object ARNs
     ]
   }
 }
