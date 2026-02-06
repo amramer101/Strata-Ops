@@ -20,3 +20,41 @@ module "vpc" {
   }
 }
 
+
+# 1. Create Private Hosted Zone
+
+resource "aws_route53_zone" "private_zone" {
+  name = "eprofile.in"
+
+  vpc {
+    vpc_id = module.vpc.vpc_id  
+  }
+
+}
+
+resource "aws_route53_record" "db" {
+  zone_id = aws_route53_zone.private_zone.zone_id
+  name    = "db01.vprofile.in"
+  type    = "A"
+  ttl     = "300"
+  records = [module.ec2_instance_mysql.private_ip]
+}
+
+# 3. Create Record for Memcached
+resource "aws_route53_record" "mc" {
+  zone_id = aws_route53_zone.private_zone.zone_id
+  name    = "mc01.vprofile.in"
+  type    = "A"
+  ttl     = "300"
+  records = [module.ec2_instance_memcache.private_ip]
+}
+
+# 4. Create Record for RabbitMQ
+resource "aws_route53_record" "rmq" {
+  zone_id = aws_route53_zone.private_zone.zone_id
+  name    = "rmq01.vprofile.in"
+  type    = "A"
+  ttl     = "300"
+  records = [module.ec2_instance_rabbitmq.private_ip]
+}
+

@@ -1,8 +1,6 @@
 ### EC2 Instance for Nginx Server
 
-
-
-module "ec2_instance" {
+module "ec2_instance_nginx" {
   source = "terraform-aws-modules/ec2-instance/aws"
 
   name = "Nginx-instance"
