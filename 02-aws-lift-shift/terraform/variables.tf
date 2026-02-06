@@ -29,3 +29,8 @@ variable "AWS_Zone-b" {
 variable "AWS_Zone-c" {
   default = "eu-central-1c"
 }
+
+variable "S3_Bucket_Name" {
+  default = "S3-terraform-2026-java-artifacts1598"
+  
+}
