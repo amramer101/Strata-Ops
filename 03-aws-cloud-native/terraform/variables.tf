@@ -35,7 +35,6 @@ variable "S3_Bucket_Name" {
 
 }
 
-
 variable "Pub_Key_Path" {
-  default = "ec2-eprofile-key.pub"
+  default = "bean-stack-key.pub"
 }
