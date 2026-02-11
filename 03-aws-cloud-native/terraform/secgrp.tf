@@ -1,26 +1,18 @@
 
 ### Security Group for the Frontend EC2 Instance
 
-resource "aws_security_group" "Frontend-SG" {
-  name        = "Frontend-sg"
-  description = "Allow SSH and HTTP inbound traffic and all outbound traffic"
+resource "aws_security_group" "Load-Balancer-SG" {
+  name        = "Load-Balancer-SG"
+  description = "Allow HTTP inbound traffic and all outbound traffic"
   vpc_id      = module.vpc.vpc_id
 
   tags = {
-    Name = "Frontend-SG"
+    Name = "Load-Balancer-SG"
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_frontend" {
-  security_group_id = aws_security_group.Frontend-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 22
-  ip_protocol       = "tcp"
-  to_port           = 22
-}
-
 resource "aws_vpc_security_group_ingress_rule" "allow_http" {
-  security_group_id = aws_security_group.Frontend-SG.id
+  security_group_id = aws_security_group.Load-Balancer-SG.id
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = 80
   ip_protocol       = "tcp"
@@ -28,7 +20,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_http" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4_frontend" {
-  security_group_id = aws_security_group.Frontend-SG.id
+  security_group_id = aws_security_group.Load-Balancer-SG.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1" # semantically equivalent to all ports
 }
@@ -50,23 +42,15 @@ resource "aws_security_group" "Tomcat-SG" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_tomcat" {
   security_group_id = aws_security_group.Tomcat-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv4         = "0.0.0.0/0" # Note: In production, it's recommended to restrict this to specific IPs or ranges for security reasons.
   from_port         = 22
   ip_protocol       = "tcp"
   to_port           = 22
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_8080_from_Everywhere" {
-  security_group_id = aws_security_group.Tomcat-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 8080
-  ip_protocol       = "tcp"
-  to_port           = 8080
-}
-
 resource "aws_vpc_security_group_ingress_rule" "allow_8080_from_frontend" {
   security_group_id            = aws_security_group.Tomcat-SG.id
-  referenced_security_group_id = aws_security_group.Frontend-SG.id
+  referenced_security_group_id = aws_security_group.Load-Balancer-SG.id
   from_port                    = 8080
   ip_protocol                  = "tcp"
   to_port                      = 8080
@@ -95,13 +79,6 @@ resource "aws_security_group" "Data-SG" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_Data" {
-  security_group_id = aws_security_group.Data-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 22
-  ip_protocol       = "tcp"
-  to_port           = 22
-}
 
 resource "aws_vpc_security_group_ingress_rule" "allow_3306_from_tomcat-SG" {
   security_group_id            = aws_security_group.Data-SG.id
@@ -133,4 +110,41 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4_Data" {
   ip_protocol       = "-1" # semantically equivalent to all ports
 }
 
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_Bastion" {
+  security_group_id = aws_security_group.Data-SG.id
+  referenced_security_group_id = aws_security_group.Bastion-SG.id
+  from_port         = 22
+  ip_protocol       = "tcp"
+  to_port           = 22
+}
+
+
+
+
+
+### Security Group for the Bastion EC2s Instance
+
+resource "aws_security_group" "Bastion-SG" {
+  name        = "Bastion-SG"
+  description = "Allow SSH inbound traffic and all outbound traffic"
+  vpc_id      = module.vpc.vpc_id
+
+  tags = {
+    Name = "Bastion-SG"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_Bastion" {
+  security_group_id = aws_security_group.Bastion-SG.id
+  cidr_ipv4         = "0.0.0.0/0" # Note: In production, it's recommended to restrict this to specific IPs or ranges for security reasons.
+  from_port         = 22
+  ip_protocol       = "tcp"
+  to_port           = 22
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4_Bastion" {
+  security_group_id = aws_security_group.Bastion-SG.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1" # semantically equivalent to all ports
+}
 
