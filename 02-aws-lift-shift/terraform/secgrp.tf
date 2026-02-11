@@ -13,7 +13,7 @@ resource "aws_security_group" "Frontend-SG" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_frontend" {
   security_group_id = aws_security_group.Frontend-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv4         = "0.0.0.0/0" # Allow SSH from everywhere for demonstration purposes. In production, consider restricting this to specific IPs or security groups.
   from_port         = 22
   ip_protocol       = "tcp"
   to_port           = 22
@@ -50,19 +50,12 @@ resource "aws_security_group" "Tomcat-SG" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_tomcat" {
   security_group_id = aws_security_group.Tomcat-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv4         = "0.0.0.0/0" # Note: In production, it's recommended to restrict this to specific IPs or ranges for security reasons.
   from_port         = 22
   ip_protocol       = "tcp"
   to_port           = 22
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_8080_from_Everywhere" {
-  security_group_id = aws_security_group.Tomcat-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 8080
-  ip_protocol       = "tcp"
-  to_port           = 8080
-}
 
 resource "aws_vpc_security_group_ingress_rule" "allow_8080_from_frontend" {
   security_group_id            = aws_security_group.Tomcat-SG.id
@@ -81,7 +74,6 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4_tomcat" {
 
 
 
-
 ### Security Group for the Data EC2s Instance
 
 resource "aws_security_group" "Data-SG" {
@@ -96,7 +88,7 @@ resource "aws_security_group" "Data-SG" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_Data" {
   security_group_id = aws_security_group.Data-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv4         = "0.0.0.0/0" # Note: In production, it's recommended to restrict this to specific IPs or ranges for security reasons.
   from_port         = 22
   ip_protocol       = "tcp"
   to_port           = 22
