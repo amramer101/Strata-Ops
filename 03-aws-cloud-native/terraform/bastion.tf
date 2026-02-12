@@ -31,7 +31,26 @@ resource "aws_instance" "bastion" {
   tags = {
     Name = "bastion"
   }
+ 
+ provisioner "file" {
 
+    content = templatefile("templates/db-init.tmpl", {rds-endpoint = aws_db_instance.RDS.address , dbuser = var.db_user_name , dbpass = var.db_password})
+    destination = "/tmp/bastion-setup.sh"
+
+    connection {
+      type        = "ssh"
+      user        = var.bastion_host_username
+      private_key = file(var.priv_key_path)
+      host        = self.public_ip
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/bastion-setup.sh",
+      "sudo /tmp/bastion-setup.sh"
+    ]
+ }
 
 
 

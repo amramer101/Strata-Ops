@@ -48,7 +48,7 @@ variable "pub_key_path" {
   default = "bean-stack-key.pub"
 }
 
-variable "piv_key_path" {
+variable "priv_key_path" {
   default = "bean-stack-key"
 }
 
@@ -74,4 +74,11 @@ variable "rmq_user" {
 
 variable "rmq_password" {
   default = "Gr33n@pple123456"
+}
+
+
+## Bastion Host Variables
+
+variable "bastion_host_username" {
+  default = "ubuntu"
 }
