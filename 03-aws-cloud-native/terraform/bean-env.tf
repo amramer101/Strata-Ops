@@ -17,7 +17,7 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value = data.aws_iam_instance_profile.existing_ec2_profile.name
+    value     = data.aws_iam_instance_profile.existing_ec2_profile.name
   }
 
   setting {
