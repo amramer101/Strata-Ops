@@ -27,6 +27,7 @@ resource "aws_db_instance" "RDS" {
   password               = var.db_password
   db_subnet_group_name   = aws_db_subnet_group.RDS_subnet_group.name
   vpc_security_group_ids = [aws_security_group.Data-SG.id]
+
 }
 
 

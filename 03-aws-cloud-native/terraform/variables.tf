@@ -55,7 +55,7 @@ variable "priv_key_path" {
 ## DataBase Services Variables
 
 variable "db_name" {
-  default = "mydb"
+  default = "accounts"
 }
 
 variable "db_user_name" {

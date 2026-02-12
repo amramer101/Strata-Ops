@@ -1,32 +1,43 @@
+# 1. جلب البيانات الموجودة فعلياً في حسابك
+data "aws_iam_role" "existing_service_role" {
+  name = "aws-elasticbeanstalk-service-role"
+}
 
+data "aws_iam_instance_profile" "existing_ec2_profile" {
+  name = "aws-elasticbeanstalk-ec2-role"
+}
+
+# 2. إعداد البيئة
 resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
   name                = "elbeanstalkenv"
   application         = aws_elastic_beanstalk_application.Eprofile_bean_app.name
   solution_stack_name = "64bit Amazon Linux 2023 v5.9.3 running Tomcat 10 Corretto 21"
-  cname_prefix        = "eprofileapp254698" # must be unique across all of AWS, so you might want to change it
+  cname_prefix        = "eprofileapp254698"
+
+  # --- تصحيح الـ IAM Settings (التركيز هنا) ---
 
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = aws_iam_role.beanstalk_ec2.name
+    # الصح: نستخدم الـ Instance Profile (للمكن)
+    value     = data.aws_iam_instance_profile.existing_ec2_profile.name 
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "ServiceRole"
-    value     = aws_iam_role.beanstalk_service.name
+    # الصح: نستخدم الـ Service Role (للخدمة)
+    value     = data.aws_iam_role.existing_service_role.name
   }
+
+  # --- باقي الإعدادات (سليمة) ---
 
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "RootVolumeType"
     value     = "gp3"
   }
-  setting {
-    namespace = "aws:autoscaling:launchconfiguration"
-    name      = "DisableIMDSv1"
-    value     = true
-  }
+
   setting {
     namespace = "aws:ec2:vpc"
     name      = "AssociatePublicIpAddress"
@@ -38,6 +49,7 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
     name      = "Subnets"
     value     = join(",", [module.vpc.private_subnets[0], module.vpc.private_subnets[1], module.vpc.private_subnets[2]])
   }
+
   setting {
     namespace = "aws:ec2:vpc"
     name      = "ELBSubnets"
@@ -58,78 +70,14 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
 
   setting {
     namespace = "aws:autoscaling:asg"
-    name      = "Availability Zones"
-    value     = "Any 3"
-  }
-  setting {
-    namespace = "aws:autoscaling:asg"
     name      = "MinSize"
     value     = "1"
   }
+
   setting {
     namespace = "aws:autoscaling:asg"
     name      = "MaxSize"
-    value     = "4"
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "environment"
-    value     = "prod"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "LOGGING_APPENDER"
-    value     = "GRAYLOG"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:healthreporting:system"
-    name      = "SystemType"
-    value     = "enhanced"
-  }
-  setting {
-    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
-    name      = "RollingUpdateEnabled"
-    value     = "true"
-  }
-  setting {
-    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
-    name      = "RollingUpdateType"
-    value     = "Health"
-  }
-
-  setting {
-    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
-    name      = "MaxBatchSize"
-    value     = "1"
-  }
-  setting {
-    namespace = "aws:elb:loadbalancer"
-    name      = "CrossZone"
-    value     = "true"
-  }
-
-  setting {
-    name      = "StickinessEnabled"
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    value     = "true"
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:command"
-    name      = "BatchSizeType"
-    value     = "Fixed"
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:command"
-    name      = "BatchSize"
-    value     = "1"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:command"
-    name      = "DeploymentPolicy"
-    value     = "Rolling"
+    value     = "2" # قللتها لـ 2 عشان الـ Free Tier
   }
 
   setting {
@@ -145,5 +93,4 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
   }
 
   depends_on = [aws_security_group.Load-Balancer-SG, aws_security_group.Tomcat-SG]
-
 }
