@@ -94,10 +94,10 @@ variable "github_token" {
 }
 
 variable "github_owner" {  
-  description = "GitHub Username"  ## if required, add your GitHub username to your environment variables as GITHUB_OWNER
+  description = "amramer101"  ## if required, add your GitHub username to your environment variables as GITHUB_OWNER
 }
 
 variable "github_repo" {
   description = "Repository Name"
-  default     = "https://github.com/amramer101/Strata-Ops.git"
+  default     = "Strata-Ops"
 }
