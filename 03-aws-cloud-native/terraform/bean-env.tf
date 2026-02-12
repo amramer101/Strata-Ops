@@ -15,7 +15,7 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "ServiceRole"
-    value = aws_iam_role.beanstalk_service.name
+    value     = aws_iam_role.beanstalk_service.name
   }
 
   setting {
@@ -63,7 +63,7 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
   setting {
     namespace = "aws:autoscaling:asg"
     name      = "MaxSize"
-    value     = "2" 
+    value     = "2"
   }
 
   setting {
@@ -79,7 +79,7 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
   }
 
 
-    setting {
+  setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RDS_HOSTNAME"
     value     = aws_db_instance.RDS.address
@@ -107,19 +107,19 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RABBITMQ_HOSTNAME"
     # معادلة عشان تجيب الدومين بس من غير بروتوكول
-    value     = split("/", split("@", aws_mq_broker.RabbitMQ.instances[0].endpoints[0])[0])[2]
+    value = split("/", split("@", aws_mq_broker.RabbitMQ.instances[0].endpoints[0])[0])[2]
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RABBITMQ_USERNAME"
-    value     = var.rmq_user 
+    value     = var.rmq_user
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RABBITMQ_PASSWORD"
-    value     = var.rmq_password 
+    value     = var.rmq_password
   }
 
   depends_on = [aws_security_group.Load-Balancer-SG, aws_security_group.Tomcat-SG, aws_iam_role.beanstalk_service, aws_iam_role.beanstalk_ec2]
