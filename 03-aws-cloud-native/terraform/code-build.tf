@@ -1,6 +1,6 @@
 # 1. S3 Bucket for Artifacts
 resource "aws_s3_bucket" "codepipeline_bucket" {
-  bucket        = "eprofile-cicd-artifacts-${random_id.bucket_suffix.hex}"
+  bucket        = "vprofile-cicd-artifacts-${random_id.bucket_suffix.hex}"
   force_destroy = true
 }
 
@@ -10,7 +10,7 @@ resource "random_id" "bucket_suffix" {
 
 # 2. CodeBuild Project
 resource "aws_codebuild_project" "vprofile_build" {
-  name          = "eprofile-build-job"
+  name          = "vprofile-build-job"
   description   = "Builds the Java vProfile application"
   service_role  = aws_iam_role.codebuild_role.arn
 
@@ -27,10 +27,11 @@ resource "aws_codebuild_project" "vprofile_build" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "buildspec.yml"
+    buildspec = "../buildspec.yml"
   }
 }
 
+# 3. CodeStar Connection 
 resource "aws_codestarconnections_connection" "github_connection" {
   name          = "vprofile-github-conn"
   provider_type = "GitHub"
@@ -38,38 +39,55 @@ resource "aws_codestarconnections_connection" "github_connection" {
 
 # 4. CodePipeline
 resource "aws_codepipeline" "vprofile_pipeline" {
-  name     = "vprofile-pipeline"
-  role_arn = aws_iam_role.codepipeline_role.arn
+  name          = "vprofile-pipeline"
+  role_arn      = aws_iam_role.codepipeline_role.arn
+  pipeline_type = "V2"
 
   artifact_store {
     location = aws_s3_bucket.codepipeline_bucket.bucket
     type     = "S3"
   }
 
-  # Stage 1: Source (Updated to use CodeStarSourceConnection)
+  trigger {
+    provider_type = "CodeStarSourceConnection"
+    git_configuration {
+      source_action_name = "Source"
+      push {
+        branches {
+          includes = ["main"]
+        }
+        file_paths {
+          includes = ["03-aws-cloud-native/src/.*"] ## only trigger pipeline if files in this path are changed
+        }
+      }
+    }
+  }
+
+  # Stage 1: Source
   stage {
     name = "Source"
 
     action {
       name             = "Source"
       category         = "Source"
-      owner            = "AWS" 
+      owner            = "AWS"
       provider         = "CodeStarSourceConnection"
       version          = "1"
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn    = aws_codestarconnections_connection.github_connection.arn
-        FullRepositoryId = "${var.github_owner}/${var.github_repo}"
+        ConnectionArn    = "arn:aws:codestar-connections:eu-central-1:493789572447:connection/6b11992b-1288-4377-8da8-617466a14d38" ## replace with your actual connection ARN
+        FullRepositoryId = "amramer101/Strata-Ops" ## your GitHub username/repo
         BranchName       = "main"
-       
+        DetectChanges    = "false" 
       }
     }
   }
 
-  # Stage 2: Build (CodeBuild)
+  # Stage 2: Build
   stage {
     name = "Build"
+
     action {
       name             = "Build"
       category         = "Build"
@@ -78,15 +96,17 @@ resource "aws_codepipeline" "vprofile_pipeline" {
       input_artifacts  = ["source_output"]
       output_artifacts = ["build_output"]
       version          = "1"
+
       configuration = {
         ProjectName = aws_codebuild_project.vprofile_build.name
       }
     }
   }
 
-  # Stage 3: Deploy (Elastic Beanstalk)
+  # Stage 3: Deploy
   stage {
     name = "Deploy"
+
     action {
       name            = "Deploy"
       category        = "Deploy"
@@ -94,6 +114,7 @@ resource "aws_codepipeline" "vprofile_pipeline" {
       provider        = "ElasticBeanstalk"
       input_artifacts = ["build_output"]
       version         = "1"
+
       configuration = {
         ApplicationName = aws_elastic_beanstalk_application.Eprofile_bean_app.name
         EnvironmentName = aws_elastic_beanstalk_environment.elbeanstalk_env.name
