@@ -7,8 +7,8 @@ resource "aws_iam_role" "codebuild_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
       Principal = { Service = "codebuild.amazonaws.com" }
     }]
   })
@@ -40,8 +40,8 @@ resource "aws_iam_role" "codepipeline_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
       Principal = { Service = "codepipeline.amazonaws.com" }
     }]
   })
@@ -68,8 +68,8 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
       },
       # 3. صلاحيات كاملة لـ CodeBuild و CodeStar
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "codebuild:*",
           "codestar-connections:*"
         ]
@@ -77,8 +77,8 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
       },
       # 4. صلاحيات ضرورية للخدمات المرتبطة (EC2, ASG, RDS, CloudFormation)
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "ec2:*",
           "elasticloadbalancing:*",
           "autoscaling:*",

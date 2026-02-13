@@ -89,7 +89,7 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RDS_DB_NAME"
     value     = var.db_name
-  } 
+  }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
@@ -132,7 +132,8 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
     aws_security_group.Tomcat-SG,
     aws_db_instance.RDS,
     aws_mq_broker.RabbitMQ,
-    aws_elasticache_cluster.ElastiCache
+    aws_elasticache_cluster.ElastiCache,
+    aws_instance.bastion
   ]
-  
-  }
+
+}

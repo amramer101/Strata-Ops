@@ -76,8 +76,8 @@ resource "aws_codepipeline" "vprofile_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn    = "arn:aws:codestar-connections:eu-central-1:493789572447:connection/d5fface5-3d6c-4282-bdb5-e53caa598954" ## replace with your actual connection ARN
-        FullRepositoryId = "amramer101/Strata-Ops"                                                                                  ## your GitHub username/repo
+        ConnectionArn    = aws_codestarconnections_connection.github_connection.arn ## replace with your actual connection ARN
+        FullRepositoryId = "amramer101/Strata-Ops"                       ## your GitHub username/repo
         BranchName       = "main"
         DetectChanges    = "false"
       }
