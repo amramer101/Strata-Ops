@@ -87,6 +87,11 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "elasticbeanstalk:DescribeEnvironments"
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = ["codestar-connections:UseConnection"]
+        Resource = "*"
       }
     ]
   })

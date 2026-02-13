@@ -10,9 +10,9 @@ resource "random_id" "bucket_suffix" {
 
 # 2. CodeBuild Project
 resource "aws_codebuild_project" "vprofile_build" {
-  name          = "vprofile-build-job"
-  description   = "Builds the Java vProfile application"
-  service_role  = aws_iam_role.codebuild_role.arn
+  name         = "vprofile-build-job"
+  description  = "Builds the Java vProfile application"
+  service_role = aws_iam_role.codebuild_role.arn
 
   artifacts {
     type = "CODEPIPELINE"
@@ -27,7 +27,7 @@ resource "aws_codebuild_project" "vprofile_build" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "../buildspec.yml"
+    buildspec = "03-aws-cloud-native/buildspec.yml"
   }
 }
 
@@ -76,10 +76,10 @@ resource "aws_codepipeline" "vprofile_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn    = "arn:aws:codestar-connections:eu-central-1:493789572447:connection/6b11992b-1288-4377-8da8-617466a14d38" ## replace with your actual connection ARN
-        FullRepositoryId = "amramer101/Strata-Ops" ## your GitHub username/repo
+        ConnectionArn    = "arn:aws:codestar-connections:eu-central-1:493789572447:connection/d5fface5-3d6c-4282-bdb5-e53caa598954" ## replace with your actual connection ARN
+        FullRepositoryId = "amramer101/Strata-Ops"                                                                                  ## your GitHub username/repo
         BranchName       = "main"
-        DetectChanges    = "false" 
+        DetectChanges    = "false"
       }
     }
   }
