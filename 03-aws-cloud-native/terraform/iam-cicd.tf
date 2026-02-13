@@ -89,8 +89,8 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         Resource = "*"
       },
       {
-        Effect = "Allow"
-        Action = ["codestar-connections:UseConnection"]
+        Effect   = "Allow"
+        Action   = ["codestar-connections:UseConnection"]
         Resource = "*"
       }
     ]
