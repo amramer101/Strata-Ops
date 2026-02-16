@@ -1,5 +1,5 @@
 # -----------------------------------------------------------
-# 1. Role for CodeBuild (صلاحيات كاملة لعملية البناء)
+# 1. Role for CodeBuild
 # -----------------------------------------------------------
 resource "aws_iam_role" "codebuild_role" {
   name = "vprofile-codebuild-role"
@@ -22,7 +22,6 @@ resource "aws_iam_role_policy" "codebuild_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        # صلاحيات كاملة لكل شيء يحتاجه Build (Logs, S3, EC2)
         Effect   = "Allow"
         Action   = ["*"]
         Resource = "*"
@@ -32,7 +31,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
 }
 
 # -----------------------------------------------------------
-# 2. Role for CodePipeline (صلاحيات كاملة لإدارة خط الإنتاج والرفع)
+# 2. Role for CodePipeline
 # -----------------------------------------------------------
 resource "aws_iam_role" "codepipeline_role" {
   name = "vprofile-codepipeline-role"
@@ -54,19 +53,16 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      # 1. القضاء على مشاكل S3 نهائياً (بما فيها DeleteObject و GetBucketPolicy)
       {
         Effect   = "Allow"
         Action   = ["s3:*"]
         Resource = "*"
       },
-      # 2. القضاء على مشاكل Elastic Beanstalk نهائياً
       {
         Effect   = "Allow"
         Action   = ["elasticbeanstalk:*"]
         Resource = "*"
       },
-      # 3. صلاحيات كاملة لـ CodeBuild و CodeStar
       {
         Effect = "Allow"
         Action = [
@@ -75,7 +71,6 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         ]
         Resource = "*"
       },
-      # 4. صلاحيات ضرورية للخدمات المرتبطة (EC2, ASG, RDS, CloudFormation)
       {
         Effect = "Allow"
         Action = [
@@ -89,7 +84,6 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         ]
         Resource = "*"
       },
-      # 5. صلاحية تمرير أي رول (PassRole) لضمان عدم توقف Beanstalk
       {
         Effect   = "Allow"
         Action   = ["iam:PassRole"]
