@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 sudo yum install epel-release -y
 sudo yum update -y
 sudo yum install wget -y

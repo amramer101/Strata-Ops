@@ -1,4 +1,5 @@
-# adding repository and installing nginx		
+#!/bin/bash
+set -e
 apt update
 apt install nginx -y
 cat <<EOT > vproapp
