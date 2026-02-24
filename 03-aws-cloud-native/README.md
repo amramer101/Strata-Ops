@@ -55,7 +55,7 @@ The Crust (Containerized)    → Docker, Kubernetes, serverless
 
 ## 🏗️ Cloud-Native Architecture
 
-![Cloud-Native Architecture](media/architecture.png)
+![Cloud-Native Architecture](media/cloud-native/architecture.png)
 
 ### The Managed Services Stack
 
@@ -85,7 +85,7 @@ The Crust (Containerized)    → Docker, Kubernetes, serverless
 
 ### Terraform Automation Scope
 
-![Terraform Resource Map](media/terraform-1.png)
+![Terraform Resource Map](media/cloud-native/terraform-1.png)
 
 **67 resources created in one command:**
 - VPC & networking (15 resources)
@@ -134,7 +134,7 @@ git push origin main
 **Error prone:** Low (consistent builds)  
 **Scalability:** Automatic
 
-![CI/CD Pipeline](media/04-cicd-pipeline-build.png)
+![CI/CD Pipeline](media/cloud-native/04-cicd-pipeline-build.png)
 
 ### Pipeline Stages
 
@@ -171,7 +171,7 @@ git push origin main
 
 ## 📊 Infrastructure Dependency Graph
 
-![Terraform Dependencies](media/relations.png)
+![Terraform Dependencies](media/cloud-native/relations.png)
 
 ### Resource Creation Order
 
@@ -235,7 +235,7 @@ rabbitmq.address=${RABBITMQ_HOSTNAME}
 
 ### 2. **Bastion-Driven Database Initialization**
 
-![RDS Provisioned](media/03-aws-rds-provisioned.jpg)
+![RDS Provisioned](media/cloud-native/03-aws-rds-provisioned.jpg)
 
 **Problem:** RDS starts empty. Application needs schema + seed data.
 
@@ -266,7 +266,7 @@ mq_endpoint      = ["amqps://b-41185c5a-f07d-44c0-9868-4313c2de59c0.mq.eu-centra
 
 ### 3. **Rolling Deployments (Zero Downtime)**
 
-![Beanstalk Environment Healthy](media/05-beanstalk-environment-green.png)
+![Beanstalk Environment Healthy](media/cloud-native/05-beanstalk-environment-green.png)
 
 **Elastic Beanstalk deployment strategy:**
 ```
@@ -295,7 +295,7 @@ Both instances on v1.1 → Old version terminated
 
 ### 1. Terraform Deployment Success
 
-![Terraform Apply Success](media/01-terraform-apply-success.png)
+![Terraform Apply Success](media/cloud-native/01-terraform-apply-success.png)
 
 **Outputs prove infrastructure is live:**
 ```
@@ -310,7 +310,7 @@ mq_endpoint = ["amqps://b-41185c5a-f07d-44c0-9868-4313c2de59c0.mq.eu-central-1.o
 
 ### 2. Database Connection Working
 
-![Data from Database](media/07-app-dashboard-data-insert.png)
+![Data from Database](media/cloud-native/07-app-dashboard-data-insert.png)
 
 **Message:** "Data is From DB and Data Inserted In Cache !!"
 
@@ -328,7 +328,7 @@ Email: admin@hkhinfo.com
 
 ### 3. Cache Hit Verified
 
-![Data from Cache](media/07-app-dashboard-cache.png)
+![Data from Cache](media/cloud-native/07-app-dashboard-cache.png)
 
 **Message:** "[Data is From Cache]" (red badge)
 
@@ -340,7 +340,7 @@ Email: admin@hkhinfo.com
 
 ### 4. Backend Services Connectivity
 
-![ElastiCache Working](media/08-backend-cache-services-verification.png)
+![ElastiCache Working](media/cloud-native/08-backend-cache-services-verification.png)
 
 **ElastiCache Details:**
 - Cluster ID: `elasticache`
@@ -349,7 +349,7 @@ Email: admin@hkhinfo.com
 - Status: ✅ Available
 - Configuration endpoint: Active
 
-![Amazon MQ Working](media/08-backend-mq-services-verification.png)
+![Amazon MQ Working](media/cloud-native/08-backend-mq-services-verification.png)
 
 **Amazon MQ Details:**
 - Broker name: `example`
@@ -672,6 +672,6 @@ From PaaS to **containers and orchestration**. The final evolution where we pack
 
 **🌋 The deeper you go, the hotter it gets. PaaS is pure power.**
 
-*Made with managed services for DevOps engineers*
+*Made with managed services for DevOps engineers by Me Amr M. Amer*
 
 </div>
