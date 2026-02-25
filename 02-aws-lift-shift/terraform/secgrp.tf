@@ -75,6 +75,14 @@ resource "aws_vpc_security_group_ingress_rule" "allow_8080_from_frontend" {
   to_port                      = 8080
 }
 
+resource "aws_vpc_security_group_ingress_rule" "allow_8080_from_Jenkins" {
+  security_group_id            = aws_security_group.Tomcat-SG.id
+  referenced_security_group_id = aws_security_group.jenkins-SG.id
+  from_port                    = 8080
+  ip_protocol                  = "tcp"
+  to_port                      = 8080
+}
+
 resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4_tomcat" {
   security_group_id = aws_security_group.Tomcat-SG.id
   cidr_ipv4         = "0.0.0.0/0"
