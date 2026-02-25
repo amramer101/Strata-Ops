@@ -53,7 +53,7 @@ credentials:
               privateKey: "${GITHUB_PRIVATE_KEY}"
           description: "GitHub Private Key for cloning repo"
 
-      # 5. Tomcat EC2 SSH Key (السر كله هنا عشان جينكنز يرمي الكود جوه التوم كات)
+      # 5. Tomcat EC2 SSH Key
       - basicSSHUserPrivateKey:
           id: "tomcat-ssh-key"
           scope: GLOBAL

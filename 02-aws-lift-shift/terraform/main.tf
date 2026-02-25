@@ -91,6 +91,8 @@ module "ec2_instance_tomcat" {
   }
 
   user_data = file("../userdata-EC2/tomcat_ubuntu.sh")
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+
 
 }
 
