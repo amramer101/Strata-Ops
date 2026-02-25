@@ -21,7 +21,7 @@ credentials:
   system:
     domainCredentials:
     - credentials:
-      # Nexus Credentials
+      # 1. Nexus Credentials
       - usernamePassword:
           id: "nexuslogin"
           scope: GLOBAL
@@ -29,19 +29,39 @@ credentials:
           password: "${NEXUS_PASSWORD}"
           description: "Nexus Authentication"
           
-      # SonarQube Token
+      # 2. SonarQube Token
       - string:
           id: "sonertoken"
           scope: GLOBAL
           secret: "${SONAR_TOKEN}"
           description: "sonertoken"
           
-      # Slack Token
+      # 3. Slack Token
       - string:
           id: "Slack-token"
           scope: GLOBAL
           secret: "${SLACK_TOKEN}"
           description: "Slack-token"
+
+      # 4. GitHub SSH Key
+      - basicSSHUserPrivateKey:
+          id: "github-ssh-key"
+          scope: GLOBAL
+          username: "git"
+          privateKeySource:
+            directEntry:
+              privateKey: "${GITHUB_PRIVATE_KEY}"
+          description: "GitHub Private Key for cloning repo"
+
+      # 5. Tomcat EC2 SSH Key (السر كله هنا عشان جينكنز يرمي الكود جوه التوم كات)
+      - basicSSHUserPrivateKey:
+          id: "tomcat-ssh-key"
+          scope: GLOBAL
+          username: "ubuntu"
+          privateKeySource:
+            directEntry:
+              privateKey: "${TOMCAT_SSH_KEY}"
+          description: "SSH Key to deploy to Tomcat EC2"
 
 # ----------------- Tools Setup -----------------
 tool:
@@ -52,7 +72,7 @@ tool:
   jdk:
     installations:
     - name: "JDK21"
-      home: "/usr/lib/jvm/java-1.21.0-openjdk-amd64" 
+      home: "/usr/lib/jvm/java-21-openjdk-amd64" 
   maven:
     installations:
     - name: "Maven3.9"
@@ -84,7 +104,7 @@ unclassified:
     buildWrapperEnabled: true
     installations:
     - name: "sonarserver"
-      serverUrl: "http://sonarqube.eprofile.in:80" 
+      serverUrl: "http://sonarqube.eprofile.in:80"
       credentialsId: "sonertoken"
       triggers:
         skipScmCause: false

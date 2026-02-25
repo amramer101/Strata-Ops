@@ -4,7 +4,7 @@
 
 
 # ==========================================
-# 1. الحاجات اللي السيرفرات بتعملها (Late Binding)
+# 1. (Late Binding)
 # ==========================================
 
 resource "aws_ssm_parameter" "sonar_token" {
@@ -19,6 +19,13 @@ resource "aws_ssm_parameter" "nexus_password" {
   type  = "SecureString"
   value = "pending"
   lifecycle { ignore_changes = [value] }
+}
+
+resource "aws_ssm_parameter" "tomcat_private_key" {
+  name  = "/strata-ops/tomcat-ssh-key"
+  type  = "SecureString"
+  
+  value = file("${path.module}/ec2-eprofile-key") 
 }
 
 # ==========================================
@@ -36,7 +43,6 @@ resource "aws_ssm_parameter" "jenkins_password" {
   value = random_password.jenkins_admin.result
 }
 
-# توليد وحفظ باسورد قاعدة البيانات
 resource "random_password" "db_password" {
   length  = 8
   special = false 
