@@ -1,0 +1,91 @@
+jenkins:
+  systemMessage: "Welcome to Strata-Ops Enterprise Jenkins - Automated by Terraform & JCasC"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  numExecutors: 2
+  mode: NORMAL
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+      - id: "Amr"
+        name: "Amr Medhat"
+        password: "${ADMIN_PASSWORD}" # تم إضافة الباسورد هنا
+        properties:
+        - mailer:
+            emailAddress: "amr@gmail.com"
+
+# ----------------- Credentials -----------------
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      # Nexus Credentials
+      - usernamePassword:
+          id: "nexuslogin"
+          scope: GLOBAL
+          username: "admin"
+          password: "${NEXUS_PASSWORD}"
+          description: "Nexus Authentication"
+          
+      # SonarQube Token
+      - string:
+          id: "sonertoken"
+          scope: GLOBAL
+          secret: "${SONAR_TOKEN}"
+          description: "sonertoken"
+          
+      # Slack Token
+      - string:
+          id: "Slack-token"
+          scope: GLOBAL
+          secret: "${SLACK_TOKEN}"
+          description: "Slack-token"
+
+# ----------------- Tools Setup -----------------
+tool:
+  git:
+    installations:
+    - name: "Default"
+      home: "git"
+  jdk:
+    installations:
+    - name: "JDK21"
+      home: "/usr/lib/jvm/java-1.21.0-openjdk-amd64" # المسار اللي بينزل فيه Java 21 على Ubuntu
+  maven:
+    installations:
+    - name: "Maven3.9"
+      properties:
+      - installSource:
+          installers:
+          - maven:
+              id: "3.9.9"
+  sonarRunnerInstallation:
+    installations:
+    - name: "sonarscanner"
+      properties:
+      - installSource:
+          installers:
+          - sonarRunnerInstaller:
+              id: "4.7.0.2747"
+
+# ----------------- Integrations -----------------
+unclassified:
+  location:
+    url: "http://jenkins.eprofile.in/" # عدل الـ URL للـ DNS بتاعك
+  slackNotifier:
+    botUser: false
+    room: "#jenkins-cicd"
+    sendAsText: false
+    teamDomain: "devops-m8f7836"
+    tokenCredentialId: "Slack-token"
+  sonarGlobalConfiguration:
+    buildWrapperEnabled: true
+    installations:
+    - name: "sonarserver"
+      serverUrl: "http://sonarqube.eprofile.in:9000" # يفضل استخدام الـ DNS بدلاً من IP ثابت
+      credentialsId: "sonertoken"
+      triggers:
+        skipScmCause: false
+        skipUpstreamCause: false

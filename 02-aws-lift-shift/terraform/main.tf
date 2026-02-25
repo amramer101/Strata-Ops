@@ -198,7 +198,7 @@ module "ec2_instance_Jenkins" {
 
 ### EC2 Instance for sonar Server
 
-module "ec2_instance_sonar" {
+module "ec2_instance_sonarqube" {
   source = "terraform-aws-modules/ec2-instance/aws"
 
   name = "sonar-instance"

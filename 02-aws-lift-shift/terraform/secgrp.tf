@@ -7,7 +7,7 @@ locals {
   my_public_ip_cidr = "${chomp(data.http.my_public_ip.response_body)}/32"
 }
 
-
+#####------------------------------------------------------------------------------------------------------------------
 
 ### Security Group for the Frontend EC2 Instance
 
@@ -143,7 +143,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4_Data" {
 }
 
 
-##### ------------------------------------------------------------------------------------------------
+##### ---------------------------------------------------------------------------------------------------------------------------
 
 
 ### Security Group for the jenkins EC2 Instance

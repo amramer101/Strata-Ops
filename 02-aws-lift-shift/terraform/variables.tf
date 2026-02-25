@@ -30,11 +30,6 @@ variable "AWS_Zone-c" {
   default = "eu-central-1c"
 }
 
-variable "S3_Bucket_Name" {
-  default = "s3-terraform-2026-java-artifacts1598"
-
-}
-
 
 variable "Pub_Key_Path" {
   default = "ec2-eprofile-key.pub"

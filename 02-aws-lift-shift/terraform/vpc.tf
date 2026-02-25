@@ -70,3 +70,30 @@ resource "aws_route53_record" "tomcat" {
   records = [module.ec2_instance_tomcat.private_ip]
 }
 
+## 6. Create Record for Nexus
+resource "aws_route53_record" "Nexus" {
+  zone_id = aws_route53_zone.private_zone.zone_id
+  name    = "nexus.eprofile.in"
+  type    = "A"
+  ttl     = "300"
+  records = [module.ec2_instance_nexus.private_ip]
+}
+
+# 7. Create Record for Jenkins
+resource "aws_route53_record" "Jenkins" {
+  zone_id = aws_route53_zone.private_zone.zone_id
+  name    = "jenkins.eprofile.in"
+  type    = "A"
+  ttl     = "300"
+  records = [module.ec2_instance_Jenkins.private_ip]
+}
+
+# 8. Create Record for SonarQube
+resource "aws_route53_record" "SonarQube" {
+  zone_id = aws_route53_zone.private_zone.zone_id
+  name    = "sonarqube.eprofile.in"
+  type    = "A"
+  ttl     = "300"
+  records = [module.ec2_instance_sonarqube.private_ip]
+}
+
