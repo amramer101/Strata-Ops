@@ -192,6 +192,7 @@ module "ec2_instance_Jenkins" {
   }
 
   user_data = file("../userdata-EC2/jenkins.sh")
+  depends_on = [module.ec2_instance_nexus, module.ec2_instance_sonarqube]
 
 }
 
