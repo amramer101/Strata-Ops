@@ -10,8 +10,8 @@ jenkins:
       allowsSignup: false
       users:
       - id: "Amr"
-        name: "Amr Medhat"
-        password: "${ADMIN_PASSWORD}" # تم إضافة الباسورد هنا
+        name: "Amr"
+        password: "${ADMIN_PASSWORD}" 
         properties:
         - mailer:
             emailAddress: "amr@gmail.com"
@@ -52,7 +52,7 @@ tool:
   jdk:
     installations:
     - name: "JDK21"
-      home: "/usr/lib/jvm/java-1.21.0-openjdk-amd64" # المسار اللي بينزل فيه Java 21 على Ubuntu
+      home: "/usr/lib/jvm/java-1.21.0-openjdk-amd64" 
   maven:
     installations:
     - name: "Maven3.9"
@@ -73,7 +73,7 @@ tool:
 # ----------------- Integrations -----------------
 unclassified:
   location:
-    url: "http://jenkins.eprofile.in/" # عدل الـ URL للـ DNS بتاعك
+    url: "http://jenkins.eprofile.in/"
   slackNotifier:
     botUser: false
     room: "#jenkins-cicd"
@@ -84,7 +84,7 @@ unclassified:
     buildWrapperEnabled: true
     installations:
     - name: "sonarserver"
-      serverUrl: "http://sonarqube.eprofile.in:9000" # يفضل استخدام الـ DNS بدلاً من IP ثابت
+      serverUrl: "http://sonarqube.eprofile.in:80" 
       credentialsId: "sonertoken"
       triggers:
         skipScmCause: false
