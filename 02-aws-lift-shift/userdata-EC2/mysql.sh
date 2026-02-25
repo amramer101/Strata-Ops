@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-DATABASE_PASS='admin123'
+DATABASE_PASS= $(aws ssm get-parameter --name "/strata-ops/mysql-password" --with-decryption --query "Parameter.Value" --output text)
 sudo dnf update -y
 sudo dnf install git zip unzip -y
 sudo dnf install mariadb105-server -y

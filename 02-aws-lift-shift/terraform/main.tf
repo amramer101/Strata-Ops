@@ -192,6 +192,7 @@ module "ec2_instance_Jenkins" {
   }
 
   user_data = file("../userdata-EC2/jenkins.sh")
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
   depends_on = [module.ec2_instance_nexus, module.ec2_instance_sonarqube]
 
 }
@@ -220,6 +221,7 @@ module "ec2_instance_sonarqube" {
   }
 
   user_data = file("../userdata-EC2/sonar.sh")
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
 }
 
@@ -245,6 +247,7 @@ module "ec2_instance_nexus" {
   }
 
   user_data = file("../userdata-EC2/nexus.sh")
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
 }
 
