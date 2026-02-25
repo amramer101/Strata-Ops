@@ -25,3 +25,4 @@ Thumbs.db
 *.pub
 ec2-eprofile-key
 bean-stack-key
+ci-key

@@ -39,3 +39,8 @@ variable "S3_Bucket_Name" {
 variable "Pub_Key_Path" {
   default = "ec2-eprofile-key.pub"
 }
+
+
+variable "Pub_Key_Path_ci" {
+  default = "ci-key.pub"
+}

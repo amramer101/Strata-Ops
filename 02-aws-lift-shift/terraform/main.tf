@@ -1,3 +1,47 @@
+## search for ubuntu22 ami 
+
+data "aws_ami" "ubuntu22" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
+
+## search for aws Linux ami 
+
+data "aws_ami" "amazon_linux_2" {
+  most_recent = true
+
+  owners = ["amazon"] # Official Amazon owner alias
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"] # A common name pattern for Amazon Linux 2 AMIs
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+##--------------------------------------------------------------------------------------------------------------
+
 ### EC2 Instance for Nginx Server
 
 module "ec2_instance_nginx" {
@@ -7,11 +51,11 @@ module "ec2_instance_nginx" {
 
   instance_type               = "t2.micro"
   associate_public_ip_address = true
-  ami                         = "ami-01f79b1e4a5c64257" # eu-central-1 ubuntu 20.24.04 LTS
+  ami                         = data.aws_ami.ubuntu22.id
   vpc_security_group_ids      = [aws_security_group.Frontend-SG.id]
   key_name                    = aws_key_pair.EC2_Key_Pair.key_name
   monitoring                  = false
-  subnet_id                   = module.vpc.public_subnets[0]
+  subnet_id                   = module.vpc.public_subnets[1]
   create_security_group       = false
 
   tags = {
@@ -33,7 +77,7 @@ module "ec2_instance_tomcat" {
 
   instance_type               = "t2.micro"
   associate_public_ip_address = true
-  ami                         = "ami-01f79b1e4a5c64257" # eu-central-1 ubuntu 20.24.04 LTS
+  ami                         = data.aws_ami.ubuntu22.id
   vpc_security_group_ids      = [aws_security_group.Tomcat-SG.id]
   key_name                    = aws_key_pair.EC2_Key_Pair.key_name
   monitoring                  = false
@@ -60,7 +104,7 @@ module "ec2_instance_rabbitmq" {
   name = "RabbitMQ-instance"
 
   instance_type          = "t2.micro"
-  ami                    = "ami-0191d47ba10441f0b" # eu-central-1 AWS Linux 2
+  ami                    = data.aws_ami.amazon_linux_2.id
   vpc_security_group_ids = [aws_security_group.Data-SG.id]
   key_name               = aws_key_pair.EC2_Key_Pair.key_name
   monitoring             = false
@@ -84,7 +128,7 @@ module "ec2_instance_memcache" {
   name = "Memcache-instance"
 
   instance_type          = "t2.micro"
-  ami                    = "ami-0191d47ba10441f0b" # eu-central-1 AWS Linux 2
+  ami                    = data.aws_ami.amazon_linux_2.id
   vpc_security_group_ids = [aws_security_group.Data-SG.id]
   key_name               = aws_key_pair.EC2_Key_Pair.key_name
   monitoring             = false
@@ -109,7 +153,7 @@ module "ec2_instance_mysql" {
   name = "MySQL-instance"
 
   instance_type          = "t2.micro"
-  ami                    = "ami-0191d47ba10441f0b" # eu-central-1 AWS Linux 2
+  ami                    = data.aws_ami.amazon_linux_2.id
   vpc_security_group_ids = [aws_security_group.Data-SG.id]
   key_name               = aws_key_pair.EC2_Key_Pair.key_name
   monitoring             = false
@@ -122,6 +166,85 @@ module "ec2_instance_mysql" {
   }
 
   user_data = file("../userdata-EC2/mysql.sh")
+
+}
+
+
+
+### EC2 Instance for Jenkins Server
+
+module "ec2_instance_Jenkins" {
+  source = "terraform-aws-modules/ec2-instance/aws"
+
+  name = "Jenkins-instance"
+
+  instance_type               = "t2.medium"
+  associate_public_ip_address = true
+  ami                         = data.aws_ami.ubuntu22.id
+  vpc_security_group_ids      = [aws_security_group.jenkins-SG.id]
+  key_name                    = aws_key_pair.ci_key_pair.key_name
+  monitoring                  = false
+  subnet_id                   = module.vpc.public_subnets[0]
+  create_security_group       = false
+
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+  }
+
+  user_data = file("../userdata-EC2/jenkins.sh")
+
+}
+
+
+### EC2 Instance for sonar Server
+
+module "ec2_instance_sonar" {
+  source = "terraform-aws-modules/ec2-instance/aws"
+
+  name = "sonar-instance"
+
+  instance_type               = "t2.medium"
+  associate_public_ip_address = true
+  ami                         = data.aws_ami.ubuntu22.id
+  vpc_security_group_ids      = [aws_security_group.sonar-SG.id]
+  key_name                    = aws_key_pair.ci_key_pair.key_name
+  monitoring                  = false
+  subnet_id                   = module.vpc.public_subnets[0]
+  create_security_group       = false
+
+
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+  }
+
+  user_data = file("../userdata-EC2/sonar.sh")
+
+}
+
+
+#### EC2 Instance for nexus Server
+
+module "ec2_instance_nexus" {
+  source = "terraform-aws-modules/ec2-instance/aws"
+
+  name = "nexus-instance"
+
+  instance_type          = "t2.medium"
+  ami                    = data.aws_ami.amazon_linux_2.id
+  vpc_security_group_ids = [aws_security_group.nexus-SG.id]
+  key_name               = aws_key_pair.ci_key_pair.key_name
+  monitoring             = false
+  subnet_id              = module.vpc.public_subnets[0]
+  create_security_group  = false
+
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+  }
+
+  user_data = file("../userdata-EC2/nexus.sh")
 
 }
 
