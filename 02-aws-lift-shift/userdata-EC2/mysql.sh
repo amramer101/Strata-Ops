@@ -1,23 +1,42 @@
 #!/bin/bash
 set -e
-DATABASE_PASS= $(aws ssm get-parameter --name "/strata-ops/mysql-password" --with-decryption --query "Parameter.Value" --output text)
+
+echo "Installing AWS CLI and Dependencies..."
 sudo dnf update -y
-sudo dnf install git zip unzip -y
+sudo dnf install git zip unzip curl -y
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+rm -rf aws awscliv2.zip
+
+REGION="eu-central-1"
+echo "Fetching Database Password from AWS SSM..."
+DATABASE_PASS=$(aws ssm get-parameter --name "/strata-ops/mysql-password" --with-decryption --query "Parameter.Value" --output text --region $REGION)
+
 sudo dnf install mariadb105-server -y
-# starting & enabling mariadb-server
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
+
 cd /tmp/
+rm -rf Strata-Ops
 git clone -b main https://github.com/amramer101/Strata-Ops.git
-#restore the dump file for the application
+
+echo "Configuring MariaDB..."
 sudo mysqladmin -u root password "$DATABASE_PASS"
-sudo mysql -u root -p"$DATABASE_PASS" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$DATABASE_PASS'"
-sudo mysql -u root -p"$DATABASE_PASS" -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
-sudo mysql -u root -p"$DATABASE_PASS" -e "DELETE FROM mysql.user WHERE User=''"
-sudo mysql -u root -p"$DATABASE_PASS" -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
-sudo mysql -u root -p"$DATABASE_PASS" -e "FLUSH PRIVILEGES"
-sudo mysql -u root -p"$DATABASE_PASS" -e "create database accounts"
-sudo mysql -u root -p"$DATABASE_PASS" -e "grant all privileges on accounts.* TO 'admin'@'localhost' identified by 'admin123'"
-sudo mysql -u root -p"$DATABASE_PASS" -e "grant all privileges on accounts.* TO 'admin'@'%' identified by 'admin123'"
+
+sudo mysql -u root -p"$DATABASE_PASS" <<EOF
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$DATABASE_PASS';
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+DELETE FROM mysql.user WHERE User='';
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%';
+CREATE DATABASE IF NOT EXISTS accounts;
+GRANT ALL PRIVILEGES ON accounts.* TO 'admin'@'localhost' IDENTIFIED BY '$DATABASE_PASS';
+GRANT ALL PRIVILEGES ON accounts.* TO 'admin'@'%' IDENTIFIED BY '$DATABASE_PASS';
+FLUSH PRIVILEGES;
+EOF
+
+echo "Restoring Database Dump..."
 sudo mysql -u root -p"$DATABASE_PASS" accounts < /tmp/Strata-Ops/src/main/resources/db_backup.sql
-sudo mysql -u root -p"$DATABASE_PASS" -e "FLUSH PRIVILEGES"
+
+echo "MySQL Provisioning Completed Successfully!"

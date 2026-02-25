@@ -60,6 +60,14 @@ resource "aws_security_group" "Tomcat-SG" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_tomcat" {
   security_group_id = aws_security_group.Tomcat-SG.id
+  referenced_security_group_id = aws_security_group.jenkins-SG.id
+  from_port         = 22
+  ip_protocol       = "tcp"
+  to_port           = 22
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_tomcat" {
+  security_group_id = aws_security_group.Tomcat-SG.id
   cidr_ipv4         = local.my_public_ip_cidr
   from_port         = 22
   ip_protocol       = "tcp"

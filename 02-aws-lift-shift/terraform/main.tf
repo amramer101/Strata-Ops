@@ -167,6 +167,8 @@ module "ec2_instance_mysql" {
   }
 
   user_data = file("../userdata-EC2/mysql.sh")
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+
 
 }
 
