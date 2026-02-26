@@ -7,13 +7,6 @@
 # 1. (Late Binding)
 # ==========================================
 
-resource "aws_ssm_parameter" "sonar_token" {
-  name  = "/strata-ops/sonar-token"
-  type  = "SecureString"
-  value = "pending"
-  lifecycle { ignore_changes = [value] }
-}
-
 resource "aws_ssm_parameter" "nexus_password" {
   name  = "/strata-ops/nexus-password"
   type  = "SecureString"
@@ -22,10 +15,10 @@ resource "aws_ssm_parameter" "nexus_password" {
 }
 
 resource "aws_ssm_parameter" "tomcat_private_key" {
-  name  = "/strata-ops/tomcat-ssh-key"
-  type  = "SecureString"
-  
-  value = file("${path.module}/ec2-eprofile-key") 
+  name = "/strata-ops/tomcat-ssh-key"
+  type = "SecureString"
+
+  value = file("${path.module}/ec2-eprofile-key")
 }
 
 # ==========================================
@@ -44,7 +37,7 @@ resource "aws_ssm_parameter" "jenkins_password" {
 
 resource "random_password" "db_password" {
   length  = 8
-  special = false 
+  special = false
 }
 resource "aws_ssm_parameter" "mysql_password" {
   name  = "/strata-ops/mysql-password"
@@ -65,6 +58,13 @@ resource "aws_ssm_parameter" "github_key" {
 
 resource "aws_ssm_parameter" "slack_token" {
   name  = "/strata-ops/slack-token"
+  type  = "SecureString"
+  value = "please_update_me_in_aws_console"
+  lifecycle { ignore_changes = [value] }
+}
+
+resource "aws_ssm_parameter" "sonar_token" {
+  name  = "/strata-ops/sonar-token"
   type  = "SecureString"
   value = "please_update_me_in_aws_console"
   lifecycle { ignore_changes = [value] }

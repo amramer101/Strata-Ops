@@ -90,7 +90,7 @@ module "ec2_instance_tomcat" {
     Environment = "dev"
   }
 
-  user_data = file("../userdata-EC2/tomcat_ubuntu.sh")
+  user_data            = file("../userdata-EC2/tomcat_ubuntu.sh")
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
 
@@ -166,7 +166,7 @@ module "ec2_instance_mysql" {
     Environment = "dev"
   }
 
-  user_data = file("../userdata-EC2/mysql.sh")
+  user_data            = file("../userdata-EC2/mysql.sh")
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
 
@@ -195,9 +195,9 @@ module "ec2_instance_Jenkins" {
     Environment = "dev"
   }
 
-  user_data = file("../userdata-EC2/jenkins.sh")
+  user_data            = file("../userdata-EC2/jenkins.sh")
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
-  depends_on = [module.ec2_instance_nexus, module.ec2_instance_sonarqube]
+  depends_on           = [module.ec2_instance_nexus, module.ec2_instance_sonarqube]
 
 }
 
@@ -224,7 +224,7 @@ module "ec2_instance_sonarqube" {
     Environment = "dev"
   }
 
-  user_data = file("../userdata-EC2/sonar.sh")
+  user_data            = file("../userdata-EC2/sonar.sh")
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
 }
@@ -250,7 +250,7 @@ module "ec2_instance_nexus" {
     Environment = "dev"
   }
 
-  user_data = file("../userdata-EC2/nexus.sh")
+  user_data            = file("../userdata-EC2/nexus.sh")
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
 }
