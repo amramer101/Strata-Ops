@@ -109,3 +109,24 @@ unclassified:
       triggers:
         skipScmCause: false
         skipUpstreamCause: false
+
+## ----------------- Jobs Setup -----------------
+
+jobs:
+  - script: >
+      pipelineJob('Strata-Ops-Phase2-Pipeline') {
+          definition {
+              cpsScm {
+                  scm {
+                      git {
+                          remote { 
+                              url('https://github.com/amramer101/Strata-Ops.git') 
+                              credentials('github-ssh-key')
+                          }
+                          branches('main')
+                      }
+                  }
+                  scriptPath('02-aws-lift-shift/Jenkinsfile')
+              }
+          }
+      }
