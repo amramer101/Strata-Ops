@@ -70,6 +70,7 @@ Environment="ADMIN_PASSWORD=${JENKINS_PASS}"
 Environment="NEXUS_PASSWORD=${NEXUS_PASS}"
 Environment="GITHUB_PRIVATE_KEY=${GITHUB_KEY}"
 Environment="TOMCAT_SSH_KEY=${TOMCAT_SSH_KEY}"
+Environment="SLACK_TOKEN=${SLACK_TOK}"
 EOF
 
 # 9. Reload and Restart Jenkins

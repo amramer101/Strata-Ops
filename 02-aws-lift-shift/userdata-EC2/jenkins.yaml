@@ -30,7 +30,7 @@ credentials:
           description: "Nexus Authentication"
           
 
-      # 4. GitHub SSH Key
+      # 2. GitHub SSH Key
       - basicSSHUserPrivateKey:
           id: "github-ssh-key"
           scope: GLOBAL
@@ -40,7 +40,7 @@ credentials:
               privateKey: "${GITHUB_PRIVATE_KEY}"
           description: "GitHub Private Key for cloning repo"
 
-      # 5. Tomcat EC2 SSH Key
+      # 3. Tomcat EC2 SSH Key
       - basicSSHUserPrivateKey:
           id: "tomcat-ssh-key"
           scope: GLOBAL
@@ -49,6 +49,13 @@ credentials:
             directEntry:
               privateKey: "${TOMCAT_SSH_KEY}"
           description: "SSH Key to deploy to Tomcat EC2"
+
+      # 4. Slack Token
+      - string:
+          scope: GLOBAL
+          id: "Slack-token"
+          secret: "${SLACK_TOKEN}"
+          description: "Slack Integration Token"
 
 # ----------------- Tools Setup -----------------
 tool:
