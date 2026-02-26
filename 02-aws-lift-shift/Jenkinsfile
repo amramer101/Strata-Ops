@@ -107,31 +107,21 @@ pipeline {
             steps {
                 sshagent(['tomcat-ssh-key']) {
                     sh """
-                    echo "Deploying Artifact to Tomcat Server..."
-                    
                     scp -o StrictHostKeyChecking=no target/vprofile-v2.war ${TOMCAT_USER}@${TOMCAT_IP}:/tmp/vprofile-v2.war
                     
                     ssh -o StrictHostKeyChecking=no ${TOMCAT_USER}@${TOMCAT_IP} '
-                        echo "Stopping Tomcat..."
-                        sudo systemctl stop tomcat10
+
+                        sudo cp /tmp/vprofile-v2.war /opt/tomcat/webapps/ROOT.war
+                        sudo chown tomcat:tomcat /opt/tomcat/webapps/ROOT.war
                         
-                        echo "Cleaning old files..."
-                        sudo rm -rf /var/lib/tomcat10/webapps/ROOT*
-                        
-                        echo "Deploying new WAR as ROOT..."
-                        sudo cp /tmp/vprofile-v2.war /var/lib/tomcat10/webapps/ROOT.war
-                        sudo chown tomcat:tomcat /var/lib/tomcat10/webapps/ROOT.war
-                        
-                        echo "Starting Tomcat..."
-                        sudo systemctl start tomcat10
-                        echo "Deployment Successful!"
+                        sudo /opt/tomcat/bin/shutdown.sh || true
+                        sudo /opt/tomcat/bin/startup.sh
                     '
                     """
                 }
             }
         }
-    }
-
+}
     post {
         always {
             echo 'Sending Slack Notifications...'
