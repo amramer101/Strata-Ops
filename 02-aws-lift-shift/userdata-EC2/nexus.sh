@@ -63,10 +63,12 @@ echo "Nexus is UP! Processing passwords..."
 
 INITIAL_PASSWORD_FILE="/opt/nexus/sonatype-work/nexus3/admin.password"
 
+NEW_NEXUS_PASS="admin123"
+
+
 if [ -f "$INITIAL_PASSWORD_FILE" ]; then
     INITIAL_PASS=$(cat $INITIAL_PASSWORD_FILE)
     
-    NEW_NEXUS_PASS="admin123"
 
     curl -u "admin:$INITIAL_PASS" \
          -X PUT \

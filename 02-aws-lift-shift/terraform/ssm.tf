@@ -56,16 +56,17 @@ resource "aws_ssm_parameter" "github_key" {
   lifecycle { ignore_changes = [value] }
 }
 
-resource "aws_ssm_parameter" "slack_token" {
-  name  = "/strata-ops/slack-token"
-  type  = "SecureString"
-  value = "please_update_me_in_aws_console"
-  lifecycle { ignore_changes = [value] }
-}
-
 resource "aws_ssm_parameter" "sonar_token" {
   name  = "/strata-ops/sonar-token"
   type  = "SecureString"
-  value = "please_update_me_in_aws_console"
+  value = "pending"  # ← غيرها لـ pending زي nexus
+  lifecycle { ignore_changes = [value] }
+}
+
+# وبرضو الـ slack_token
+resource "aws_ssm_parameter" "slack_token" {
+  name  = "/strata-ops/slack-token"
+  type  = "SecureString"
+  value = "pending"
   lifecycle { ignore_changes = [value] }
 }

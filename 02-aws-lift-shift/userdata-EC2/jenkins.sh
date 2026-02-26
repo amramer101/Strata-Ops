@@ -12,6 +12,7 @@ echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.
 sudo apt update
 sudo apt install jenkins -y
 sudo apt install awscli -y
+sudo systemctl stop jenkins   # ← أضف السطر ده فوراً بعد الـ install
 
 # 3. Disable the Initial Setup Wizard (We are using JCasC)
 sudo sed -i 's/Environment="JAVA_OPTS=-Djava.awt.headless=true"/Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"/g' /usr/lib/systemd/system/jenkins.service
@@ -53,11 +54,11 @@ echo "Fetching parameters from AWS SSM..."
 
 JENKINS_PASS=$(aws ssm get-parameter --name "/strata-ops/jenkins-admin-password" --with-decryption --query "Parameter.Value" --output text --region $REGION)
 GITHUB_KEY=$(aws ssm get-parameter --name "/strata-ops/github-private-key" --with-decryption --query "Parameter.Value" --output text --region $REGION)
-SLACK_TOK=$(aws ssm get-parameter --name "/strata-ops/slack-token" --with-decryption --query "Parameter.Value" --output text --region $REGION)
 TOMCAT_SSH_KEY=$(aws ssm get-parameter --name "/strata-ops/tomcat-ssh-key" --with-decryption --query "Parameter.Value" --output text --region $REGION)
 
 NEXUS_PASS=$(wait_for_ssm_param "/strata-ops/nexus-password")
 SONAR_TOK=$(wait_for_ssm_param "/strata-ops/sonar-token")
+SLACK_TOK=$(wait_for_ssm_param "/strata-ops/slack-token")
 
 # ==============================================================================
 # 8. INJECT ENVIRONMENT VARIABLES SECURELY (No SSH Keys here)
@@ -88,7 +89,7 @@ cat <<EOF | sudo tee -a /var/lib/jenkins/casc_configs/jenkins.yaml
           privateKeySource:
             directEntry:
               privateKey: |
-$(echo "$TOMCAT_SSH_KEY" | sed '/^$/d' | sed 's/^/                /')
+$(echo "$GITHUB_KEY" | sed '/^$/d' | sed 's/^/                /')
 
       # 4. Tomcat EC2 SSH Key
       - basicSSHUserPrivateKey:
