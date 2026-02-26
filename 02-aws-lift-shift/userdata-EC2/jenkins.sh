@@ -88,7 +88,7 @@ cat <<EOF | sudo tee -a /var/lib/jenkins/casc_configs/jenkins.yaml
           privateKeySource:
             directEntry:
               privateKey: |
-$(echo "$GITHUB_KEY" | sed 's/^/                /')
+$(echo "$TOMCAT_SSH_KEY" | sed '/^$/d' | sed 's/^/                /')
 
       # 4. Tomcat EC2 SSH Key
       - basicSSHUserPrivateKey:
@@ -99,7 +99,7 @@ $(echo "$GITHUB_KEY" | sed 's/^/                /')
           privateKeySource:
             directEntry:
               privateKey: |
-$(echo "$TOMCAT_SSH_KEY" | sed 's/^/                /')
+$(echo "$TOMCAT_SSH_KEY" | sed '/^$/d' | sed 's/^/                /')
 EOF
 
 # 9. Reload and Restart Jenkins

@@ -118,13 +118,12 @@ sudo ufw allow 80,9000,9001/tcp
 sudo systemctl start sonarqube.service
 
 echo "Waiting for SonarQube to fully start..."
+
 while true; do
   if curl -s http://localhost:9000/api/system/status | grep -q '"status":"UP"'; then
     echo "SonarQube is UP! Changing password..."
-
     curl -u admin:admin -X POST "http://localhost:9000/api/users/change_password?login=admin&previousPassword=admin&password=admin123"
-    
-    sleep 5 
+    sleep 5
 
     echo "Creating Webhook..."
     curl -s -u "admin:admin123" -X POST "http://localhost:9000/api/webhooks/create" \
@@ -132,17 +131,27 @@ while true; do
          -d "url=http://jenkins.eprofile.in:8080/sonarqube-webhook/"
          
     echo "Generating Token..."
-    curl -s -u "admin:admin123" -X POST "http://localhost:9000/api/user_tokens/generate" -d "name=jenkins-ci-token" > /tmp/sonar_resp.json
+    curl -s -u "admin:admin123" -X POST "http://localhost:9000/api/user_tokens/generate" \
+         -d "name=jenkins-ci-token" > /tmp/sonar_resp.json
     
     SONAR_TOKEN=$(cat /tmp/sonar_resp.json | jq -r '.token // empty')
 
     if [ -z "$SONAR_TOKEN" ]; then
-        echo "ERROR: Failed to generate Sonar Token. Response was:"
+        echo "ERROR: Failed to generate Sonar Token."
         cat /tmp/sonar_resp.json
     else
         echo "Pushing Token to SSM..."
-        aws ssm put-parameter --name "/strata-ops/sonar-token" --value "$SONAR_TOKEN" --type "SecureString" --overwrite --region eu-central-1
+        aws ssm put-parameter \
+          --name "/strata-ops/sonar-token" \
+          --value "$SONAR_TOKEN" \
+          --type "SecureString" \
+          --overwrite \
+          --region eu-central-1
+        echo "Done!"
     fi
+    
+    break
+  fi 
   sleep 15
 done
 
