@@ -114,7 +114,6 @@ ln -s /etc/nginx/sites-available/sonarqube /etc/nginx/sites-enabled/sonarqube
 systemctl enable nginx.service
 systemctl restart nginx.service
 sudo ufw allow 80,9000,9001/tcp
-sleep 30
 
 sudo systemctl start sonarqube.service
 
@@ -140,3 +139,5 @@ while true; do
   fi
   sleep 15
 done
+
+reboot

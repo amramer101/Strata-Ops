@@ -61,34 +61,8 @@ unclassified:
         skipScmCause: false
         skipUpstreamCause: false
 
-# ----------------- Credentials -----------------
-credentials:
-  system:
-    domainCredentials:
-    - credentials:
-      # 1. Nexus Credentials
-      - usernamePassword:
-          id: "nexuslogin"
-          scope: GLOBAL
-          username: "admin"
-          password: "${NEXUS_PASSWORD}"
-          description: "Nexus Authentication"
-          
-      # 2. Slack Token
-      - string:
-          scope: GLOBAL
-          id: "Slack-token"
-          secret: "${SLACK_TOKEN}"
-          description: "Slack Integration Token"
 
-      # 3. SonarQube Token
-      - string:
-          scope: GLOBAL
-          id: "sonartoken"
-          secret: "${SONAR_TOKEN}"
-          description: "SonarQube Token"
-
-          
+         
 ### Add more credentials here as needed, such as GitHub SSH Key, SonarQube Token, etc.         
 jobs:
   - script: |
@@ -108,3 +82,30 @@ jobs:
               }
           }
       }
+
+# ----------------- Credentials -----------------
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      # 1. Nexus Credentials
+      - usernamePassword:
+          id: "nexuslogin"
+          scope: GLOBAL
+          username: "admin"
+          password: "${NEXUS_PASSWORD}"
+          description: "Nexus Authentication"    
+              
+      # 2. Slack Token
+      - string:
+          scope: GLOBAL
+          id: "Slack-token"
+          secret: "${SLACK_TOKEN}"
+          description: "Slack Integration Token"
+
+      # 3. SonarQube Token
+      - string:
+          scope: GLOBAL
+          id: "sonartoken"
+          secret: "${SONAR_TOKEN}"
+          description: "SonarQube Token"
