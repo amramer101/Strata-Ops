@@ -64,6 +64,7 @@ SONAR_TOK=$(wait_for_ssm_param "/strata-ops/sonar-token")
 sudo mkdir -p /etc/systemd/system/jenkins.service.d/
 cat <<EOF | sudo tee /etc/systemd/system/jenkins.service.d/override.conf
 [Service]
+Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
 Environment="CASC_JENKINS_CONFIG=/var/lib/jenkins/casc_configs/jenkins.yaml"
 Environment="ADMIN_PASSWORD=${JENKINS_PASS}"
 Environment="NEXUS_PASSWORD=${NEXUS_PASS}"
