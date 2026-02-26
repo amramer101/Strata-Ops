@@ -27,7 +27,7 @@ resource "aws_ssm_parameter" "tomcat_private_key" {
 
 resource "random_password" "jenkins_admin" {
   length  = 8
-  special = true
+  special = false
 }
 resource "aws_ssm_parameter" "jenkins_password" {
   name  = "/strata-ops/jenkins-admin-password"

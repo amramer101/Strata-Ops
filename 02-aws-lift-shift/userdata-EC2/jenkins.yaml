@@ -16,48 +16,6 @@ jenkins:
         - mailer:
             emailAddress: "amr@gmail.com"
 
-# ----------------- Credentials -----------------
-credentials:
-  system:
-    domainCredentials:
-    - credentials:
-      # 1. Nexus Credentials
-      - usernamePassword:
-          id: "nexuslogin"
-          scope: GLOBAL
-          username: "admin"
-          password: "${NEXUS_PASSWORD}"
-          description: "Nexus Authentication"
-          
-
-      # 2. GitHub SSH Key
-      - basicSSHUserPrivateKey:
-          id: "github-ssh-key"
-          scope: GLOBAL
-          username: "git"
-          privateKeySource:
-            directEntry:
-              privateKey: "${GITHUB_PRIVATE_KEY}"
-          description: "GitHub Private Key for cloning repo"
-
-      # 3. Tomcat EC2 SSH Key
-      - basicSSHUserPrivateKey:
-          id: "tomcat-ssh-key"
-          scope: GLOBAL
-          username: "ubuntu"
-          privateKeySource:
-            directEntry:
-              privateKey: "${TOMCAT_SSH_KEY}"
-          description: "SSH Key to deploy to Tomcat EC2"
-
-      # 4. Slack Token
-      - string:
-          scope: GLOBAL
-          id: "Slack-token"
-          secret: "${SLACK_TOKEN}"
-          description: "Slack Integration Token"
-
-# ----------------- Tools Setup -----------------
 tool:
   git:
     installations:
@@ -84,7 +42,6 @@ tool:
           - sonarRunnerInstaller:
               id: "4.7.0.2747"
 
-# ----------------- Integrations -----------------
 unclassified:
   location:
     url: "http://jenkins.eprofile.in/"
@@ -99,15 +56,34 @@ unclassified:
     installations:
     - name: "sonarserver"
       serverUrl: "http://sonarqube.eprofile.in:80"
-      credentialsId: "sonertoken"
+      credentialsId: "sonartoken"
       triggers:
         skipScmCause: false
         skipUpstreamCause: false
 
-## ----------------- Jobs Setup -----------------
+# ----------------- Credentials -----------------
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      # 1. Nexus Credentials
+      - usernamePassword:
+          id: "nexuslogin"
+          scope: GLOBAL
+          username: "admin"
+          password: "${NEXUS_PASSWORD}"
+          description: "Nexus Authentication"
+          
+      # 2. Slack Token
+      - string:
+          scope: GLOBAL
+          id: "Slack-token"
+          secret: "${SLACK_TOKEN}"
+          description: "Slack Integration Token"
 
+### Add more credentials here as needed, such as GitHub SSH Key, SonarQube Token, etc.         
 jobs:
-  - script: >
+  - script: |
       pipelineJob('Strata-Ops-Phase2-Pipeline') {
           definition {
               cpsScm {

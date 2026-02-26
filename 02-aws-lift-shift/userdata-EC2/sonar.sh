@@ -117,3 +117,25 @@ sudo ufw allow 80,9000,9001/tcp
 echo "System reboot in 30 sec"
 sleep 30
 reboot
+
+
+# ==============================================================================
+# AUTO-CONFIGURE JENKINS WEBHOOK VIA API
+# ==============================================================================
+echo "Waiting for SonarQube to fully start to configure Webhook..."
+
+# اللوب دي بتسأل السونار: إنت قمت وبقيت جاهز؟
+while true; do
+  if curl -s http://localhost:9000/api/system/status | grep -q '"status":"UP"'; then
+    echo "SonarQube is UP! Creating Jenkins Webhook..."
+    
+    # استخدام الـ API لإنشاء الـ Webhook أوتوماتيك باليوزر الافتراضي
+    curl -u "admin:admin" -X POST "http://localhost:9000/api/webhooks/create" \
+         -d "name=Jenkins-CI" \
+         -d "url=http://jenkins.eprofile.in:8080/sonarqube-webhook/"
+         
+    echo "Webhook created successfully!"
+    break
+  fi
+  sleep 10
+done

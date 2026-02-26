@@ -24,7 +24,7 @@ pipeline {
         SONARSERVER         = "sonarserver" 
         SONARSCANNER        = "sonarscanner" 
         
-        TOMCAT_IP           = "tomcat.eprofile.in"
+        TOMCAT_IP           = "app01.eprofile.in"
         TOMCAT_USER         = "ubuntu"
     }
 

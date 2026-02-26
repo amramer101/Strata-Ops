@@ -22,7 +22,7 @@ wget https://github.com/jenkinsci/plugin-installation-manager-tool/releases/down
 sudo java -jar jenkins-plugin-manager-2.12.14.jar \
   --war /usr/share/java/jenkins.war \
   --plugin-download-directory /var/lib/jenkins/plugins \
-  --plugins configuration-as-code git github workflow-aggregator credentials plain-credentials ssh-credentials sonar slack maven-plugin email-ext timestamper ws-cleanup job-dsl
+  --plugins configuration-as-code git github workflow-aggregator credentials plain-credentials ssh-credentials sonar slack maven-plugin email-ext timestamper ws-cleanup job-dsl nexus-artifact-uploader ssh-agent
 
 # 6. Setup JCasC Directory and Download your YAML file
 sudo mkdir -p /var/lib/jenkins/casc_configs
