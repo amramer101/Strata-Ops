@@ -36,7 +36,6 @@ sudo chown -R jenkins:jenkins /var/lib/jenkins/casc_configs
 # ==============================================================================
 REGION="eu-central-1"
 
-# دالة ذكية تستنى لحد ما الباسورد يتحدث وميبقاش "pending"
 wait_for_ssm_param() {
   PARAM_NAME=$1
   echo "Waiting for $PARAM_NAME to be populated by its server..."

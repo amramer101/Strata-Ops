@@ -89,4 +89,28 @@ else
     echo "ERROR: Initial password file not found."
 fi
 
+# ==============================================================================
+# 6. AUTOMATION: Create Maven Hosted Repository via API
+# ==============================================================================
+
+    echo "Creating Maven Hosted Repository (vprofile-repo)..."
+
+    curl -u "admin:$NEW_NEXUS_PASS" -X POST "http://localhost:8081/service/rest/v1/repositories/maven/hosted" \
+         -H "accept: application/json" \
+         -H "Content-Type: application/json" \
+         -d '{
+               "name": "vprofile-repo",
+               "online": true,
+               "storage": {
+                 "blobStoreName": "default",
+                 "strictContentTypeValidation": true,
+                 "writePolicy": "ALLOW"
+               },
+               "maven": {
+                 "versionPolicy": "MIXED",
+                 "layoutPolicy": "STRICT"
+               }
+             }'
+
+echo "Repository vprofile-repo created successfully!"
 echo "Nexus Provisioning Completed!"
