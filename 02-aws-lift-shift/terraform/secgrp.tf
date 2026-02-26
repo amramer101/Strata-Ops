@@ -59,14 +59,6 @@ resource "aws_security_group" "Tomcat-SG" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_tomcat" {
-  security_group_id            = aws_security_group.Tomcat-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port                    = 22
-  ip_protocol                  = "tcp"
-  to_port                      = 22
-}
-
-resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_tomcat_from_my_ip" {
   security_group_id = aws_security_group.Tomcat-SG.id
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = 22
@@ -74,18 +66,26 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_tomcat_from_my_ip
   to_port           = 22
 }
 
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_tomcat_from_my_ip" {
+  security_group_id = aws_security_group.Tomcat-SG.id
+  cidr_ipv4         = local.my_public_ip_cidr
+  from_port         = 22
+  ip_protocol       = "tcp"
+  to_port           = 22
+}
+
 
 resource "aws_vpc_security_group_ingress_rule" "allow_8080_from_frontend" {
-  security_group_id            = aws_security_group.Tomcat-SG.id
+  security_group_id = aws_security_group.Tomcat-SG.id
   cidr_ipv4         = "0.0.0.0/0"
-  from_port                    = 8080
-  ip_protocol                  = "tcp"
-  to_port                      = 8080
+  from_port         = 8080
+  ip_protocol       = "tcp"
+  to_port           = 8080
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_8080_from_Jenkins" {
   security_group_id            = aws_security_group.Tomcat-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
+  referenced_security_group_id = aws_security_group.jenkins-SG.id
   from_port                    = 8080
   ip_protocol                  = "tcp"
   to_port                      = 8080
@@ -225,7 +225,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_80_sonar" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_80_from_jenkins" {
   security_group_id            = aws_security_group.sonar-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
+  referenced_security_group_id = aws_security_group.jenkins-SG.id
   from_port                    = 80
   ip_protocol                  = "tcp"
   to_port                      = 80
@@ -261,7 +261,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4_nexus" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_8081_from_jenkins" {
   security_group_id            = aws_security_group.nexus-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
+  referenced_security_group_id = aws_security_group.jenkins-SG.id
   from_port                    = 8081
   ip_protocol                  = "tcp"
   to_port                      = 8081

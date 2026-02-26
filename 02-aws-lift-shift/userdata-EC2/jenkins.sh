@@ -1,17 +1,16 @@
 #!/bin/bash
-set -e
+sudo apt update
+sudo apt install fontconfig openjdk-21-jre -y
 
-echo "Starting Jenkins Enterprise Provisioning..."
+sudo mkdir -p /etc/apt/keyrings
 
-# 1. Update and install prerequisites including Java 21 & AWS CLI
-sudo apt-get update
-sudo apt-get install -y fontconfig openjdk-21-jdk wget curl unzip awscli jq
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
 
-# 2. Install Jenkins
-sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
-echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
-sudo apt-get update
-sudo apt-get install -y jenkins
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+sudo apt update
+sudo apt install jenkins -y
 
 # 3. Disable the Initial Setup Wizard (We are using JCasC)
 sudo sed -i 's/Environment="JAVA_OPTS=-Djava.awt.headless=true"/Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"/g' /usr/lib/systemd/system/jenkins.service
