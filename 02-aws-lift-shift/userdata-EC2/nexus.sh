@@ -89,6 +89,7 @@ if [ -f "$INITIAL_PASSWORD_FILE" ]; then
     echo "Nexus password successfully injected into AWS SSM."
 else
     echo "ERROR: Initial password file not found."
+    exit 1
 fi
 
 # ==============================================================================
