@@ -110,7 +110,8 @@ pipeline {
                     scp -o StrictHostKeyChecking=no target/vprofile-v2.war ${TOMCAT_USER}@${TOMCAT_IP}:/tmp/vprofile-v2.war
                     
                     ssh -o StrictHostKeyChecking=no ${TOMCAT_USER}@${TOMCAT_IP} '
-
+                    
+                        sudo rm -rf /opt/tomcat/webapps/ROOT*
                         sudo cp /tmp/vprofile-v2.war /opt/tomcat/webapps/ROOT.war
                         sudo chown tomcat:tomcat /opt/tomcat/webapps/ROOT.war
                         
