@@ -81,6 +81,14 @@ credentials:
           secret: "${SLACK_TOKEN}"
           description: "Slack Integration Token"
 
+      # 3. SonarQube Token
+      - string:
+          scope: GLOBAL
+          id: "sonartoken"
+          secret: "${SONAR_TOKEN}"
+          description: "SonarQube Token"
+
+          
 ### Add more credentials here as needed, such as GitHub SSH Key, SonarQube Token, etc.         
 jobs:
   - script: |

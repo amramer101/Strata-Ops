@@ -15,6 +15,7 @@ EOT
 sudo apt-get update -y
 sudo apt-get install openjdk-17-jdk -y
 sudo update-alternatives --config java
+sudo apt-get install zip jq awscli nginx -y
 
 java -version
 
@@ -124,12 +125,10 @@ reboot
 # ==============================================================================
 echo "Waiting for SonarQube to fully start to configure Webhook..."
 
-# اللوب دي بتسأل السونار: إنت قمت وبقيت جاهز؟
 while true; do
   if curl -s http://localhost:9000/api/system/status | grep -q '"status":"UP"'; then
     echo "SonarQube is UP! Creating Jenkins Webhook..."
     
-    # استخدام الـ API لإنشاء الـ Webhook أوتوماتيك باليوزر الافتراضي
     curl -u "admin:admin" -X POST "http://localhost:9000/api/webhooks/create" \
          -d "name=Jenkins-CI" \
          -d "url=http://jenkins.eprofile.in:8080/sonarqube-webhook/"
@@ -139,3 +138,19 @@ while true; do
   fi
   sleep 10
 done
+
+
+echo "Generating SonarQube Token via API..."
+curl -s -u "admin:admin" -X POST "http://localhost:9000/api/user_tokens/generate" -d "name=jenkins-ci-token" -d "login=admin" > /tmp/sonar_token.json
+
+SONAR_TOKEN=$(cat /tmp/sonar_token.json | jq -r '.token')
+
+echo "Pushing Sonar Token to AWS SSM..."
+aws ssm put-parameter \
+  --name "/strata-ops/sonar-token" \
+  --value "$SONAR_TOKEN" \
+  --type "SecureString" \
+  --overwrite \
+  --region eu-central-1
+
+echo "SonarQube Automation Fully Completed!"

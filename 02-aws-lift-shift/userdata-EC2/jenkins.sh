@@ -59,7 +59,7 @@ NEXUS_PASS=$(wait_for_ssm_param "/strata-ops/nexus-password")
 SONAR_TOK=$(wait_for_ssm_param "/strata-ops/sonar-token")
 
 # ==============================================================================
-# 8. INJECT ENVIRONMENT VARIABLES SECURELY
+# 8. INJECT ENVIRONMENT VARIABLES SECURELY (No SSH Keys here)
 # ==============================================================================
 sudo mkdir -p /etc/systemd/system/jenkins.service.d/
 cat <<EOF | sudo tee /etc/systemd/system/jenkins.service.d/override.conf
@@ -67,9 +67,37 @@ cat <<EOF | sudo tee /etc/systemd/system/jenkins.service.d/override.conf
 Environment="CASC_JENKINS_CONFIG=/var/lib/jenkins/casc_configs/jenkins.yaml"
 Environment="ADMIN_PASSWORD=${JENKINS_PASS}"
 Environment="NEXUS_PASSWORD=${NEXUS_PASS}"
-Environment="GITHUB_PRIVATE_KEY=${GITHUB_KEY}"
-Environment="TOMCAT_SSH_KEY=${TOMCAT_SSH_KEY}"
+Environment="SONAR_TOKEN=${SONAR_TOK}"
 Environment="SLACK_TOKEN=${SLACK_TOK}"
+EOF
+
+# ==============================================================================
+# 8.5 THE MAGIC TRICK: APPEND SSH KEYS DIRECTLY TO YAML WITH PERFECT INDENTATION
+# ==============================================================================
+echo "Appending multiline SSH Keys to jenkins.yaml dynamically..."
+cat <<EOF | sudo tee -a /var/lib/jenkins/casc_configs/jenkins.yaml
+
+      # 3. GitHub SSH Key
+      - basicSSHUserPrivateKey:
+          id: "github-ssh-key"
+          scope: GLOBAL
+          username: "git"
+          description: "GitHub Private Key for cloning repo"
+          privateKeySource:
+            directEntry:
+              privateKey: |
+$(echo "$GITHUB_KEY" | sed 's/^/                /')
+
+      # 4. Tomcat EC2 SSH Key
+      - basicSSHUserPrivateKey:
+          id: "tomcat-ssh-key"
+          scope: GLOBAL
+          username: "ubuntu"
+          description: "SSH Key to deploy to Tomcat EC2"
+          privateKeySource:
+            directEntry:
+              privateKey: |
+$(echo "$TOMCAT_SSH_KEY" | sed 's/^/                /')
 EOF
 
 # 9. Reload and Restart Jenkins
@@ -77,5 +105,3 @@ sudo systemctl daemon-reload
 sudo chown -R jenkins:jenkins /var/lib/jenkins/plugins
 sudo systemctl restart jenkins
 sudo systemctl enable jenkins
-
-echo "Jenkins Provisioning Completed Successfully with Secure SSM Injection!"
