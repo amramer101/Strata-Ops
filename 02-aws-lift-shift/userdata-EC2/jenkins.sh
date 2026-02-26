@@ -68,8 +68,6 @@ cat <<EOF | sudo tee /etc/systemd/system/jenkins.service.d/override.conf
 Environment="CASC_JENKINS_CONFIG=/var/lib/jenkins/casc_configs/jenkins.yaml"
 Environment="ADMIN_PASSWORD=${JENKINS_PASS}"
 Environment="NEXUS_PASSWORD=${NEXUS_PASS}"
-Environment="SONAR_TOKEN=${SONAR_TOK}"
-Environment="SLACK_TOKEN=${SLACK_TOK}"
 Environment="GITHUB_PRIVATE_KEY=${GITHUB_KEY}"
 Environment="TOMCAT_SSH_KEY=${TOMCAT_SSH_KEY}"
 EOF

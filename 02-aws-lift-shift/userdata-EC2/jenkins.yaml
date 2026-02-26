@@ -29,19 +29,6 @@ credentials:
           password: "${NEXUS_PASSWORD}"
           description: "Nexus Authentication"
           
-      # 2. SonarQube Token
-      - string:
-          id: "sonertoken"
-          scope: GLOBAL
-          secret: "${SONAR_TOKEN}"
-          description: "sonertoken"
-          
-      # 3. Slack Token
-      - string:
-          id: "Slack-token"
-          scope: GLOBAL
-          secret: "${SLACK_TOKEN}"
-          description: "Slack-token"
 
       # 4. GitHub SSH Key
       - basicSSHUserPrivateKey:

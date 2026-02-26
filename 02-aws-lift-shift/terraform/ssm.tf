@@ -52,7 +52,7 @@ resource "aws_ssm_parameter" "mysql_password" {
 resource "aws_ssm_parameter" "github_key" {
   name  = "/strata-ops/github-private-key"
   type  = "SecureString"
-  value = "please_update_me_in_aws_console"
+  value = file("${path.module}/aws-2-github")
   lifecycle { ignore_changes = [value] }
 }
 

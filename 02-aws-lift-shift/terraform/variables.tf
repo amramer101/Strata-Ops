@@ -39,3 +39,4 @@ variable "Pub_Key_Path" {
 variable "Pub_Key_Path_ci" {
   default = "ci-key.pub"
 }
+
