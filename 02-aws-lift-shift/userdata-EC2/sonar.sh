@@ -112,46 +112,31 @@ server{
 EOT
 ln -s /etc/nginx/sites-available/sonarqube /etc/nginx/sites-enabled/sonarqube
 systemctl enable nginx.service
-#systemctl restart nginx.service
+systemctl restart nginx.service
 sudo ufw allow 80,9000,9001/tcp
+sleep 30
 
+sudo systemctl start sonarqube.service
 
-# ==============================================================================
-# AUTO-CONFIGURE JENKINS WEBHOOK VIA API
-# ==============================================================================
-echo "Waiting for SonarQube to fully start to configure Webhook..."
-
+echo "Waiting for SonarQube to fully start..."
 while true; do
   if curl -s http://localhost:9000/api/system/status | grep -q '"status":"UP"'; then
-    echo "SonarQube is UP! Creating Jenkins Webhook..."
+    echo "SonarQube is UP!"
     
-    curl -u "admin:admin" -X POST "http://localhost:9000/api/webhooks/create" \
+    curl -u admin:admin -X POST "http://localhost:9000/api/users/change_password?login=admin&previousPassword=admin&password=admin123"
+    
+    echo "Password changed. Creating Webhook..."
+    
+    curl -u "admin:admin123" -X POST "http://localhost:9000/api/webhooks/create" \
          -d "name=Jenkins-CI" \
          -d "url=http://jenkins.eprofile.in:8080/sonarqube-webhook/"
          
-    echo "Webhook created successfully!"
+    echo "Generating Token..."
+    SONAR_TOKEN=$(curl -s -u "admin:admin123" -X POST "http://localhost:9000/api/user_tokens/generate" -d "name=jenkins-ci-token" | jq -r '.token')
+
+    aws ssm put-parameter --name "/strata-ops/sonar-token" --value "$SONAR_TOKEN" --type "SecureString" --overwrite --region eu-central-1
+    
     break
   fi
-  sleep 10
+  sleep 15
 done
-
-
-echo "Generating SonarQube Token via API..."
-curl -s -u "admin:admin" -X POST "http://localhost:9000/api/user_tokens/generate" -d "name=jenkins-ci-token" -d "login=admin" > /tmp/sonar_token.json
-
-SONAR_TOKEN=$(cat /tmp/sonar_token.json | jq -r '.token')
-
-echo "Pushing Sonar Token to AWS SSM..."
-aws ssm put-parameter \
-  --name "/strata-ops/sonar-token" \
-  --value "$SONAR_TOKEN" \
-  --type "SecureString" \
-  --overwrite \
-  --region eu-central-1
-
-echo "SonarQube Automation Fully Completed!"
-
-
-echo "System reboot in 30 sec"
-sleep 30
-reboot
