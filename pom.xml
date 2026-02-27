@@ -303,11 +303,12 @@
                 <formats>
                     <format>XML</format>
                     <format>HTML</format> </formats> 
+                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
             </configuration>
         </plugin>
 
 
-        
+
             <!-- JaCoCo Plugin -->
 <!--            <plugin>-->
 <!--                <groupId>org.jacoco</groupId>-->
