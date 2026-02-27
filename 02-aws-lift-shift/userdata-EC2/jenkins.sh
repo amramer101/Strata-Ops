@@ -108,3 +108,7 @@ sudo systemctl daemon-reload
 sudo chown -R jenkins:jenkins /var/lib/jenkins/plugins
 sudo systemctl restart jenkins
 sudo systemctl enable jenkins
+
+# Pre-download OWASP NVD database
+sudo mkdir -p /var/lib/jenkins/OWASP-NVD
+sudo chown jenkins:jenkins /var/lib/jenkins/OWASP-NVD

@@ -32,12 +32,29 @@ pipeline {
                 sh "mvn test"
             }
         }
-        
-        stage("OWASP Dependency Check") {
-                    steps {
-                        sh "mvn dependency-check:check"
-                    }
+
+        stage('OWASP Dependency-Check') {
+            steps {
+                dependencyCheck(
+                    additionalArguments: '''
+                        --scan target/
+                        --format XML
+                        --out target/
+                        --data /var/lib/jenkins/OWASP-NVD
+                    ''',
+                    odcInstallation: 'OWASP-DC'
+                )
+            }
+            post {
+                always {
+                    dependencyCheckPublisher(
+                        pattern: 'target/dependency-check-report.xml',
+                        failedTotalCritical: 0,
+                        unstableTotalHigh: 5
+                    )
                 }
+            }
+        }
 
         stage("Checkstyle Analysis") {
             steps {

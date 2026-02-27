@@ -41,7 +41,15 @@ tool:
           installers:
           - sonarRunnerInstaller:
               id: "4.7.0.2747"
-
+  dependencyCheck:
+    installations:
+    - name: "OWASP-DC"
+      properties:
+      - installSource:
+          installers:
+          - dependencyCheckInstaller:
+              id: "10.0.4"
+              
 unclassified:
   location:
     url: "http://jenkins.eprofile.in/"
