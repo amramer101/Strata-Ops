@@ -29,7 +29,7 @@ chown -R nexus:nexus /opt/nexus
 # 4. Disable Onboarding Wizard (يحل مشكلة EULA تلقائياً)
 NEXUS_PROPS="/opt/nexus/sonatype-work/nexus3/etc/nexus.properties"
 mkdir -p "$(dirname $NEXUS_PROPS)"
-eecho "nexus.onboarding.enabled=false" > "$NEXUS_PROPS"
+echo "nexus.onboarding.enabled=false" > "$NEXUS_PROPS"
 echo "nexus.eula.accepted=true" >> "$NEXUS_PROPS"
 chown -R nexus:nexus /opt/nexus/sonatype-work
 
