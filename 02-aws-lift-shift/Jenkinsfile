@@ -32,6 +32,12 @@ pipeline {
                 sh "mvn test"
             }
         }
+        
+        stage("OWASP Dependency Check") {
+                    steps {
+                        sh "mvn dependency-check:check"
+                    }
+                }
 
         stage("Checkstyle Analysis") {
             steps {
