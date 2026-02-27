@@ -37,7 +37,7 @@ pipeline {
             steps {
                 dependencyCheck(
                     additionalArguments: '''
-                        --scan target/
+                        --scan ./
                         --format XML
                         --out target/
                         --data /var/lib/jenkins/OWASP-NVD
