@@ -41,8 +41,8 @@ pipeline {
                     }
                     post {
                         always {
-                            dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-                            stopBuild: false  
+                            dependencyCheckPublisher pattern: 'target/dependency-check-report.xml',
+                                stopBuild: false  
 
                         }
                     }
