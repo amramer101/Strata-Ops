@@ -39,13 +39,13 @@ REGION="eu-central-1"
 
 wait_for_ssm_param() {
   PARAM_NAME=$1
-  echo "Waiting for $PARAM_NAME to be populated by its server..."
   while true; do
     VAL=$(aws ssm get-parameter --name "$PARAM_NAME" --with-decryption --query "Parameter.Value" --output text --region $REGION 2>/dev/null)
     if [[ "$VAL" != "pending" && -n "$VAL" ]]; then
-      echo "$VAL"
+      echo "$VAL"  
       break
     fi
+    echo "Waiting for $PARAM_NAME..." >&2 
     sleep 10
   done
 }
