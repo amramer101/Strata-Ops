@@ -295,13 +295,19 @@
  		        </executions>
  		</plugin>
 
-        <plugin>
-    <groupId>org.owasp</groupId>
-    <artifactId>dependency-check-maven</artifactId>
-    <version>9.0.9</version> 
-    <configuration>
-        <format>XML</format> </configuration>
-</plugin>
+     <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>9.0.9</version> 
+            <configuration>
+                <formats>
+                    <format>XML</format>
+                    <format>HTML</format> </formats> 
+            </configuration>
+        </plugin>
+
+
+        
             <!-- JaCoCo Plugin -->
 <!--            <plugin>-->
 <!--                <groupId>org.jacoco</groupId>-->
