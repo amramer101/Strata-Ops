@@ -7,6 +7,9 @@ apt update -y
 apt upgrade -y
 apt install openjdk-17-jdk awscli tomcat9 tomcat9-admin tomcat9-common git -y
 
+echo 'JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /etc/environment
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+
 REGION="eu-central-1"
 echo "Fetching Database Password from AWS SSM..."
 DB_PASS=$(aws ssm get-parameter --name "/strata-ops/mysql-password" \
