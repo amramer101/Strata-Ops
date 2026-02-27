@@ -11,6 +11,7 @@ cat <<EOT> /etc/security/limits.conf
 sonarqube   -   nofile   65536
 sonarqube   -   nproc    409
 EOT
+sudo sysctl -p
 
 sudo apt-get update -y
 sudo apt-get install openjdk-17-jdk -y
