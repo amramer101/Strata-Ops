@@ -81,7 +81,7 @@ pipeline {
         stage("Upload Artifact to Nexus") {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'nexuslogin',        // ← من Jenkins credentials
+                    credentialsId: 'nexuslogin',
                     usernameVariable: 'NX_USER',
                     passwordVariable: 'NX_PASS'
                 )]) {
@@ -92,7 +92,7 @@ pipeline {
                         groupId: 'QA',
                         version: "${env.BUILD_ID}-${new java.text.SimpleDateFormat('yyyyMMdd.HHmmss').format(new Date())}",
                         repository: "${NEXUS_REPOSITORY}",
-                        credentialsId: 'nexuslogin',    // ← نفس الـ credential
+                        credentialsId: 'nexuslogin',
                         artifacts: [[
                             artifactId: 'vproapp',
                             classifier: '',
@@ -104,27 +104,25 @@ pipeline {
             }
         }
 
-        // ========================================================
-        // Push Model Deployment to Tomcat
-        // ========================================================
-        stage('Deploy to Tomcat (Push)') {
+        stage('Deploy to Tomcat') {
             steps {
                 sshagent(['tomcat-ssh-key']) {
                     sh """
                     scp -o StrictHostKeyChecking=no target/vprofile-v2.war ${TOMCAT_USER}@${TOMCAT_IP}:/tmp/vprofile-v2.war
                     
                     ssh -o StrictHostKeyChecking=no ${TOMCAT_USER}@${TOMCAT_IP} '
-                        sudo systemctl stop tomcat10 || true
-                        sudo rm -rf /var/lib/tomcat10/webapps/ROOT*
-                        sudo cp /tmp/vprofile-v2.war /var/lib/tomcat10/webapps/ROOT.war
-                        sudo chown tomcat:tomcat /var/lib/tomcat10/webapps/ROOT.war
-                        sudo systemctl start tomcat10
+                        sudo systemctl stop tomcat9 || true
+                        sudo rm -rf /var/lib/tomcat9/webapps/ROOT*
+                        sudo cp /tmp/vprofile-v2.war /var/lib/tomcat9/webapps/ROOT.war
+                        sudo chown tomcat:tomcat /var/lib/tomcat9/webapps/ROOT.war
+                        sudo systemctl start tomcat9
                     '
                     """
                 }
             }
         }
-  }
+    }
+
     post {
         always {
             echo 'Sending Slack Notifications...'

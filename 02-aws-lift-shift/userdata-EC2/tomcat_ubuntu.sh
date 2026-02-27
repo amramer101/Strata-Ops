@@ -1,22 +1,21 @@
 #!/bin/bash
 set -e
 
-echo "Starting Tomcat 10 Provisioning..."
+echo "Starting Tomcat 9 Provisioning..."
 
-sudo apt update
-sudo apt upgrade -y
-
-sudo apt install openjdk-17-jdk awscli -y
-sudo apt install tomcat10 tomcat10-admin tomcat10-docs tomcat10-common git -y
+apt update -y
+apt upgrade -y
+apt install openjdk-17-jdk awscli tomcat9 tomcat9-admin tomcat9-common git -y
 
 REGION="eu-central-1"
 echo "Fetching Database Password from AWS SSM..."
-DB_PASS=$(aws ssm get-parameter --name "/strata-ops/mysql-password" --with-decryption --query "Parameter.Value" --output text --region $REGION)
+DB_PASS=$(aws ssm get-parameter --name "/strata-ops/mysql-password" \
+  --with-decryption --query "Parameter.Value" --output text --region $REGION)
 
-echo "Injecting Environment Variables for Stage 2..."
-sudo mkdir -p /usr/share/tomcat10/bin
+echo "Injecting Environment Variables..."
+mkdir -p /usr/share/tomcat9/bin
 
-cat <<EOF | sudo tee /usr/share/tomcat10/bin/setenv.sh
+cat > /usr/share/tomcat9/bin/setenv.sh <<EOF
 export RDS_HOSTNAME=db01.eprofile.in
 export RDS_PORT=3306
 export RDS_DB_NAME=accounts
@@ -26,11 +25,11 @@ export RABBITMQ_HOSTNAME=rmq01.eprofile.in
 export MEMCACHED_HOSTNAME=mc01.eprofile.in
 EOF
 
-sudo chmod +x /usr/share/tomcat10/bin/setenv.sh
-sudo chown tomcat:tomcat /usr/share/tomcat10/bin/setenv.sh
+chmod +x /usr/share/tomcat9/bin/setenv.sh
+chown tomcat:tomcat /usr/share/tomcat9/bin/setenv.sh
 
-sudo systemctl daemon-reload
-sudo systemctl enable tomcat10
-sudo systemctl restart tomcat10
+systemctl daemon-reload
+systemctl enable tomcat9
+systemctl restart tomcat9
 
-echo "Tomcat Provisioning Completed! Server is ready to receive WAR from Jenkins."
+echo "Tomcat 9 Provisioning Completed!"

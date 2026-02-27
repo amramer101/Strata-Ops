@@ -4,9 +4,9 @@ set -e
 echo "Starting Nexus Native Provisioning..."
 
 # 1. Install Dependencies
-sudo rpm --import https://yum.corretto.aws/corretto.key
-sudo curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo
-sudo yum install -y java-17-amazon-corretto-devel wget jq aws-cli -y
+rpm --import https://yum.corretto.aws/corretto.key
+curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo
+yum install -y java-17-amazon-corretto-devel wget jq aws-cli
 
 # 2. Download and Setup Nexus
 mkdir -p /opt/nexus/
@@ -26,8 +26,14 @@ sleep 5
 useradd nexus
 chown -R nexus:nexus /opt/nexus
 
-# 4. Configure Systemd Service
-cat <<EOT>> /etc/systemd/system/nexus.service
+# 4. Disable Onboarding Wizard (يحل مشكلة EULA تلقائياً)
+NEXUS_PROPS="/opt/nexus/sonatype-work/nexus3/etc/nexus.properties"
+mkdir -p "$(dirname $NEXUS_PROPS)"
+echo "nexus.onboarding.enabled=false" > "$NEXUS_PROPS"
+chown -R nexus:nexus /opt/nexus/sonatype-work
+
+# 5. Configure Systemd Service
+cat > /etc/systemd/system/nexus.service <<EOT
 [Unit]
 Description=nexus service
 After=network.target
@@ -50,94 +56,104 @@ systemctl enable nexus
 systemctl start nexus
 
 # ==============================================================================
-# 5. AUTOMATION: Password Extraction, Update & SSM Injection
+# 6. Wait for Nexus to Start
 # ==============================================================================
 
-echo "Waiting for Nexus to start (This usually takes 2-3 minutes)..."
+echo "Waiting for Nexus to start (usually 2-3 minutes)..."
 
-while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:8081/)" != "200" ]]; do
-  sleep 10
+while [[ "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8081/)" != "200" ]]; do
+  echo "Still waiting..." >&2
+  sleep 15
 done
 
-echo "Nexus is UP! Processing passwords..."
+echo "Nexus is UP!"
+
+# ==============================================================================
+# 7. Change Admin Password & Push to SSM
+# ==============================================================================
 
 INITIAL_PASSWORD_FILE="/opt/nexus/sonatype-work/nexus3/admin.password"
-
 NEW_NEXUS_PASS="admin123"
 
-
-if [ -f "$INITIAL_PASSWORD_FILE" ]; then
-    INITIAL_PASS=$(cat $INITIAL_PASSWORD_FILE)
-    
-
-    curl -u "admin:$INITIAL_PASS" \
-         -X PUT \
-         -H 'Content-Type: text/plain' \
-         -H 'accept: application/json' \
-         --data "$NEW_NEXUS_PASS" \
-         http://localhost:8081/service/rest/v1/security/users/admin/change-password
-    
-    echo "Password changed successfully."
-
-    aws ssm put-parameter \
-      --name "/strata-ops/nexus-password" \
-      --value "$NEW_NEXUS_PASS" \
-      --type "SecureString" \
-      --overwrite \
-      --region eu-central-1
-
-    echo "Nexus password successfully injected into AWS SSM."
-else
+if [ ! -f "$INITIAL_PASSWORD_FILE" ]; then
     echo "ERROR: Initial password file not found."
     exit 1
 fi
 
+INITIAL_PASS=$(cat "$INITIAL_PASSWORD_FILE")
+
+echo "Changing admin password..."
+HTTP_CODE=$(curl -s -o /dev/null -w '%{http_code}' \
+  -u "admin:$INITIAL_PASS" \
+  -X PUT \
+  -H 'Content-Type: text/plain' \
+  --data "$NEW_NEXUS_PASS" \
+  "http://localhost:8081/service/rest/v1/security/users/admin/change-password")
+
+if [[ "$HTTP_CODE" != "204" ]]; then
+    echo "ERROR: Failed to change password. HTTP: $HTTP_CODE"
+    exit 1
+fi
+
+echo "Password changed successfully."
+
+echo "Pushing Nexus password to SSM..."
+aws ssm put-parameter \
+  --name "/strata-ops/nexus-password" \
+  --value "$NEW_NEXUS_PASS" \
+  --type "SecureString" \
+  --overwrite \
+  --region eu-central-1
+
+echo "Nexus password injected into SSM."
+
 # ==============================================================================
-# 6. AUTOMATION: Create Maven Hosted and Central Repository via API
+# 8. Create Repositories
 # ==============================================================================
 
-    echo "Creating Maven Hosted Repository (vprofile-repo)..."
+echo "Creating Maven Hosted Repository (vprofile-repo)..."
 
-    curl -u "admin:$NEW_NEXUS_PASS" -X POST "http://localhost:8081/service/rest/v1/repositories/maven/hosted" \
-         -H "accept: application/json" \
-         -H "Content-Type: application/json" \
-         -d '{
-               "name": "vprofile-repo",
-               "online": true,
-               "storage": {
-                 "blobStoreName": "default",
-                 "strictContentTypeValidation": true,
-                 "writePolicy": "ALLOW"
-               },
-               "maven": {
-                 "versionPolicy": "MIXED",
-                 "layoutPolicy": "STRICT"
-               }
-             }'
+curl -s -o /dev/null -w '%{http_code}' \
+  -u "admin:$NEW_NEXUS_PASS" \
+  -X POST "http://localhost:8081/service/rest/v1/repositories/maven/hosted" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "vprofile-repo",
+    "online": true,
+    "storage": {
+      "blobStoreName": "default",
+      "strictContentTypeValidation": true,
+      "writePolicy": "ALLOW"
+    },
+    "maven": {
+      "versionPolicy": "MIXED",
+      "layoutPolicy": "STRICT"
+    }
+  }'
 
+echo "Creating Maven Proxy Repository (vprofile-maven-central)..."
 
-    curl -u "admin:$NEW_NEXUS_PASS" -X POST "http://localhost:8081/service/rest/v1/repositories/maven/proxy" \
-        -H "accept: application/json" \
-        -H "Content-Type: application/json" \
-        -d '{
-              "name": "vprofile-maven-central",
-              "online": true,
-              "storage": {
-                "blobStoreName": "default",
-                "strictContentTypeValidation": true
-              },
-              "proxy": {
-                "remoteUrl": "https://repo1.maven.org/maven2/",
-                "contentMaxAge": 1440,
-                "metadataMaxAge": 1440
-              },
-              "maven": {
-                "versionPolicy": "RELEASE",
-                "layoutPolicy": "STRICT"
-              }
-            }'
+curl -s -o /dev/null -w '%{http_code}' \
+  -u "admin:$NEW_NEXUS_PASS" \
+  -X POST "http://localhost:8081/service/rest/v1/repositories/maven/proxy" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "vprofile-maven-central",
+    "online": true,
+    "storage": {
+      "blobStoreName": "default",
+      "strictContentTypeValidation": true
+    },
+    "proxy": {
+      "remoteUrl": "https://repo1.maven.org/maven2/",
+      "contentMaxAge": 1440,
+      "metadataMaxAge": 1440
+    },
+    "maven": {
+      "versionPolicy": "RELEASE",
+      "layoutPolicy": "STRICT"
+    }
+  }'
 
-
-
-echo "Repository vprofile-repo created successfully!"
+echo "Repositories created successfully!"
 echo "Nexus Provisioning Completed!"
