@@ -1,6 +1,7 @@
 def COLOR_MAP = [
-    'SUCCESS': 'good', 
-    'FAILURE': 'danger',
+    'SUCCESS' : 'good',
+    'FAILURE' : 'danger',
+    'UNSTABLE': 'warning'
 ]
 
 pipeline {   
@@ -41,6 +42,8 @@ pipeline {
                     post {
                         always {
                             dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+                            stopBuild: false  
+
                         }
                     }
                 }
