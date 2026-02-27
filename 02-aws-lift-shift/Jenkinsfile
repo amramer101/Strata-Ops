@@ -49,7 +49,7 @@ pipeline {
                             dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
                         }
                     }
-
+        }
         stage('Sonar Analysis') {
             environment {
                 scannerHome = tool "${SONARSCANNER}"
