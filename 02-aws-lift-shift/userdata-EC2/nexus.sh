@@ -128,31 +128,9 @@ curl -s -o /dev/null -w '%{http_code}' \
     },
     "maven": {
       "versionPolicy": "MIXED",
-      "layoutPolicy": "STRICT"
+      "layoutPolicy": "PERMISSIVE"
     }
   }'
 
 echo "Repositories created successfully!"
 echo "Nexus Provisioning Completed!"
-
-
-echo "Waiting for Nexus to start..."
-while [[ "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8081/)" != "200" ]]; do
-  sleep 15
-done
-
-# Accept EULA via onboarding API
-curl -s -u "admin:$INITIAL_PASS" -X POST \
-  "http://localhost:8081/service/rest/v1/eula/accept" \
-  -H "Content-Type: application/json"
-
-# Complete onboarding wizard
-curl -s -u "admin:$INITIAL_PASS" -X PUT \
-  "http://localhost:8081/service/rest/v1/onboarding/complete" \
-  -H "Content-Type: application/json"
-
-# Change password
-curl -s -u "admin:$INITIAL_PASS" -X PUT \
-  -H 'Content-Type: text/plain' \
-  --data "$NEW_NEXUS_PASS" \
-  "http://localhost:8081/service/rest/v1/security/users/admin/change-password"

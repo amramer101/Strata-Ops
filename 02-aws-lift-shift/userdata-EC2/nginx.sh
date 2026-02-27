@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-sudo -i
 apt update
 apt install nginx -y
 
