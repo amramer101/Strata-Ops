@@ -99,6 +99,8 @@ pipeline {
                         sudo cp /tmp/vprofile-v2.war /var/lib/tomcat9/webapps/ROOT.war
                         sudo chown tomcat:tomcat /var/lib/tomcat9/webapps/ROOT.war
                         sudo systemctl start tomcat9
+                        sleep 30
+                        sudo systemctl status tomcat9
                     '
                     """
                 }

@@ -5,10 +5,16 @@ echo "Starting Tomcat 9 Provisioning..."
 
 apt update -y
 apt upgrade -y
-apt install openjdk-17-jdk awscli tomcat9 tomcat9-admin tomcat9-common git -y
 
+# 1. نصب Java الأول
+apt install openjdk-17-jdk -y
+
+# 2. Set JAVA_HOME قبل أي حاجة تانية
 echo 'JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /etc/environment
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+
+# 3. نصب Tomcat بعد Java
+apt install awscli tomcat9 tomcat9-admin tomcat9-common git -y
 
 REGION="eu-central-1"
 echo "Fetching Database Password from AWS SSM..."
@@ -19,6 +25,7 @@ echo "Injecting Environment Variables..."
 mkdir -p /usr/share/tomcat9/bin
 
 cat > /usr/share/tomcat9/bin/setenv.sh <<EOF
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 export RDS_HOSTNAME=db01.eprofile.in
 export RDS_PORT=3306
 export RDS_DB_NAME=accounts
