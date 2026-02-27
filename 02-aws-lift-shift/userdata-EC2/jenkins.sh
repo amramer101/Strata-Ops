@@ -56,7 +56,6 @@ JENKINS_PASS=$(aws ssm get-parameter --name "/strata-ops/jenkins-admin-password"
 GITHUB_KEY=$(aws ssm get-parameter --name "/strata-ops/github-private-key" --with-decryption --query "Parameter.Value" --output text --region $REGION)
 TOMCAT_SSH_KEY=$(aws ssm get-parameter --name "/strata-ops/tomcat-ssh-key" --with-decryption --query "Parameter.Value" --output text --region $REGION)
 
-NEXUS_PASS=$(wait_for_ssm_param "/strata-ops/nexus-password")
 SONAR_TOK=$(wait_for_ssm_param "/strata-ops/sonar-token")
 SLACK_TOK=$(wait_for_ssm_param "/strata-ops/slack-token")
 
@@ -69,7 +68,6 @@ cat <<EOF | sudo tee /etc/systemd/system/jenkins.service.d/override.conf
 Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
 Environment="CASC_JENKINS_CONFIG=/var/lib/jenkins/casc_configs/jenkins.yaml"
 Environment="ADMIN_PASSWORD=${JENKINS_PASS}"
-Environment="NEXUS_PASSWORD=${NEXUS_PASS}"
 Environment="SONAR_TOKEN=${SONAR_TOK}"
 Environment="SLACK_TOKEN=${SLACK_TOK}"
 EOF

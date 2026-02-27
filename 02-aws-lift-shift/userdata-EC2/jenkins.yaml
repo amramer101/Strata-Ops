@@ -93,9 +93,9 @@ credentials:
           id: "nexuslogin"
           scope: GLOBAL
           username: "admin"
-          password: "${NEXUS_PASSWORD}"
-          description: "Nexus Authentication"    
-              
+          password: "admin123"
+          description: "Nexus Authentication"
+
       # 2. Slack Token
       - string:
           scope: GLOBAL

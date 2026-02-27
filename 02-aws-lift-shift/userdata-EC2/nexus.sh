@@ -131,29 +131,5 @@ curl -s -o /dev/null -w '%{http_code}' \
     }
   }'
 
-echo "Creating Maven Proxy Repository (vprofile-maven-central)..."
-
-curl -s -o /dev/null -w '%{http_code}' \
-  -u "admin:$NEW_NEXUS_PASS" \
-  -X POST "http://localhost:8081/service/rest/v1/repositories/maven/proxy" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "vprofile-maven-central",
-    "online": true,
-    "storage": {
-      "blobStoreName": "default",
-      "strictContentTypeValidation": true
-    },
-    "proxy": {
-      "remoteUrl": "https://repo1.maven.org/maven2/",
-      "contentMaxAge": 1440,
-      "metadataMaxAge": 1440
-    },
-    "maven": {
-      "versionPolicy": "RELEASE",
-      "layoutPolicy": "STRICT"
-    }
-  }'
-
 echo "Repositories created successfully!"
 echo "Nexus Provisioning Completed!"

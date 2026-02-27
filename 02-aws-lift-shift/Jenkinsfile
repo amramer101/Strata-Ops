@@ -85,27 +85,21 @@ pipeline {
 
         stage("Upload Artifact to Nexus") {
             steps {
-                withCredentials([usernamePassword(
+                nexusArtifactUploader(
+                    nexusVersion: "${NEXUS_VERSION}",
+                    protocol: 'http',
+                    nexusUrl: "${NEXUSIP}:${NEXUSPORT}",
+                    groupId: 'QA',
+                    version: "${env.BUILD_ID}-${new java.text.SimpleDateFormat('yyyyMMdd.HHmmss').format(new Date())}",
+                    repository: "${NEXUS_REPOSITORY}",
                     credentialsId: 'nexuslogin',
-                    usernameVariable: 'NX_USER',
-                    passwordVariable: 'NX_PASS'
-                )]) {
-                    nexusArtifactUploader(
-                        nexusVersion: "${NEXUS_VERSION}",
-                        protocol: 'http',
-                        nexusUrl: "${NEXUSIP}:${NEXUSPORT}",
-                        groupId: 'QA',
-                        version: "${env.BUILD_ID}-${new java.text.SimpleDateFormat('yyyyMMdd.HHmmss').format(new Date())}",
-                        repository: "${NEXUS_REPOSITORY}",
-                        credentialsId: 'nexuslogin',
-                        artifacts: [[
-                            artifactId: 'vproapp',
-                            classifier: '',
-                            file: 'target/vprofile-v2.war',
-                            type: 'war'
-                        ]]
-                    )
-                }
+                    artifacts: [[
+                        artifactId: 'vproapp',
+                        classifier: '',
+                        file: 'target/vprofile-v2.war',
+                        type: 'war'
+                    ]]
+                )
             }
         }
 
