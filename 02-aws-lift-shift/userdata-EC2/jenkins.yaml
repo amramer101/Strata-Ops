@@ -109,3 +109,10 @@ credentials:
           id: "sonartoken"
           secret: "${SONAR_TOKEN}"
           description: "SonarQube Token"
+
+      # 3. NVD Token
+      - string:
+          scope: GLOBAL
+          id: "nvd-api-key"
+          secret: "066A063E-ED13-F111-8368-129478FCB64D"
+          description: "NVD Token"
