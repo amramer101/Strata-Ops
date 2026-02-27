@@ -13,7 +13,7 @@ pipeline {
 
     environment {
         NEXUS_VERSION       = "nexus3"
-        NEXUSIP             = "nexus.eprofile.in"
+        NEXUSIP             = "3.76.225.244"
         NEXUSPORT           = "8081"
         NEXUS_REPOSITORY    = "vprofile-repo"
         NEXUS_CREDENTIAL_ID = "nexuslogin" 
