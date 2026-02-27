@@ -32,18 +32,19 @@ pipeline {
                 sh "mvn test"
             }
         }
-        
+
         stage("OWASP Dependency Check") {
                     steps {
-                        sh "mvn dependency-check:check"
+                        withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_API_KEY')]) {
+                            sh "mvn dependency-check:check -DnvdApiKey=\$NVD_API_KEY"
+                        }
                     }
                     post {
                         always {
-                            // الخطوة دي هي اللي بترسم الـ Dashboard بتاع الثغرات في جينكنز
                             dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
                         }
                     }
-        }
+                }
         stage('Sonar Analysis') {
             environment {
                 scannerHome = tool "${SONARSCANNER}"
