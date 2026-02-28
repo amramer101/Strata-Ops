@@ -89,9 +89,7 @@ pipeline {
 
         stage('Upload Artifact to Nexus') {
                     steps {
-                        script {
-                            def NEXUS_IP = "nexus.eprofile.in" 
-                            
+                        script {                            
                             nexusArtifactUploader(
                                 nexusVersion: 'nexus3',
                                 protocol: 'http',
