@@ -92,7 +92,7 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId: "${env.NEXUS_CREDENTIAL_ID}", passwordVariable: 'NEXUS_PASS', usernameVariable: 'NEXUS_USER')]) {
                             sh """
                             echo "Uploading Artifact using Curl (Bypassing Plugin)..."
-                            curl -v -u "\$NEXUS_USER:\$NEXUS_PASS" --upload-file target/vprofile-v2.war http://${env.NEXUSIP}:${env.NEXUSPORT}/repository/${env.NEXUS_REPOSITORY}/QA/vprofile-v2/${env.BUILD_ID}/vprofile-v2.war
+                            curl -v -u "\$NEXUS_USER:\$NEXUS_PASS" --upload-file target/vprofile-v2.war http://${env.NEXUS_IP}:${env.NEXUSPORT}/repository/${env.NEXUS_REPOSITORY}/QA/vprofile-v2/${env.BUILD_ID}/vprofile-v2.war
                             """
                         }
                     }
