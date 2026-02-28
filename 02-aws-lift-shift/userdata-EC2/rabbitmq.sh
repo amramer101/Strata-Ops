@@ -1,29 +1,26 @@
 #!/bin/bash
 set -e
 
-echo "Starting RabbitMQ Provisioning on Ubuntu 22.04..."
+# على الـ RabbitMQ server دلوقتي
+sudo apt update -y
 
-apt update -y
-apt install -y curl gnupg
+# نصب erlang بالـ packages الصح على Ubuntu 22.04
+sudo apt install -y erlang-base erlang-asn1 erlang-crypto erlang-eldap \
+  erlang-ftp erlang-inets erlang-mnesia erlang-os-mon erlang-parsetools \
+  erlang-public-key erlang-runtime-tools erlang-snmp erlang-ssl \
+  erlang-syntax-tools erlang-tftp erlang-tools erlang-xmerl
 
-# Install Erlang
-curl -1sLf 'https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/setup.deb.sh' | bash
-apt install -y erlang
+# نصب RabbitMQ
+curl -1sLf 'https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/setup.deb.sh' | sudo bash
+sudo apt install -y rabbitmq-server
 
-# Install RabbitMQ
-curl -1sLf 'https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/setup.deb.sh' | bash
-apt install -y rabbitmq-server
+sudo systemctl enable rabbitmq-server
+sudo systemctl start rabbitmq-server
 
-systemctl enable rabbitmq-server
-systemctl start rabbitmq-server
+sudo sh -c 'echo "[{rabbit, [{loopback_users, []}]}]." > /etc/rabbitmq/rabbitmq.config'
+sudo rabbitmqctl add_user test test
+sudo rabbitmqctl set_user_tags test administrator
+sudo rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
 
-# Configure
-sh -c 'echo "[{rabbit, [{loopback_users, []}]}]." > /etc/rabbitmq/rabbitmq.config'
-rabbitmqctl add_user test test
-rabbitmqctl set_user_tags test administrator
-rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
-
-systemctl restart rabbitmq-server
-systemctl status rabbitmq-server
-
-echo "RabbitMQ Provisioning Completed!"
+sudo systemctl restart rabbitmq-server
+sudo systemctl status rabbitmq-server
