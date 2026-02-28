@@ -12,7 +12,7 @@ echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.
 sudo apt update
 sudo apt install jenkins -y
 sudo apt install awscli -y
-sudo systemctl stop jenkins   # ← أضف السطر ده فوراً بعد الـ install
+sudo systemctl stop jenkins   
 
 # 3. Disable the Initial Setup Wizard (We are using JCasC)
 sudo sed -i 's/Environment="JAVA_OPTS=-Djava.awt.headless=true"/Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"/g' /usr/lib/systemd/system/jenkins.service

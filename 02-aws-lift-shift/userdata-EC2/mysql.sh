@@ -14,13 +14,10 @@ echo "Network is ready!"
 apt update -y
 apt install -y mariadb-server git curl awscli
 
-# ==========================================
-# التعديل السحري: السماح بالاتصالات الخارجية
 echo "Allowing external connections..."
 sed -i 's/^bind-address.*/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
-# ==========================================
 
-systemctl start mariadb
+systemctl restart mariadb
 systemctl enable mariadb
 
 # Fetch password from SSM
