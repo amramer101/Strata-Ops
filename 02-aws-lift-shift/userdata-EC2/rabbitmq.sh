@@ -1,22 +1,34 @@
 #!/bin/bash
 set -e
-## primary RabbitMQ signing key
-rpm --import 'https://github.com/rabbitmq/signing-keys/releases/download/3.0/rabbitmq-release-signing-key.asc'
-## modern Erlang repository
-rpm --import 'https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-erlang.E495BB49CC4BBE5B.key'
-## RabbitMQ server repository
-rpm --import 'https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-server.9F4587F226208342.key'
-curl -o /etc/yum.repos.d/rabbitmq.repo https://raw.githubusercontent.com/hkhcoder/vprofile-project/refs/heads/awsliftandshift/al2023rmq.repo
-dnf update -y
-## install these dependencies from standard OS repositories
-dnf install socat logrotate -y
-## install RabbitMQ and zero dependency Erlang
-dnf install -y erlang rabbitmq-server
-systemctl enable rabbitmq-server
-systemctl start rabbitmq-server
+
+echo "Installing RabbitMQ for Amazon Linux 2..."
+
+# Install Erlang first from EPEL
+sudo yum install -y epel-release || true
+sudo amazon-linux-extras install -y epel || true
+sudo yum install -y erlang socat logrotate
+
+# Add RabbitMQ repo for Amazon Linux 2
+curl -o /tmp/rabbitmq.repo https://raw.githubusercontent.com/hkhcoder/vprofile-project/refs/heads/awsliftandshift/al2rmq.repo || \
+cat > /etc/yum.repos.d/rabbitmq.repo <<'EOF'
+[rabbitmq-server]
+name=rabbitmq-server
+baseurl=https://packagecloud.io/rabbitmq/rabbitmq-server/el/7/$basearch
+gpgcheck=0
+enabled=1
+EOF
+
+sudo yum install -y rabbitmq-server
+
+sudo systemctl enable rabbitmq-server
+sudo systemctl start rabbitmq-server
+
+# Configure
 sudo sh -c 'echo "[{rabbit, [{loopback_users, []}]}]." > /etc/rabbitmq/rabbitmq.config'
 sudo rabbitmqctl add_user test test
 sudo rabbitmqctl set_user_tags test administrator
-rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
+sudo rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
 
 sudo systemctl restart rabbitmq-server
+
+echo "RabbitMQ Provisioning Completed!"

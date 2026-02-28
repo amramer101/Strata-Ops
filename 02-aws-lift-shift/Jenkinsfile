@@ -95,7 +95,7 @@ pipeline {
                             
                             ssh -o StrictHostKeyChecking=no ${TOMCAT_USER}@${TOMCAT_IP} '
                                 sudo systemctl stop tomcat10 || true
-                                sudo rm -rf /opt/tomcat10/webapps/ROOT*
+                                sudo rm -rf /opt/tomcat10/webapps/ROOT /opt/tomcat10/webapps/ROOT.war
                                 sudo cp /tmp/vprofile-v2.war /opt/tomcat10/webapps/ROOT.war
                                 sudo chown tomcat:tomcat /opt/tomcat10/webapps/ROOT.war
                                 sudo systemctl start tomcat10

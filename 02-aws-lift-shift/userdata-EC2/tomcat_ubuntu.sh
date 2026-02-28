@@ -1,29 +1,31 @@
 #!/bin/bash
 set -e
 
-echo "Starting Tomcat 9 Provisioning..."
+echo "Starting Tomcat 10 & Java 21 Provisioning..."
 
 apt update -y
 apt upgrade -y
 
-# 1. Install Java First
-apt install openjdk-17-jdk -y
+# 1. Install Java 21 and AWS CLI
+apt install openjdk-21-jdk awscli -y
 
 # 2. Set JAVA_HOME system-wide
-echo 'JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> /etc/environment
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+echo 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64' >> /etc/environment
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 
-# 3. Install Tomcat after Java
-apt install awscli tomcat9 tomcat9-admin tomcat9-common git -y
+# 3. Create Tomcat User and Group (Security Best Practice)
+id -u tomcat &>/dev/null || useradd -m -U -d /opt/tomcat10 -s /bin/false tomcat
 
-# 4. Set JAVA_HOME for systemd (so tomcat9.service can find Java)
-mkdir -p /etc/systemd/system/tomcat9.service.d/
-cat > /etc/systemd/system/tomcat9.service.d/override.conf <<EOF
-[Service]
-Environment="JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64"
-EOF
+# 4. Download and Install Tomcat 10 manually (Since apt defaults to tomcat9)
+cd /tmp
+TOMCAT_VERSION="10.1.19"
+wget https://archive.apache.org/dist/tomcat/tomcat-10/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz
+mkdir -p /opt/tomcat10
+tar xzvf apache-tomcat-${TOMCAT_VERSION}.tar.gz -C /opt/tomcat10 --strip-components=1
 
-systemctl daemon-reload
+# Fix permissions
+chown -R tomcat:tomcat /opt/tomcat10
+chmod -R 755 /opt/tomcat10/bin
 
 # 5. Fetch DB Password from SSM
 REGION="eu-central-1"
@@ -33,10 +35,8 @@ DB_PASS=$(aws ssm get-parameter --name "/strata-ops/mysql-password" \
 
 # 6. Inject Environment Variables via setenv.sh
 echo "Injecting Environment Variables..."
-mkdir -p /usr/share/tomcat9/bin
-
-cat > /usr/share/tomcat9/bin/setenv.sh <<EOF
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+cat > /opt/tomcat10/bin/setenv.sh <<EOF
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 export RDS_HOSTNAME=db01.eprofile.in
 export RDS_PORT=3306
 export RDS_DB_NAME=accounts
@@ -46,15 +46,38 @@ export RABBITMQ_HOSTNAME=rmq01.eprofile.in
 export MEMCACHED_HOSTNAME=mc01.eprofile.in
 EOF
 
-chmod +x /usr/share/tomcat9/bin/setenv.sh
-chown tomcat:tomcat /usr/share/tomcat9/bin/setenv.sh
+chmod +x /opt/tomcat10/bin/setenv.sh
+chown tomcat:tomcat /opt/tomcat10/bin/setenv.sh
 
-# 7. Start Tomcat
-systemctl enable tomcat9
-systemctl restart tomcat9
+# 7. Create Systemd Service for Tomcat 10
+cat > /etc/systemd/system/tomcat10.service <<EOF
+[Unit]
+Description=Apache Tomcat 10 Web Application Container
+After=network.target
 
-# 8. Verify
+[Service]
+Type=forking
+User=tomcat
+Group=tomcat
+Environment="JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64"
+Environment="CATALINA_PID=/opt/tomcat10/temp/tomcat.pid"
+Environment="CATALINA_HOME=/opt/tomcat10"
+Environment="CATALINA_BASE=/opt/tomcat10"
+ExecStart=/opt/tomcat10/bin/startup.sh
+ExecStop=/opt/tomcat10/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+
+# 8. Start & Enable Tomcat 10
+systemctl enable tomcat10
+systemctl start tomcat10
+
+# 9. Verify
 sleep 10
-systemctl is-active tomcat9 && echo "Tomcat is UP!" || echo "Tomcat FAILED - check logs!"
+systemctl is-active tomcat10 && echo "Tomcat 10 is UP!" || echo "Tomcat 10 FAILED - check logs!"
 
-echo "Tomcat 9 Provisioning Completed!"
+echo "Tomcat 10 Provisioning Completed Successfully!"
