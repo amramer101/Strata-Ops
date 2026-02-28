@@ -10,7 +10,7 @@ apt install -y openjdk-17-jdk wget curl jq awscli
 mkdir -p /opt/nexus/
 mkdir -p /tmp/nexus/
 cd /tmp/nexus/
-NEXUSURL="https://download.sonatype.com/nexus/3/nexus-unix-x86-64-3.78.0-14.tar.gz"
+NEXUSURL="https://download.sonatype.com/nexus/3/nexus-3.75.1-01-unix.tar.gz"
 wget $NEXUSURL -O nexus.tar.gz
 sleep 10
 EXTOUT=$(tar xzvf nexus.tar.gz)
