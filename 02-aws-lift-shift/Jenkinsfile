@@ -89,22 +89,11 @@ pipeline {
 
         stage('Upload Artifact to Nexus') {
                     steps {
-                        script {                            
-                            nexusArtifactUploader(
-                                nexusVersion: 'nexus3',
-                                protocol: 'http',
-                                nexusUrl: "${NEXUS_IP}:8081",
-                                groupId: 'QA',
-                                version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
-                                repository: 'vprofile-repo', 
-                                credentialsId: 'nexuslogin', 
-                                artifacts: [
-                                    [artifactId: 'vprofile',
-                                    classifier: '',
-                                    file: 'target/vprofile-v2.war',
-                                    type: 'war']
-                                ]
-                            )
+                        withCredentials([usernamePassword(credentialsId: "${env.NEXUS_CREDENTIAL_ID}", passwordVariable: 'NEXUS_PASS', usernameVariable: 'NEXUS_USER')]) {
+                            sh """
+                            echo "Uploading Artifact using Curl (Bypassing Plugin)..."
+                            curl -v -u "\$NEXUS_USER:\$NEXUS_PASS" --upload-file target/vprofile-v2.war http://${env.NEXUSIP}:${env.NEXUSPORT}/repository/${env.NEXUS_REPOSITORY}/QA/vprofile-v2/${env.BUILD_ID}/vprofile-v2.war
+                            """
                         }
                     }
                 }

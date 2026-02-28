@@ -58,6 +58,7 @@ TOMCAT_SSH_KEY=$(aws ssm get-parameter --name "/strata-ops/tomcat-ssh-key" --wit
 
 SONAR_TOK=$(wait_for_ssm_param "/strata-ops/sonar-token")
 SLACK_TOK=$(wait_for_ssm_param "/strata-ops/slack-token")
+NEXUS_PASS=$(wait_for_ssm_param "/strata-ops/nexus-password")
 
 # ==============================================================================
 # 8. INJECT ENVIRONMENT VARIABLES SECURELY (No SSH Keys here)
