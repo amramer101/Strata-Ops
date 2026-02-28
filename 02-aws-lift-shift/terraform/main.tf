@@ -17,29 +17,6 @@ data "aws_ami" "ubuntu22" {
 }
 
 
-## search for aws Linux ami 
-
-data "aws_ami" "amazon_linux_2" {
-  most_recent = true
-
-  owners = ["amazon"] # Official Amazon owner alias
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"] # A common name pattern for Amazon Linux 2 AMIs
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-}
-
 ##--------------------------------------------------------------------------------------------------------------
 
 ### EC2 Instance for Nginx Server
@@ -105,7 +82,7 @@ module "ec2_instance_rabbitmq" {
   name = "RabbitMQ-instance"
 
   instance_type          = "t2.micro"
-  ami                    = data.aws_ami.amazon_linux_2.id
+  ami                    = data.aws_ami.ubuntu22.id
   vpc_security_group_ids = [aws_security_group.Data-SG.id]
   key_name               = aws_key_pair.EC2_Key_Pair.key_name
   monitoring             = false
@@ -129,7 +106,7 @@ module "ec2_instance_memcache" {
   name = "Memcache-instance"
 
   instance_type          = "t2.micro"
-  ami                    = data.aws_ami.amazon_linux_2.id
+  ami                    = data.aws_ami.ubuntu22.id
   vpc_security_group_ids = [aws_security_group.Data-SG.id]
   key_name               = aws_key_pair.EC2_Key_Pair.key_name
   monitoring             = false
@@ -154,7 +131,7 @@ module "ec2_instance_mysql" {
   name = "MySQL-instance"
 
   instance_type          = "t2.micro"
-  ami                    = data.aws_ami.amazon_linux_2.id
+  ami                    = data.aws_ami.ubuntu22.id
   vpc_security_group_ids = [aws_security_group.Data-SG.id]
   key_name               = aws_key_pair.EC2_Key_Pair.key_name
   monitoring             = false
@@ -238,7 +215,7 @@ module "ec2_instance_nexus" {
   name = "nexus-instance"
 
   instance_type          = "t2.medium"
-  ami                    = data.aws_ami.amazon_linux_2.id
+  ami                    = data.aws_ami.ubuntu22.id
   vpc_security_group_ids = [aws_security_group.nexus-SG.id]
   key_name               = aws_key_pair.ci_key_pair.key_name
   monitoring             = false

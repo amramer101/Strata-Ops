@@ -66,6 +66,6 @@ resource "aws_ssm_parameter" "sonar_token" {
 resource "aws_ssm_parameter" "slack_token" {
   name  = "/strata-ops/slack-token"
   type  = "SecureString"
-  value = "YfMi7uwL9nrgbCUn0kP9wJgC"  # ← حط التوكن هنا
+  value = "YfMi7uwL9nrgbCUn0kP9wJgC" # ← حط التوكن هنا
   lifecycle { ignore_changes = [value] }
 }

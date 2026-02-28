@@ -1,17 +1,16 @@
 #!/bin/bash
 set -e
 
-echo "Installing Memcached for Amazon Linux 2..."
+echo "Starting Memcached Provisioning on Ubuntu 22.04..."
 
-sudo yum install -y memcached
+apt update -y
+apt install -y memcached
 
-sudo systemctl start memcached
-sudo systemctl enable memcached
+# Allow connections from all IPs
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/memcached.conf
 
-# Allow connections from all IPs (not just localhost)
-sed -i 's/127.0.0.1/0.0.0.0/g' /etc/sysconfig/memcached
-
-sudo systemctl restart memcached
-sudo systemctl status memcached
+systemctl enable memcached
+systemctl restart memcached
+systemctl status memcached
 
 echo "Memcached Provisioning Completed!"
