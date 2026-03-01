@@ -83,3 +83,15 @@ variable "bastion_host_username" {
   default = "ubuntu"
 }
 
+## SNS Variables Email
+
+variable "sns_email" {
+  default = "amrmedhatamer100@gmail.com"
+}
+
+
+## ElastiBeansalk Variables
+
+variable "beanstalk_cname" {
+  default = "eprofileapp254698"
+}

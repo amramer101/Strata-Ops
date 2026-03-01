@@ -3,7 +3,7 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
   name                = "elbeanstalkenv"
   application         = aws_elastic_beanstalk_application.Eprofile_bean_app.name
   solution_stack_name = "64bit Amazon Linux 2023 v5.9.3 running Tomcat 10 Corretto 21"
-  cname_prefix        = "eprofileapp254698"
+  cname_prefix        = var.beanstalk_cname
 
 
   setting {
@@ -28,7 +28,7 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
   setting {
     namespace = "aws:ec2:vpc"
     name      = "AssociatePublicIpAddress"
-    value     = true
+    value     = false
   }
 
   setting {
@@ -131,6 +131,20 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RABBITMQ_PORT"
     value     = "5672"
+  }
+
+  # 1. (Enhanced Health Reporting)
+  setting {
+    namespace = "aws:elasticbeanstalk:healthreporting:system"
+    name      = "SystemType"
+    value     = "enhanced"
+  }
+
+  # 3. CloudWatch Logs
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "StreamLogs"
+    value     = "true"
   }
 
   depends_on = [
