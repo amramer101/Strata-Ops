@@ -100,7 +100,7 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RDS_PASSWORD"
-    value     = var.db_password
+    value     = aws_ssm_parameter.mysql_password.value
   }
 
   setting {
@@ -124,7 +124,7 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RABBITMQ_PASSWORD"
-    value     = var.rmq_password
+    value     = aws_ssm_parameter.rabbitmq_password.value
   }
 
   setting {
@@ -153,7 +153,9 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
     aws_db_instance.RDS,
     aws_mq_broker.RabbitMQ,
     aws_elasticache_cluster.ElastiCache,
-    aws_instance.bastion
+    aws_instance.bastion,
+    aws_ssm_parameter.mysql_password,
+    aws_ssm_parameter.rabbitmq_password
   ]
 
 }

@@ -62,18 +62,11 @@ variable "db_user_name" {
   default = "admin"
 }
 
-variable "db_password" {
-  default = "admin123"
-}
 
 ## RabbitMQ Variables
 
 variable "rmq_user" {
   default = "rabbit"
-}
-
-variable "rmq_password" {
-  default = "Gr33n@pple123456"
 }
 
 
