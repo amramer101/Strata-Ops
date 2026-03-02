@@ -216,6 +216,7 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "autoscaling:*",
           "cloudwatch:*",
           "sns:*",
+          "logs:*",
           "cloudformation:*",
           "rds:*"
         ]
