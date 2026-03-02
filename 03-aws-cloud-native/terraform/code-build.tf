@@ -8,7 +8,31 @@ resource "random_id" "bucket_suffix" {
   byte_length = 4
 }
 
-# 2. CodeBuild Project
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 2. CodeBuild Project for building the application
 resource "aws_codebuild_project" "vprofile_build" {
   name         = "vprofile-build-job"
   description  = "Builds the Java vProfile application"
@@ -36,6 +60,10 @@ resource "aws_codestarconnections_connection" "github_connection" {
   name          = "vprofile-github-conn"
   provider_type = "GitHub"
 }
+
+
+
+
 
 # 4. CodePipeline
 resource "aws_codepipeline" "vprofile_pipeline" {
