@@ -9,6 +9,7 @@ phases:
     commands:
       - echo "Fetching CodeArtifact Token..."
       - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain vprofile-domain --query authorizationToken --output text`
+      - export CODEARTIFACT_URL=`aws codeartifact get-repository-endpoint --domain vprofile-domain --repository vprofile-repo --format maven --query repositoryEndpoint --output text`
       
   build:
     commands:
