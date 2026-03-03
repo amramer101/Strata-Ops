@@ -66,7 +66,9 @@ The same Java application from Phase 2 now runs on a **fully managed, auto-scali
 > **Eprofile-VPC** (`10.0.0.0/16`) spans **3 Availability Zones** (eu-central-1a/b/c) with 6 subnets — 3 public, 3 private. Private subnets reach the internet only via NAT Gateway. All backend services (RDS, ElastiCache, Amazon MQ) live exclusively in private subnets, unreachable from the public internet.
 
 ---
-> **📊 Architecture Overview (C4 Model):**
+
+## 📊 Architecture Overview (C4 Model):**
+
 > The diagram above illustrates the complete cloud-native infrastructure and continuous delivery flow for **Strata-Ops (Phase 3)**. 
 
 ![Architecture](../media/cloud-native/System.png)
