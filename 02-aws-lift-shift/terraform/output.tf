@@ -10,7 +10,6 @@ output "ssh_commands" {
   value = {
     nginx  = "ssh -i ec2-eprofile-key ubuntu@${module.ec2_instance_nginx.public_ip}"
     tomcat = "ssh -i ec2-eprofile-key ubuntu@${module.ec2_instance_tomcat.public_ip}"
-    mysql  = "ssh -i ec2-eprofile-key ubuntu@${module.ec2_instance_mysql.public_ip}"
   }
 }
 
@@ -24,20 +23,19 @@ output "internal_ips" {
   }
 }
 
-
 output "nexus_ip" {
   description = "The public IP of the nexus host"
-  value       = module.ec2_instance_nexus.public_ip
+  value       = "http://${module.ec2_instance_nexus.public_ip}:8081"
 }
 
 
 output "jenkins_ip" {
   description = "The public IP of the jenkins host"
-  value       = module.ec2_instance_Jenkins.public_ip
+  value       = "http://${module.ec2_instance_Jenkins.public_ip}:8080"
 }
 
 
 output "sonar_ip" {
   description = "The public IP of the Sonar host"
-  value       = module.ec2_instance_sonarqube.public_ip
+  value       = "http://${module.ec2_instance_sonarqube.public_ip}:9000"
 }

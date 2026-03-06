@@ -59,13 +59,13 @@ resource "aws_ssm_parameter" "github_key" {
 resource "aws_ssm_parameter" "sonar_token" {
   name  = "/strata-ops/sonar-token"
   type  = "SecureString"
-  value = "pending" # ← غيرها لـ pending زي nexus
+  value = "pending" 
   lifecycle { ignore_changes = [value] }
 }
 
 resource "aws_ssm_parameter" "slack_token" {
   name  = "/strata-ops/slack-token"
   type  = "SecureString"
-  value = "YfMi7uwL9nrgbCUn0kP9wJgC" # ← حط التوكن هنا
+  value = "YfMi7uwL9nrgbCUn0kP9wJgC" 
   lifecycle { ignore_changes = [value] }
 }
