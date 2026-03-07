@@ -70,7 +70,16 @@ resource "aws_route53_record" "tomcat" {
   records = [module.ec2_instance_tomcat.private_ip]
 }
 
-## 6. Create Record for Nexus
+# 6. Create Record for nginx
+resource "aws_route53_record" "nginx" {
+  zone_id = aws_route53_zone.private_zone.zone_id
+  name    = "nginx.eprofile.in"
+  type    = "A"
+  ttl     = "300"
+  records = [module.ec2_instance_nginx.private_ip]
+}
+
+## 7. Create Record for Nexus
 resource "aws_route53_record" "Nexus" {
   zone_id = aws_route53_zone.private_zone.zone_id
   name    = "nexus.eprofile.in"
@@ -79,7 +88,7 @@ resource "aws_route53_record" "Nexus" {
   records = [module.ec2_instance_nexus.private_ip]
 }
 
-# 7. Create Record for Jenkins
+# 8. Create Record for Jenkins
 resource "aws_route53_record" "Jenkins" {
   zone_id = aws_route53_zone.private_zone.zone_id
   name    = "jenkins.eprofile.in"
@@ -88,7 +97,7 @@ resource "aws_route53_record" "Jenkins" {
   records = [module.ec2_instance_Jenkins.private_ip]
 }
 
-# 8. Create Record for SonarQube
+# 9. Create Record for SonarQube
 resource "aws_route53_record" "SonarQube" {
   zone_id = aws_route53_zone.private_zone.zone_id
   name    = "sonarqube.eprofile.in"
@@ -97,3 +106,20 @@ resource "aws_route53_record" "SonarQube" {
   records = [module.ec2_instance_sonarqube.private_ip]
 }
 
+# 10. Create Record for Prometheus
+resource "aws_route53_record" " prometheus" {
+  zone_id = aws_route53_zone.private_zone.zone_id
+  name    = "prometheus.eprofile.in"
+  type    = "A"
+  ttl     = "300"
+  records = [module.ec2_instance_prometheus.private_ip]
+}
+
+# 11. Create Record for grafana
+resource "aws_route53_record" "grafana" {
+  zone_id = aws_route53_zone.private_zone.zone_id
+  name    = "grafana.eprofile.in"
+  type    = "A"
+  ttl     = "300"
+  records = [module.ec2_instance_grafana.private_ip]
+}
