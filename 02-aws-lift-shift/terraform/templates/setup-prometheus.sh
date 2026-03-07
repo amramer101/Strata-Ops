@@ -114,4 +114,4 @@ scrape_configs:
         - "${data_ip}:9100"
 EOF
 
-systemctl restart prometheu
+systemctl restart prometheus
