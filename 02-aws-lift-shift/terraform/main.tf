@@ -289,7 +289,12 @@ module "ec2_instance_grafana" {
     Environment = "dev"
   }
 
-  user_data            = file("../userdata-EC2/Grafana.sh")
+
+  user_data            = templatefile("${path.module}/templates/Grafana.sh", {
+    prometheus_ip = module.ec2_instance_prometheus.private_ip
+  })
+
+
   depends_on = [ module.ec2_instance_prometheus ]
 
 }

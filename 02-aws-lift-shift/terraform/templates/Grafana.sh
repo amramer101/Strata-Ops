@@ -34,3 +34,20 @@ echo " - Config: /etc/grafana/grafana.ini"
 echo " - Data: /var/lib/grafana/"
 echo " - Service: systemctl status ${SERVICE}"
 echo "Access Grafana UI at http://GrafanaIP:3000 (default admin/admin)"
+
+
+echo "Configuring Prometheus Data Source automatically..."
+
+mkdir -p /etc/grafana/provisioning/datasources/
+cat <<EOF > /etc/grafana/provisioning/datasources/prometheus.yml
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://${prometheus_ip}:9090
+    isDefault: true
+EOF
+
+systemctl enable grafana-server
+systemctl restart grafana-server
