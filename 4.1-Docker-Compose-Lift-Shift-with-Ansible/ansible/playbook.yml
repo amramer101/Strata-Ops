@@ -43,13 +43,13 @@
     
     - name: Copy docker-stack folder to EC2
       copy:
-        src: ../docker-stack/
-        dest: /home/ubuntu/docker-stack/
+        src: ../docker-stack/docker-compose.prod.yml
+        dest: /home/ubuntu/docker-stack/docker-compose.prod.yml
         owner: ubuntu
         group: ubuntu
         mode: '0755'
 
     - name: Run Docker Compose to start the application
-      shell: docker compose up -d
+      shell: docker compose -f docker-compose.prod.yml up -d
       args:
         chdir: /home/ubuntu/docker-stack/
