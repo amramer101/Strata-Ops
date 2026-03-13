@@ -4,7 +4,7 @@ services:
   ## ----------------- Backend Services (Internal) -----------------
   vprodb:
     build: 
-      context: ../../
+      context: ../../ ## Set context to root of the project to access all source code and resources for building the application image
       dockerfile: 4.1-Docker-Compose-Lift-Shift-with-Ansible/docker-stack/Docker-files/db/Dockerfile
 
     image: vprocontainers/vprofiledb 
@@ -45,8 +45,7 @@ services:
   # ----------------- Application Service (The Bridge) -----------------
   vproapp:
     build: 
-      context: ../../ ## Set context to root of the project to access all source code and resources for building the application image
-
+      context: ../../ 
       dockerfile: 4.1-Docker-Compose-Lift-Shift-with-Ansible/docker-stack/Docker-files/tomcat/Dockerfile
     
     image: vprocontainers/vprofileapp
