@@ -28,7 +28,9 @@ LABEL project="vprofile-Strata-Ops"
 LABEL Author="Amr M. Amer"
 
 ## Remove default Tomcat web applications and copy the built WAR file to the webapps directory
-RUN rm -rf /usr/local/tomcat/webapps/* COPY --from=builder /app/target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
+RUN rm -rf /usr/local/tomcat/webapps/* 
+
+COPY --from=builder /app/target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
 
 ## Expose Tomcat default port
 EXPOSE 8080

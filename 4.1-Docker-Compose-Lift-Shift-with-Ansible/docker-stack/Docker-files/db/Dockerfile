@@ -10,4 +10,4 @@ ENV MYSQL_ROOT_PASSWORD=vprodbpass
 ENV MYSQL_DATABASE=accounts
 
 ## Copy SQL script to initialize the database with sample data
-COPY db_backup.sql /docker-entrypoint-initdb.d/db_backup.sql 
+COPY src/main/resources/db_backup.sql /docker-entrypoint-initdb.d/db_backup.sql 

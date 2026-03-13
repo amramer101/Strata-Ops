@@ -4,7 +4,8 @@ services:
   ## ----------------- Backend Services (Internal) -----------------
   vprodb:
     build: 
-      context: ./Docker-files/db
+      context: ../../
+      dockerfile: 4.1-Docker-Compose-Lift-Shift-with-Ansible/docker-stack/Docker-files/db/Dockerfile
 
     image: vprocontainers/vprofiledb 
     container_name: vprodb
@@ -13,7 +14,11 @@ services:
     volumes:
       - vprodbdata:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD} ## From.env file
+      - MYSQL_ROOT_PASSWORD=SuperSecretRootPass123
+      - MYSQL_DATABASE=accounts
+      - MYSQL_USER=${DB_USERNAME} 
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+
     networks:
       - backend_net
 
@@ -41,7 +46,7 @@ services:
   vproapp:
     build: 
       context: ../../ ## Set context to root of the project to access all source code and resources for building the application image
-      
+
       dockerfile: 4.1-Docker-Compose-Lift-Shift-with-Ansible/docker-stack/Docker-files/tomcat/Dockerfile
     
     image: vprocontainers/vprofileapp
