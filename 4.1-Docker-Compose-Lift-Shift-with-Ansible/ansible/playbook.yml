@@ -1,0 +1,55 @@
+- name: Setup Docker and Deploy Vprofile Stack
+  hosts: all
+  become: true
+  remote_user: ubuntu
+
+  tasks:
+    - name: Update APT cache and install dependencies
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+        update_cache: yes
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+
+    - name: Install Docker and Docker Compose Plugin (The Modern Way)
+      apt:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+
+    - name: Ensure ubuntu user is in docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    # ======== Deployment
+    
+    - name: Copy docker-stack folder to EC2
+      copy:
+        src: ../docker-stack/
+        dest: /home/ubuntu/docker-stack/
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: Run Docker Compose to start the application
+      shell: docker compose up -d
+      args:
+        chdir: /home/ubuntu/docker-stack/

@@ -41,3 +41,14 @@ module "ec2_instance_docker" {
   }
 
 }
+
+resource "local_file" "ansible_inventory" {
+  filename = "../ansible/inventory.ini"
+  content  = <<-EOF
+    [docker_server]
+    ${module.ec2_instance_docker.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=../terraform/docker-key
+    
+    [docker_server:vars]
+    ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+  EOF
+}
