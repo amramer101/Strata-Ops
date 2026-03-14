@@ -64,7 +64,7 @@ resource "aws_elasticache_cluster" "ElastiCache" {
 
 
 resource "aws_mq_broker" "RabbitMQ" {
-  broker_name = "RabbitMQ"
+  broker_name = "example"
 
   engine_type                = "RabbitMQ"
   engine_version             = "3.13"
