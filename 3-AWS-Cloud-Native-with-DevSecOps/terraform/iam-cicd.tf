@@ -1,6 +1,6 @@
 # -----------------------------------------------------------
 # 1. Role for CodeBuild --- Build Stage
-# -----------------------------------------------------------
+
 resource "aws_iam_role" "codebuild_build_role" {
   name = "vprofile-codebuild-build-role"
 
@@ -79,8 +79,8 @@ resource "aws_iam_role_policy" "codebuild_build_policy" {
 
 
 # -----------------------------------------------------------
+
 # 2. Role for CodeBuild --- Security Stage
-# -----------------------------------------------------------
 
 resource "aws_iam_role" "codebuild_security_role" {
   name = "vprofile-codebuild-security-role"
@@ -103,7 +103,7 @@ resource "aws_iam_role_policy" "codebuild_security_policy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      # 1. Logs
+      # Logs
       {
         Effect = "Allow"
         Action = [
@@ -113,7 +113,7 @@ resource "aws_iam_role_policy" "codebuild_security_policy" {
         ]
         Resource = "arn:aws:logs:*:*:*"
       },
-      # 2. S3 (Pipeline Bucket)
+      # S3 (Pipeline Bucket)
       {
         Effect = "Allow"
         Action = [
@@ -128,7 +128,7 @@ resource "aws_iam_role_policy" "codebuild_security_policy" {
           "${aws_s3_bucket.codepipeline_bucket.arn}/*"
         ]
       },
-      # 3. SSM Parameter Store
+      # SSM Parameter Store
       {
         Effect = "Allow"
         Action = [
@@ -137,7 +137,7 @@ resource "aws_iam_role_policy" "codebuild_security_policy" {
         ]
         Resource = "arn:aws:ssm:*:*:parameter/strata-ops/sonar-*"
       },
-      # 4. CodeArtifact
+      # CodeArtifact
       {
         Effect = "Allow"
         Action = [
@@ -157,7 +157,7 @@ resource "aws_iam_role_policy" "codebuild_security_policy" {
           }
         }
       },
-      # 5. GitHub Connection
+      # GitHub Connection
       {
         Effect   = "Allow"
         Action   = ["codestar-connections:UseConnection"]
@@ -168,8 +168,9 @@ resource "aws_iam_role_policy" "codebuild_security_policy" {
 }
 
 # -----------------------------------------------------------
+
 # 3. Role for CodePipeline
-# -----------------------------------------------------------
+
 resource "aws_iam_role" "codepipeline_role" {
   name = "vprofile-codepipeline-role"
 

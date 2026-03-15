@@ -117,13 +117,13 @@ resource "aws_elastic_beanstalk_environment" "elbeanstalk_env" {
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "RABBITMQ_USERNAME"
+    name      = "RABBITMQ_USER"
     value     = var.rmq_user
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "RABBITMQ_PASSWORD"
+    name      = "RABBITMQ_PASS"
     value     = aws_ssm_parameter.rabbitmq_password.value
   }
 
