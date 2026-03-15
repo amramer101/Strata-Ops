@@ -14,12 +14,12 @@ resource "aws_ecs_cluster" "tomcat_cluster" {
 resource "aws_ecs_task_definition" "tomcat_definition" {
   family                   = "eprofile-tomcat-task"
   requires_compatibilities = ["FARGATE"] # ٍServerless
-  network_mode             = "awsvpc"   
-  cpu                      = 512       
+  network_mode             = "awsvpc"
+  cpu                      = 512
   memory                   = 1024
-  
+
   # Role for SSM
-  execution_role_arn       = aws_iam_role.ecs_execution.arn 
+  execution_role_arn = aws_iam_role.ecs_execution.arn
 
   container_definitions = jsonencode([
     {
@@ -38,11 +38,11 @@ resource "aws_ecs_task_definition" "tomcat_definition" {
       secrets = [
         {
           name      = "RDS_PASSWORD"
-          valueFrom = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/strata-ops/mysql-password"
+          valueFrom = "arn:aws:ssm:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:parameter/strata-ops/mysql-password"
         },
         {
           name      = "RABBITMQ_PASSWORD"
-          valueFrom = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/strata-ops/rabbitmq-password"
+          valueFrom = "arn:aws:ssm:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:parameter/strata-ops/rabbitmq-password"
         }
 
       ]
@@ -59,22 +59,22 @@ resource "aws_ecs_task_definition" "tomcat_definition" {
         {
           name  = "RDS_USERNAME"
           value = var.db_user_name
-        },        
+        },
         {
           name  = "RABBITMQ_HOSTNAME"
-          value     = split(":", split("//", aws_mq_broker.RabbitMQ.instances[0].endpoints[0])[1])[0]
+          value = split(":", split("//", aws_mq_broker.RabbitMQ.instances[0].endpoints[0])[1])[0]
         },
         {
           name  = "RABBITMQ_USERNAME"
-          value     = var.rmq_user
+          value = var.rmq_user
         },
         {
           name  = "RABBITMQ_PORT"
-          value     = "5672"
+          value = "5672"
         },
         {
           name  = "MEMCACHED_HOSTNAME"
-          value     = aws_elasticache_cluster.ElastiCache.cluster_address
+          value = aws_elasticache_cluster.ElastiCache.cluster_address
         }
       ]
     }
