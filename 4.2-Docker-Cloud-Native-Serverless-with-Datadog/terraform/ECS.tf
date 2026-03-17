@@ -68,7 +68,7 @@ resource "aws_ecs_task_definition" "tomcat_definition" {
         },
         {
           name  = "RABBITMQ_PORT"
-          value = "5671"
+          value = "5672"
         },
         {
           name  = "MEMCACHED_HOSTNAME"

@@ -69,9 +69,9 @@ resource "aws_vpc_security_group_ingress_rule" "allow_11211_from_tomcat-SG" {
 resource "aws_vpc_security_group_ingress_rule" "allow_5671_from_tomcat-SG" {
   security_group_id            = aws_security_group.Data-SG.id
   referenced_security_group_id = aws_security_group.ECS-SG.id
-  from_port                    = 5671
+  from_port                    = 5672
   ip_protocol                  = "tcp"
-  to_port                      = 5671
+  to_port                      = 5672
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_3306_from_Bastion" {
