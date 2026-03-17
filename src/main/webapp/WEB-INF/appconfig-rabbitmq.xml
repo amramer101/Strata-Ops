@@ -17,6 +17,11 @@
 	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetObject" ref="rabbitClientFactory"/>
 		<property name="targetMethod" value="useSslProtocol"/>
+		<property name="arguments">
+			<list>
+				<value>TLSv1.2</value>
+			</list>
+		</property>
 	</bean>
 
 	<rabbit:connection-factory id="connectionFactory" connection-factory="rabbitClientFactory" />
@@ -29,4 +34,5 @@
 		<property name="concurrentConsumers" value="3" />
 		<property name="maxConcurrentConsumers" value="10" />
 	</bean>
+
 </beans>
