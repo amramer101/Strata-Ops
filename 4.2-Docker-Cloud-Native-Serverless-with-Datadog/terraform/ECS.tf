@@ -23,7 +23,7 @@ resource "aws_ecs_task_definition" "tomcat_definition" {
   container_definitions = jsonencode([
     {
       name      = "vproapp"
-      image     = "amrmamer/vprofileapp"
+      image     = "amrmamer/vprofileapp:latest"
       cpu       = 512
       memory    = 1024
       essential = true
