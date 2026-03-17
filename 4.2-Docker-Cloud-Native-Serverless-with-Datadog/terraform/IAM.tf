@@ -46,7 +46,7 @@ resource "aws_iam_policy" "ecs_execution_secrets" {
           "secretsmanager:GetSecretValue",
         ]
         Resource = [
-          "arn:aws:secretsmanager${data.aws_region.current.id}:*:secret:/strata-ops/*",
+          "arn:aws:secretsmanager:${data.aws_region.current.id}:*:secret:/strata-ops/*",
         ]
       },
       {
