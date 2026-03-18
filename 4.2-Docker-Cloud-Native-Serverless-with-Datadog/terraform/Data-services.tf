@@ -70,8 +70,7 @@ resource "aws_mq_broker" "RabbitMQ" {
   engine_version             = "3.13"
   host_instance_type         = "mq.t3.micro"
   subnet_ids                 = [module.vpc.private_subnets[0]]
-  security_groups            = [aws_security_group.Data-SG.id]
-  publicly_accessible        = false
+  publicly_accessible        = true
   auto_minor_version_upgrade = true
   user {
     username = var.rmq_user
