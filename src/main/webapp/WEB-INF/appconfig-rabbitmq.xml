@@ -29,10 +29,13 @@
 	<rabbit:admin connection-factory="connectionFactory" />
 	<rabbit:template id="amqpTemplate" connection-factory="connectionFactory" />
 
-	<bean id="rabbitListenerContainerFactory" class="org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory">
-		<property name="connectionFactory" ref="connectionFactory" />
-		<property name="concurrentConsumers" value="3" />
-		<property name="maxConcurrentConsumers" value="10" />
-	</bean>
+<bean id="rabbitListenerContainerFactory" 
+      class="org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory">
+    <property name="connectionFactory" ref="connectionFactory" />
+    <property name="concurrentConsumers" value="3" />
+    <property name="maxConcurrentConsumers" value="10" />
+    <property name="missingQueuesFatal" value="false" />
+    <property name="autoStartup" value="false" />
+</bean>
 
 </beans>

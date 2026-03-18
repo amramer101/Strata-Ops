@@ -17,7 +17,15 @@ module "alb" {
       cidr_ipv4   = "0.0.0.0/0"
     }
   }
-
+  security_group_egress_rules = {
+    to_ecs = {
+      from_port   = 8080
+      to_port     = 8080
+      ip_protocol = "tcp"
+      cidr_ipv4   = "10.0.0.0/16"
+    }
+  }
+  
   listeners = {
     http_traffic = {
       port     = 80
@@ -36,15 +44,15 @@ module "alb" {
       target_type       = "ip"
       create_attachment = false
 
-      health_check = {
-        enabled             = true
-        path                = "/"
-        port                = "traffic-port"
-        healthy_threshold   = 3
-        unhealthy_threshold = 3
-        timeout             = 6
-        interval            = 30
-      }
+    health_check = {
+      enabled             = true
+      path                = "/"
+      port                = "traffic-port"
+      healthy_threshold   = 2
+      unhealthy_threshold = 5
+      timeout             = 10
+      interval            = 30
+    }
     }
   }
 
