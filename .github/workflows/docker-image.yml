@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
     paths:
-      - '4.2-Docker-Cloud-Native-Serverless-with-Datadog/**'
       - 'src/**'
       - 'Dockerfile'
       - '.github/workflows/docker-image.yml'
@@ -13,9 +12,7 @@ env:
   CONTAINER_NAME: vproapp
 
 jobs:
-  # ============================================
-  # JOB 1 - Get SSM Parameters
-  # ============================================
+  #-------------------- JOB 1 - Get SSM Parameters ---------------------------
   get-params:
     name: Get Pipeline Parameters from SSM
     runs-on: ubuntu-latest
@@ -60,9 +57,7 @@ jobs:
             --name '/strata-ops/pipeline/ecs-task-family' \
             --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
 
-  # ============================================
-  # JOB 2 - Trivy Scan Source Code & Config
-  # ============================================
+  # ----------------------- JOB 2 - Trivy Scan Source Code & Config ------------------------
   scan-code:
     name: Trivy - Scan Code & Config
     runs-on: ubuntu-latest
@@ -106,9 +101,7 @@ jobs:
           sarif_file: trivy-config-results.sarif
           category: trivy-config
 
-  # ============================================
-  # JOB 3 - Build Docker Image
-  # ============================================
+  # --------------------- JOB 3 - Build Docker Image --------------------------------------
   build-image:
     name: Docker Build
     runs-on: ubuntu-latest
@@ -136,9 +129,7 @@ jobs:
           path: image.tar
           retention-days: 1
 
-  # ============================================
-  # JOB 4 - Trivy Scan Docker Image
-  # ============================================
+  # --------------------------- JOB 4 - Trivy Scan Docker Image ------------------------------------
   scan-image:
     name: Trivy - Scan Docker Image
     runs-on: ubuntu-latest
@@ -170,9 +161,7 @@ jobs:
           sarif_file: trivy-image-results.sarif
           category: trivy-image
 
-  # ============================================
-  # JOB 5 - Push to ECR
-  # ============================================
+  #-------------------------- JOB 5 - Push to ECR --------------------------------------------
   push-ecr:
     name: Push to ECR
     runs-on: ubuntu-latest
@@ -209,9 +198,7 @@ jobs:
           docker push \
             ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:latest
 
-  # ============================================
-  # JOB 6 - Deploy to ECS
-  # ============================================
+  #------------------------------------------ JOB 6 - Deploy to ECS -------------------------------------
   deploy:
     name: Deploy to ECS
     runs-on: ubuntu-latest
