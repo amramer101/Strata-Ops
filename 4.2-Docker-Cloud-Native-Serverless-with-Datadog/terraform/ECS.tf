@@ -109,6 +109,10 @@ resource "aws_ecs_service" "tomcat_service" {
     container_name   = "vproapp"
     container_port   = 8080
   }
+
+  lifecycle {
+    ignore_changes = [task_definition]
+  }
 }
 
 
