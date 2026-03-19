@@ -67,3 +67,8 @@ variable "rmq_user" {
 variable "bastion_host_username" {
   default = "ubuntu"
 }
+
+variable "datadog_api_key" {
+  description = "Datadog API Key"
+  sensitive   = true
+}

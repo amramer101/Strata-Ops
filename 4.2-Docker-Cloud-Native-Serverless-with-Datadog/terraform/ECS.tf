@@ -1,4 +1,3 @@
-
 ## Tomcat cluster ----------------------------------------
 resource "aws_ecs_cluster" "tomcat_cluster" {
   name = "strata-tomcat-cluster"
@@ -13,20 +12,100 @@ resource "aws_ecs_cluster" "tomcat_cluster" {
 
 resource "aws_ecs_task_definition" "tomcat_definition" {
   family                   = "eprofile-tomcat-task"
-  requires_compatibilities = ["FARGATE"] # ٍServerless
+  requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 1024
   memory                   = 2048
-  # Role for SSM
-  execution_role_arn = aws_iam_role.ecs_execution.arn
+  execution_role_arn       = aws_iam_role.ecs_execution.arn
+  task_role_arn            = aws_iam_role.datadog_task_role.arn
+
+  volume {
+    name = "dd-sockets"
+  }
 
   container_definitions = jsonencode([
+
+    ## ============ Container 1 - Firelens (لازم يكون أول) ============
+    {
+      name      = "datadog-log-router"
+      image     = "public.ecr.aws/aws-observability/aws-for-fluent-bit:stable"
+      cpu       = 64
+      memory    = 128
+      essential = false
+
+      firelensConfiguration = {
+        type = "fluentbit"
+        options = {
+          "enable-ecs-log-metadata" = "true"
+        }
+      }
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs_tomcat_logs.name
+          "awslogs-region"        = data.aws_region.current.id
+          "awslogs-stream-prefix" = "firelens"
+        }
+      }
+    },
+
+    ## ============ Container 2 - Datadog Agent ============
+    {
+      name      = "datadog-agent"
+      image     = "public.ecr.aws/datadog/agent:latest"
+      cpu       = 256
+      memory    = 512
+      essential = false
+
+      environment = [
+        {
+          name  = "DD_SITE"
+          value = "us5.datadoghq.com"
+        },
+        {
+          name  = "DD_APM_ENABLED"
+          value = "true"
+        },
+        {
+          name  = "ECS_FARGATE"
+          value = "true"
+        }
+      ]
+
+      secrets = [
+        {
+          name      = "DD_API_KEY"
+          valueFrom = aws_ssm_parameter.datadog_api_key.arn
+        }
+      ]
+
+      mountPoints = [
+        {
+          containerPath = "/var/run/datadog"
+          sourceVolume  = "dd-sockets"
+          readOnly      = false
+        }
+      ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs_tomcat_logs.name
+          "awslogs-region"        = data.aws_region.current.id
+          "awslogs-stream-prefix" = "datadog-agent"
+        }
+      }
+    },
+
+    ## ============ Container 3 - App ============
     {
       name      = "vproapp"
       image     = "amrmamer/vprofileapp:latest"
       cpu       = 512
       memory    = 1024
       essential = true
+
       portMappings = [
         {
           containerPort = 8080
@@ -73,15 +152,28 @@ resource "aws_ecs_task_definition" "tomcat_definition" {
         {
           name  = "MEMCACHED_HOSTNAME"
           value = aws_elasticache_cluster.ElastiCache.cluster_address
+        },
+        {
+          name  = "DD_TRACE_AGENT_URL"
+          value = "unix:///var/run/datadog/apm.socket"
+        }
+      ]
+
+      mountPoints = [
+        {
+          containerPath = "/var/run/datadog"
+          sourceVolume  = "dd-sockets"
+          readOnly      = false
         }
       ]
 
       logConfiguration = {
-        logDriver = "awslogs"
+        logDriver = "awsfirelens"
         options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.ecs_tomcat_logs.name
-          "awslogs-region"        = data.aws_region.current.id
-          "awslogs-stream-prefix" = "tomcat"
+          Host     = "http-intake.logs.datadoghq.com"
+          apikey   = aws_ssm_parameter.datadog_api_key.value
+          provider = "ecs"
+          Name     = "datadog"
         }
       }
     }
@@ -115,7 +207,7 @@ resource "aws_ecs_service" "tomcat_service" {
   }
 }
 
-
+## CloudWatch Log Group --------------------------------------------
 
 resource "aws_cloudwatch_log_group" "ecs_tomcat_logs" {
   name              = "/ecs/vprofile-app"

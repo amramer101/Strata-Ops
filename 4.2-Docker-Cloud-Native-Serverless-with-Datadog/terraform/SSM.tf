@@ -50,3 +50,10 @@ resource "aws_ssm_parameter" "ecs_task_family" {
   type  = "String"
   value = aws_ecs_task_definition.tomcat_definition.family
 }
+
+
+resource "aws_ssm_parameter" "datadog_api_key" {
+  name  = "/strata-ops/datadog-api-key"
+  type  = "SecureString"
+  value = var.datadog_api_key
+}
