@@ -11,6 +11,10 @@ env:
   AWS_REGION: eu-central-1
   CONTAINER_NAME: vproapp
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   #-------------------- JOB 1 - Get SSM Parameters ---------------------------
   get-params:
