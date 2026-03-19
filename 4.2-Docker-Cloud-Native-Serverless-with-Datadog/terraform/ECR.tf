@@ -1,4 +1,4 @@
-resource "aws_ecr_repository" "Docker-tomcat" {
+resource "aws_ecr_repository" "Docker_tomcat" {
   name                 = "dockertomcat_repo_staraops"
   image_tag_mutability = "MUTABLE"
 

@@ -1,16 +1,251 @@
-name: Docker Image CI
+name: CI/CD Pipeline
 
 on:
-  pull_request:
-    branches: [ "main" ]
+  push:
+    branches: [main]
+    paths:
+      - '4.2-Docker-Cloud-Native-Serverless-with-Datadog/**'
+      - 'src/**'
+      - 'Dockerfile'
+      - '.github/workflows/docker-image.yml'
+env:
+  AWS_REGION: eu-central-1
+  CONTAINER_NAME: vproapp
 
 jobs:
-
-  build:
-
+  # ============================================
+  # JOB 1 - Get SSM Parameters
+  # ============================================
+  get-params:
+    name: Get Pipeline Parameters from SSM
     runs-on: ubuntu-latest
 
+    outputs:
+
+      ecr_registry: ${{ steps.ssm.outputs.ecr_registry }}
+      ecr_repo: ${{ steps.ssm.outputs.ecr_repo }}
+      ecs_cluster: ${{ steps.ssm.outputs.ecs_cluster }}
+      ecs_service: ${{ steps.ssm.outputs.ecs_service }}
+      ecs_task_family: ${{ steps.ssm.outputs.ecs_task_family }}
+
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} ## From Github Actions Secrets
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Get Parameters from SSM
+        id: ssm
+        run: |
+
+          echo "ecr_registry=$(aws ssm get-parameter \
+            --name '/strata-ops/pipeline/ecr-registry' \
+            --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
+
+          echo "ecr_repo=$(aws ssm get-parameter \
+            --name '/strata-ops/pipeline/ecr-repo' \
+            --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
+
+          echo "ecs_cluster=$(aws ssm get-parameter \
+            --name '/strata-ops/pipeline/ecs-cluster' \
+            --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
+
+          echo "ecs_service=$(aws ssm get-parameter \
+            --name '/strata-ops/pipeline/ecs-service' \
+            --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
+
+          echo "ecs_task_family=$(aws ssm get-parameter \
+            --name '/strata-ops/pipeline/ecs-task-family' \
+            --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
+
+  # ============================================
+  # JOB 2 - Trivy Scan Source Code & Config
+  # ============================================
+  scan-code:
+    name: Trivy - Scan Code & Config
+    runs-on: ubuntu-latest
+    needs: get-params
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Trivy - Filesystem Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-fs-results.sarif
+          severity: CRITICAL,HIGH
+          exit-code: 1
+
+      - name: Trivy - Config Scan (Dockerfile + Terraform)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: config
+          scan-ref: .
+          format: sarif
+          output: trivy-config-results.sarif
+          severity: CRITICAL,HIGH
+          exit-code: 1
+
+      - name: Upload Filesystem Scan Results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-fs-results.sarif
+          category: trivy-filesystem
+
+      - name: Upload Config Scan Results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-config-results.sarif
+          category: trivy-config
+
+  # ============================================
+  # JOB 3 - Build Docker Image
+  # ============================================
+  build-image:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    needs: [get-params, scan-code]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: |
+          docker build -t \
+            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }} .
+
+      - name: Save Docker Image
+        run: |
+          docker save \
+            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }} \
+            -o image.tar
+
+      - name: Upload Image as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: image.tar
+          retention-days: 1
+
+  # ============================================
+  # JOB 4 - Trivy Scan Docker Image
+  # ============================================
+  scan-image:
+    name: Trivy - Scan Docker Image
+    runs-on: ubuntu-latest
+    needs: [get-params, build-image]
+
+    steps:
+      - name: Download Image Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Load Docker Image
+        run: docker load -i image.tar
+
+      - name: Trivy - Image Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: image
+          image-ref: ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }}
+          format: sarif
+          output: trivy-image-results.sarif
+          severity: CRITICAL,HIGH
+          exit-code: 1
+
+      - name: Upload Image Scan Results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-image-results.sarif
+          category: trivy-image
+
+  # ============================================
+  # JOB 5 - Push to ECR
+  # ============================================
+  push-ecr:
+    name: Push to ECR
+    runs-on: ubuntu-latest
+    needs: [get-params, scan-image]
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Download Image Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Load Docker Image
+        run: docker load -i image.tar
+
+      - name: Push to ECR
+        run: |
+          docker push \
+            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }}
+
+          docker tag \
+            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }} \
+            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:latest
+
+          docker push \
+            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:latest
+
+  # ============================================
+  # JOB 6 - Deploy to ECS
+  # ============================================
+  deploy:
+    name: Deploy to ECS
+    runs-on: ubuntu-latest
+    needs: [get-params, push-ecr]
+    environment: production
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Download Current Task Definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition ${{ needs.get-params.outputs.ecs_task_family }} \
+            --query taskDefinition \
+            --region ${{ env.AWS_REGION }} \
+            > task-definition.json
+
+      - name: Update Image in Task Definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }}
+
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ needs.get-params.outputs.ecs_service }}
+          cluster: ${{ needs.get-params.outputs.ecs_cluster }}
+          wait-for-service-stability: true
