@@ -302,7 +302,7 @@ datadog-task-role
 
 <div align="center">
 
-![Datadog Sidecar Agent on ECS Fargate](../media/Docker-ECS/Datadog_Sidecar_Agent_on_ECS_Fargate.png)
+![Datadog Sidecar Agent on ECS Fargate](../media/Docker-ECS/Datadog Sidecar Agent on ECS Fargate.png)
 *All 3 containers visible in Datadog Infrastructure — vproapp, datadog-agent, datadog-log-router — with real-time CPU and memory metrics*
 
 </div>
@@ -311,7 +311,7 @@ datadog-task-role
 
 <div align="center">
 
-![Datadog APM Distributed Tracing](../media/Docker-ECS/Datadog_APM_-_Distributed_Request_Tracing.png)
+![Datadog APM Distributed Tracing](../media/Docker-ECS/Datadog APM-Distributed Request Tracing.png)
 *Every HTTP request traced end-to-end — GET /, login, UserController.login — with sub-millisecond precision*
 
 </div>
@@ -320,7 +320,7 @@ datadog-task-role
 
 <div align="center">
 
-![Datadog APM Endpoint Monitoring](../media/Docker-ECS/Datadog_APM_-_Endpoint_Latency___Traffic_Monitoring.png)
+![Datadog APM Endpoint Monitoring](../media/Docker-ECS/Datadog APM - Endpoint Latency Traffic Monitoring.png)
 *7 endpoints tracked — 157 requests each on GET / and /login — p95 latency, error rates, and request volume*
 
 </div>
@@ -329,7 +329,7 @@ datadog-task-role
 
 <div align="center">
 
-![Datadog JVM Runtime Metrics](../media/Docker-ECS/Datadog_-_Java-JVM_Runtime_Metrics__Heap___GC_.png)
+![Datadog JVM Runtime Metrics](../media/Docker-ECS/Datadog-Java-JVM Runtime Metrics Heap GC.png)
 *Real-time JVM internals — Heap usage, Non-Heap usage, GC Old/New Gen sizes, Thread count, Classes loaded*
 
 </div>
