@@ -68,6 +68,7 @@ variable "bastion_host_username" {
   default = "ubuntu"
 }
 
+## Datadog Variables get from terraform.tfvars locally
 variable "datadog_api_key" {
   description = "Datadog API Key"
   sensitive   = true

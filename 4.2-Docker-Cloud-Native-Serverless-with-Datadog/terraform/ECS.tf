@@ -25,7 +25,7 @@ resource "aws_ecs_task_definition" "tomcat_definition" {
 
   container_definitions = jsonencode([
 
-    ## ============ Container 1 - Firelens (لازم يكون أول) ============
+    ## ============ Container 1 - Firelens  ============
     {
       name      = "datadog-log-router"
       image     = "public.ecr.aws/aws-observability/aws-for-fluent-bit:stable"
@@ -156,6 +156,10 @@ resource "aws_ecs_task_definition" "tomcat_definition" {
         {
           name  = "DD_TRACE_AGENT_URL"
           value = "unix:///var/run/datadog/apm.socket"
+        },
+        {
+        name      = "apikey"
+        valueFrom = aws_ssm_parameter.datadog_api_key.arn
         }
       ]
 
@@ -171,7 +175,6 @@ resource "aws_ecs_task_definition" "tomcat_definition" {
         logDriver = "awsfirelens"
         options = {
           Host     = "http-intake.logs.datadoghq.com"
-          apikey   = aws_ssm_parameter.datadog_api_key.value
           provider = "ecs"
           Name     = "datadog"
         }

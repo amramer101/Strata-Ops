@@ -33,10 +33,11 @@ LABEL Author="Amr M. Amer"
 ## Remove default Tomcat web applications and copy the built WAR file to the webapps directory
 RUN rm -rf /usr/local/tomcat/webapps/* 
 
+## Copy Artifact from builder image
 COPY --from=builder /app/target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
 
 ## Expose Tomcat default port
 EXPOSE 8080
 
-## Start Tomcat server
+## Start Tomcat server and Datadog 
 CMD ["sh", "-c", "export JAVA_OPTS='-javaagent:/usr/local/tomcat/dd-java-agent.jar -Ddd.service=vproapp -Ddd.env=production -Ddd.version=1.0' && catalina.sh run"]
