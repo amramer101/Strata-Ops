@@ -177,7 +177,12 @@ resource "aws_ecs_task_definition" "tomcat_definition" {
           Host     = "http-intake.logs.datadoghq.com"
           provider = "ecs"
           Name     = "datadog"
+        } 
+       secretOptions = [{
+          name      = "apikey"
+          valueFrom = aws_ssm_parameter.datadog_api_key.arn
         }
+        ]   
       }
     }
   ])
