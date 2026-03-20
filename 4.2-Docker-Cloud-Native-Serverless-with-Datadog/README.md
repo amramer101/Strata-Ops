@@ -136,14 +136,14 @@ git push → main
 
 <div align="center">
 
-![Automated Vulnerability Scanning](../media/Docker-ECS/Automated Vulnerability Scanning (Trivy + GitHub Advanced Security).png)
+![Automated Vulnerability Scanning](../media/Docker-ECS/Automated_Vulnerability_Scanning__Trivy___GitHub_Advanced_Security_.png)
 *310 vulnerabilities detected and reported to GitHub Security tab via SARIF format*
 
 </div>
 
 <div align="center">
 
-![Detailed CVE Reporting](../media/Docker-ECS/Detailed CVE Reporting & Path Traceability.png)
+![Detailed CVE Reporting](../media/Docker-ECS/Detailed_CVE_Reporting___Path_Traceability.png)
 *Full CVE traceability — package path, affected version, fixed version, and CVE ID*
 
 </div>
@@ -336,7 +336,7 @@ datadog-task-role
 
 <div align="center">
 
-![Datadog JVM Runtime Metrics Extended](../media/Docker-ECS/Screenshot_From_2026-03-19_16-39-00.png)
+![Datadog JVM Runtime Metrics Extended](../media/Docker-ECS/cpu.png)
 *Extended JVM dashboard — GC pressure patterns, memory growth trends, thread activity*
 
 </div>
