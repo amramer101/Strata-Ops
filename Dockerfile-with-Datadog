@@ -23,8 +23,15 @@ RUN mvn clean package -DskipTests
 
 FROM tomcat:10-jdk21
 
-## For Datadog APM
-ADD https://dtdg.co/latest-java-tracer /usr/local/tomcat/dd-java-agent.jar
+## ENv for Datadog
+ENV CATALINA_OPTS="-javaagent:/usr/local/tomcat/dd-java-agent.jar \
+    -Ddd.service=vproapp \
+    -Ddd.env=production \
+    -Ddd.version=1.0"
+
+## For Datadog APM and make it reproducible
+RUN curl -Lo /usr/local/tomcat/dd-java-agent.jar \
+    https://github.com/DataDog/dd-trace-java/releases/download/v1.36.0/dd-java-agent.jar
 
 ## Metadata
 LABEL project="vprofile-Strata-Ops"
@@ -40,4 +47,4 @@ COPY --from=builder /app/target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.w
 EXPOSE 8080
 
 ## Start Tomcat server and Datadog 
-CMD ["sh", "-c", "export JAVA_OPTS='-javaagent:/usr/local/tomcat/dd-java-agent.jar -Ddd.service=vproapp -Ddd.env=production -Ddd.version=1.0' && catalina.sh run"]
+CMD ["catalina.sh", "run"]

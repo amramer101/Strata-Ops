@@ -121,6 +121,10 @@ resource "aws_ecs_task_definition" "tomcat_definition" {
         {
           name      = "RABBITMQ_PASS"
           valueFrom = "arn:aws:ssm:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:parameter/strata-ops/rabbitmq-password"
+        },
+        {
+        name      = "apikey"
+        valueFrom = aws_ssm_parameter.datadog_api_key.arn
         }
       ]
 
@@ -156,10 +160,6 @@ resource "aws_ecs_task_definition" "tomcat_definition" {
         {
           name  = "DD_TRACE_AGENT_URL"
           value = "unix:///var/run/datadog/apm.socket"
-        },
-        {
-        name      = "apikey"
-        valueFrom = aws_ssm_parameter.datadog_api_key.arn
         }
       ]
 

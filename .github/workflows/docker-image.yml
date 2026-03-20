@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'src/**'
-      - 'Dockerfile'
+      - 'Dockerfile-with-Datadog'
       - '.github/workflows/docker-image.yml'
 env:
   AWS_REGION: eu-central-1
@@ -118,7 +118,7 @@ jobs:
       - name: Build Docker Image
         run: |
           docker build -t \
-            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }} -f Dockerfile-with-Datadog
+            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }} -f Dockerfile-with-Datadog .
 
       - name: Save Docker Image
         run: |
