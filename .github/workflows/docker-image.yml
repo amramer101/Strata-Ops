@@ -118,7 +118,7 @@ jobs:
       - name: Build Docker Image
         run: |
           docker build -t \
-            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }} .
+            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }} -f Dockerfile-with-Datadog
 
       - name: Save Docker Image
         run: |
