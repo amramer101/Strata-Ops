@@ -104,31 +104,3 @@ resource "aws_iam_role_policy" "datadog_task_policy" {
     }]
   })
 }
-
-# Datadog Execution Role
-resource "aws_iam_role" "datadog_execution_role" {
-  name = "datadog-task-execution-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect    = "Allow"
-      Principal = { Service = "ecs-tasks.amazonaws.com" }
-      Action    = "sts:AssumeRole"
-    }]
-  })
-}
-
-resource "aws_iam_role_policy" "datadog_execution_policy" {
-  name = "datadog-secret-access"
-  role = aws_iam_role.datadog_execution_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect   = "Allow"
-      Action   = ["ssm:GetParameter", "ssm:GetParameters"]
-      Resource = [aws_ssm_parameter.datadog_api_key.arn]
-    }]
-  })
-}
