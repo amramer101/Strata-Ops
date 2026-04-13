@@ -25,8 +25,9 @@ module "ec2_instance_k8s" {
   source = "terraform-aws-modules/ec2-instance/aws"
 
   name = "Kuber-instance"
+  version = "5.7.0"
 
-  instance_type               = "t2.medium"
+  instance_type               = var.Ec2_Instance_Type
   associate_public_ip_address = true
   ami                         = data.aws_ami.ubuntu22.id
   vpc_security_group_ids      = [aws_security_group.k8s-SG.id]

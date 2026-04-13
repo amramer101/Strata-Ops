@@ -24,4 +24,8 @@ variable "Pub_Key_Path" {
   default = "k8s-key.pub"
 }
 
+## Server Tier
+variable "Ec2_Instance_Type" {
+  default = "t3.large"
+}
 

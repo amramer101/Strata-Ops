@@ -1,55 +1,46 @@
-- name: Setup Docker and Deploy Vprofile Stack
+---
+- name: Install and Start Minikube on Ubuntu
   hosts: all
   become: true
-  remote_user: ubuntu ## 'ubuntu' is the default user for the EC2 instance
-
   tasks:
-    - name: Update APT cache and install dependencies
+    - name: Update apt and install dependencies
       apt:
-        name:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - software-properties-common
-        state: present
+        name: [curl, wget, apt-transport-https, conntrack]
         update_cache: yes
 
-    - name: Add Docker GPG key
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-
-    - name: Add Docker APT repository
-      apt_repository:
-        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-        state: present
-
-    - name: Install Docker and Docker Compose Plugin (The Modern Way)
+    - name: Install Docker
       apt:
-        name: 
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-          - docker-compose-plugin
+        name: docker.io
         state: present
 
-    - name: Ensure ubuntu user is in docker group
+    - name: Ensure docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add user to docker group
       user:
         name: ubuntu
         groups: docker
         append: yes
 
-## ======== Deployment
-    
-    - name: Copy docker-stack folder to EC2
-      copy:
-        src: ../docker-stack/
-        dest: /home/ubuntu/docker-stack/
-        owner: ubuntu
-        group: ubuntu
+    - name: Download Minikube
+      get_url:
+        url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+        dest: /usr/local/bin/minikube
         mode: '0755'
 
-    - name: Run Docker Compose to start the application
-      shell: docker compose -f docker-compose.prod.yml up -d
-      args:
-        chdir: /home/ubuntu/docker-stack/
+    - name: Download kubectl
+      get_url:
+        url: "https://dl.k8s.io/release/{{ lookup('url', 'https://dl.k8s.io/release/stable.txt') }}/bin/linux/amd64/kubectl"
+        dest: /usr/local/bin/kubectl
+        mode: '0755'
+
+    - name: Start Minikube
+      become: false
+      command: minikube start --driver=docker
+      register: start_out
+
+    - debug:
+        msg: "{{ start_out.stdout }}"
