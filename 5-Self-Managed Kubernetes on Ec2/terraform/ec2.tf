@@ -24,8 +24,8 @@ data "aws_ami" "ubuntu22" {
 module "ec2_instance_k8s" {
   source = "terraform-aws-modules/ec2-instance/aws"
 
-  name = "Kuber-instance"
-  version = "5.7.0"
+  name    = "Kuber-instance"
+  version = "6.3.0"
 
   instance_type               = var.Ec2_Instance_Type
   associate_public_ip_address = true
@@ -34,7 +34,6 @@ module "ec2_instance_k8s" {
   key_name                    = aws_key_pair.k8s_Key_Pair.key_name
   monitoring                  = false
   subnet_id                   = module.vpc.public_subnets[0]
-  create_security_group       = false
 
   tags = {
     Terraform   = "true"
