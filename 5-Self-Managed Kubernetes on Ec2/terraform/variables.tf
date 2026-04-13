@@ -3,7 +3,7 @@ variable "AWS_Region" {
 }
 
 variable "VPC_Name" {
-  default = "Eprofile-VPC-docker"
+  default = "Eprofile-VPC-k8s"
 }
 
 variable "VPC_CIDR" {
@@ -21,7 +21,7 @@ variable "AWS_Zone-a" {
 ####  Key Pair Variables
 
 variable "Pub_Key_Path" {
-  default = "docker-key.pub"
+  default = "k8s-key.pub"
 }
 
 

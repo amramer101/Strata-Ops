@@ -19,18 +19,18 @@ data "aws_ami" "ubuntu22" {
 
 ##--------------------------------------------------------------------------------------------------------------
 
-### EC2 Instance for Docker Server
+### EC2 Instance for K8s erver
 
-module "ec2_instance_docker" {
+module "ec2_instance_k8s" {
   source = "terraform-aws-modules/ec2-instance/aws"
 
-  name = "Docker-instance"
+  name = "Kuber-instance"
 
   instance_type               = "t2.medium"
   associate_public_ip_address = true
   ami                         = data.aws_ami.ubuntu22.id
-  vpc_security_group_ids      = [aws_security_group.Docker-SG.id]
-  key_name                    = aws_key_pair.docker_Key_Pair.key_name
+  vpc_security_group_ids      = [aws_security_group.k8s-SG.id]
+  key_name                    = aws_key_pair.k8s_Key_Pair.key_name
   monitoring                  = false
   subnet_id                   = module.vpc.public_subnets[0]
   create_security_group       = false
@@ -45,10 +45,10 @@ module "ec2_instance_docker" {
 resource "local_file" "ansible_inventory" {
   filename = "../ansible/inventory.ini"
   content  = <<-EOF
-    [docker_server]
-    ${module.ec2_instance_docker.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=../terraform/docker-key
+    [k8s_server]
+    ${module.ec2_instance_k8s.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=../terraform/k8s-key
     
-    [docker_server:vars]
+    [k8s_server:vars]
     ansible_ssh_common_args='-o StrictHostKeyChecking=no'
   EOF
 }

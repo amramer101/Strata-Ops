@@ -30,6 +30,7 @@ aws-2-github
 monitor-key
 docker-key
 docker-githubActions
+k8s-key
 
 # docker files
 .env

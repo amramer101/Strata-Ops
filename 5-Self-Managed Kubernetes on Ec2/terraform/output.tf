@@ -1,7 +1,7 @@
 ## Outputs for the created resources
 
-## Docker Public IP
-output "docker_ip" {
-  description = "The public IP of the Docker instance"
-  value       = module.ec2_instance_docker.public_ip
+## K8s Public IP
+output "k8s_ip" {
+  description = "The public IP of the k8s instance"
+  value       = module.ec2_instance_k8s.public_ip
 }
