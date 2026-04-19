@@ -26,6 +26,6 @@ variable "Pub_Key_Path" {
 
 ## Server Tier
 variable "Ec2_Instance_Type" {
-  default = "t3.large"
+  default = "t3.medium"
 }
 

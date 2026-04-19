@@ -45,7 +45,7 @@
       command: minikube start --driver=docker
       register: start_out
       changed_when: "'Starting' in start_out.stdout"
-      
+
     - name: Enable Minikube Ingress Addon
       become: false
       command: minikube addons enable ingress
@@ -54,3 +54,21 @@
 
     - debug:
         msg: "Minikube is ready and Ingress is enabled!"
+
+    - name: Transfer Kubernetes manifest files
+      copy:
+        src: ../kubernetes/
+        dest: /home/{{ ansible_user }}/kubernetes/
+        owner: "{{ ansible_user }}"
+        mode: '0644'
+
+    - name: Apply Kubernetes manifests
+      become: false
+      shell: |
+        kubectl apply -f /home/{{ ansible_user }}/kubernetes/db/
+        kubectl apply -f /home/{{ ansible_user }}/kubernetes/mq/
+        kubectl apply -f /home/{{ ansible_user }}/kubernetes/cache/
+        kubectl apply -f /home/{{ ansible_user }}/kubernetes/app/
+        kubectl apply -f /home/{{ ansible_user }}/kubernetes/ingress/
+      args:
+        executable: /bin/bash       

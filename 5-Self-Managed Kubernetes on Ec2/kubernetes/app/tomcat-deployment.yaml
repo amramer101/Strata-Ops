@@ -28,7 +28,7 @@ spec:
 
         env:
         - name: RABBITMQ_HOSTNAME
-          value: vprormq 
+          value: vprormq-service 
 
         - name: RABBITMQ_USER
           valueFrom:
@@ -44,11 +44,11 @@ spec:
 
 
         - name: MEMCACHED_HOSTNAME
-          value: vprocache
+          value: vprocache-service
 
 
         - name: RDS_HOSTNAME
-          value: vprordb 
+          value: vprordb-service 
 
         - name: RDS_USERNAME
           valueFrom:
@@ -65,4 +65,4 @@ spec:
       initContainers:
         - name: wait-for-services
           image: busybox:1.28
-          command: ['sh', '-c', "until nc -zvw1 vprordb 3306 && nc -zvw1 vprormq 5672 && nc -zvw1 vprocache 11211; do echo 'Waiting for backend...'; sleep 2; done;"]              
+          command: ['sh', '-c', "until nc -zvw1 vprordb-service 3306 && nc -zvw1 vprormq-service 5672 && nc -zvw1 vprocache-service 11211; do echo 'Waiting for backend...'; sleep 2; done;"]              
