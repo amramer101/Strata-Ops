@@ -33,13 +33,13 @@ spec:
         - name: RABBITMQ_USER
           valueFrom:
             secretKeyRef:
-              name: mq-secrets
+              name: rmq-secrets
               key: username
 
         - name: RABBITMQ_PASS
           valueFrom:
             secretKeyRef:
-              name: mq-secrets
+              name: rmq-secrets
               key: password
 
 
@@ -53,13 +53,13 @@ spec:
         - name: RDS_USERNAME
           valueFrom:
             secretKeyRef:
-              name: rds-secrets
+              name: database-secrets
               key: username
 
         - name: RDS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: rds-secrets
+              name: database-secrets
               key: password
 
       initContainers:

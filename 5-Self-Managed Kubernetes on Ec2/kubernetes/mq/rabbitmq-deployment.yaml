@@ -21,11 +21,11 @@ spec:
           - name: RABBITMQ_DEFAULT_USER
             valueFrom:
               secretKeyRef:
-                name: mq-secrets
+                name: rmq-secrets
                 key: username
                 
           - name: RABBITMQ_DEFAULT_PASS
             valueFrom:
               secretKeyRef:
-                name: mq-secrets
+                name: rmq-secrets
                 key: password  
