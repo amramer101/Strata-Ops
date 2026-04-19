@@ -7,4 +7,4 @@ spec:
     - port: 3306
       targetPort: mysql-port
   selector:
-    app: vprodb
+    app: vprodb ## The selector that will be used to match the service to the deployment of the MySQL server

@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: vprocache01 ## The name of the service that will be used to base the connection string for the application to connect to the Memcached server
+  name: vprocache ## The name of the service that will be used to base the connection string for the application to connect to the Memcached server
 spec:
   ports:
     - port: 11211
       targetPort: 11211
   selector:
-    app: vprocache01
+    app: vprocache01 ## The selector that will be used to match the service to the deployment of the Memcached server
