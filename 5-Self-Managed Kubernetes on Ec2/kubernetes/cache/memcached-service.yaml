@@ -7,4 +7,4 @@ spec:
     - port: 11211
       targetPort: 11211
   selector:
-    app: vprocache-deployment ## The selector that will be used to match the service to the deployment of the Memcached server
+    app: vprocache-pod ## The selector that will be used to match the service to the deployment of the Memcached server

@@ -7,4 +7,4 @@ spec:
     - port: 5672
       targetPort: 5672
   selector:
-    app: vprormq-deployment ## The selector that will be used to match the service to the deployment of the RabbitMQ server
+    app: vprormq-pod ## The selector that will be used to match the service to the deployment of the RabbitMQ server

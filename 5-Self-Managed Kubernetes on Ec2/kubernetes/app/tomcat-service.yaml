@@ -6,4 +6,4 @@ metadata:
     - port: 8080
       targetPort: 8080
   selector:
-    app: app-tomcat ## The selector that will be used to match the service to the deployment of the Tomcat server
+    app: vproapp-pod ## The selector that will be used to match the service to the deployment of the Tomcat server

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vproapp ## The name of the deployment that will be used to base the connection string for the application to connect to the Tomcat server
+  name: vproapp-deployment ## The name of the deployment that will be used to base the connection string for the application to connect to the Tomcat server
 spec:
   replicas: 1
   selector:
@@ -65,4 +65,4 @@ spec:
       initContainers:
         - name: wait-for-services
           image: busybox:1.28
-          command: ['sh', '-c', "until nc -zvw1 vprordb-service 3306 && nc -zvw1 vprormq-service 5672 && nc -zvw1 vprocache-service 11211; do echo 'Waiting for backend...'; sleep 2; done;"]              
+          command: ['sh', '-c', "until nc -zvw1 vprodb-service 3306 && nc -zvw1 vprormq-service 5672 && nc -zvw1 vprocache-service 11211; do echo 'Waiting for backend...'; sleep 2; done;"]              
