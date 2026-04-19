@@ -28,7 +28,7 @@ spec:
 
         env:
         - name: RABBITMQ_HOSTNAME
-          value: vprormq-service 
+          value: vprormq-service
 
         - name: RABBITMQ_USER
           valueFrom:
@@ -48,7 +48,7 @@ spec:
 
 
         - name: RDS_HOSTNAME
-          value: vprordb-service 
+          value: vprodb-service 
 
         - name: RDS_USERNAME
           valueFrom:

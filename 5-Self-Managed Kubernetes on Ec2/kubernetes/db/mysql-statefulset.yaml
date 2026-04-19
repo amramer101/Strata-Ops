@@ -7,12 +7,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: vprodb ## The selector that will be used to match the statefulset to the service of the MySQL server
+      app: vprodb-statefulset ## The selector that will be used to match the statefulset to the service of the MySQL server
 
   template:
     metadata:
       labels:
-        app: vprodb ## The label that will be used to match the statefulset to the service of the MySQL server
+        app: vprodb-statefulset ## The label that will be used to match the statefulset to the service of the MySQL server
     spec:
       containers:
       - name: vprodb
