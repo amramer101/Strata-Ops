@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-tomcat ## The name of the service that will be used to base the connection string for the application to connect to the Tomcat server
+  name: app-tomcat-service ## The name of the service that will be used to base the connection string for the application to connect to the Tomcat server
   ports:
     - port: 8080
       targetPort: 8080
   selector:
-    app: app-tomcat
+    app: app-tomcat ## The selector that will be used to match the service to the deployment of the Tomcat server
