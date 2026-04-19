@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vproapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vproapp-pod
+  template:
+    metadata:
+      labels:
+        app: vproapp-pod
+    spec:
+      containers:
+      - name: vproapp-container
+        image: amrmamer/vprofileapp
+        ports:
+        - containerPort: 8080
+        env:
+        - name: RABBITMQ_HOSTNAME
+          value: vprormq 
+
+        - name: RABBITMQ_USER
+          valueFrom:
+            secretKeyRef:
+              name: mq-secrets
+              key: username
+
+        - name: RABBITMQ_PASS
+          valueFrom:
+            secretKeyRef:
+              name: mq-secrets
+              key: password
+
+        - name: MEMCACHED_HOSTNAME
+          value: vprocache01 
+
+        - name: RDS_HOSTNAME
+          value: vprordb 
+
+        - name: RDS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: rds-secrets
+              key: username
+
+        - name: RDS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rds-secrets
+              key: password
