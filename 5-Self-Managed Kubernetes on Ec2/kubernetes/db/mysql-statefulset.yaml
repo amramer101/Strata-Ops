@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vprodb
+spec:
+  serviceName: "vprodb"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vprodb
+
+  template:
+    metadata:
+      labels:
+        app: vprodb
+    spec:
+      containers:
+      - name: vprodb
+        image: amrmamer/vprofiledb
+        ports:
+        - name: mysql-port
+          containerPort: 3306
+          
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m" 
+
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: databases-secrets
+                key: root-password
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: databases-secrets
+                key: username
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: databases-secrets
+                key: password
+
+        volumeMounts:
+        - name: vprodb-data
+          mountPath: /var/lib/mysql
+
+  volumeClaimTemplates:
+  - metadata:
+      name: vprodb-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 2Gi
