@@ -34,3 +34,5 @@ k8s-key
 
 # docker files
 .env
+
+inventory.ini

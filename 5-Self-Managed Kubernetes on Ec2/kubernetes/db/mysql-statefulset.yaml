@@ -33,19 +33,19 @@ spec:
           - name: MYSQL_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: databases-secrets
+                name: database-secrets
                 key: root-password
 
           - name: MYSQL_USER
             valueFrom:
               secretKeyRef:
-                name: databases-secrets
+                name: database-secrets
                 key: username
                 
           - name: MYSQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: databases-secrets
+                name: database-secrets
                 key: password
 
         volumeMounts:
