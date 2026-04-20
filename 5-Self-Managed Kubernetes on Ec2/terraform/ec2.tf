@@ -34,7 +34,10 @@ module "ec2_instance_k8s" {
   key_name                    = aws_key_pair.k8s_Key_Pair.key_name
   monitoring                  = false
   subnet_id                   = module.vpc.public_subnets[0]
-
+  root_block_device = {
+    volume_size = 15
+    volume_type = "gp3"
+  }
   tags = {
     Terraform   = "true"
     Environment = "dev"
