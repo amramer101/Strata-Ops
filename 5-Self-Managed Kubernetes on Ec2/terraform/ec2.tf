@@ -35,8 +35,8 @@ module "ec2_instance_k8s" {
   monitoring                  = false
   subnet_id                   = module.vpc.public_subnets[0]
   root_block_device = {
-    volume_size = 15
-    volume_type = "gp3"
+    size = 15
+    type = "gp3"
   }
   tags = {
     Terraform   = "true"
