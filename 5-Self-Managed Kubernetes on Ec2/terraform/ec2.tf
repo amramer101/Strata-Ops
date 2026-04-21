@@ -28,6 +28,7 @@ module "ec2_instance_k8s" {
   version = "6.3.0"
 
   instance_type               = var.Ec2_Instance_Type
+  availability_zone           = var.AWS_Zone-a
   associate_public_ip_address = true
   ami                         = data.aws_ami.ubuntu22.id
   vpc_security_group_ids      = [aws_security_group.k8s-SG.id]
