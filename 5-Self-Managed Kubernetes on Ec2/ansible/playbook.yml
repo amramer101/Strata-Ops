@@ -1,7 +1,8 @@
-- name: Install and Start Minikube with Persistent Port-Forward
+- name: Full K8s Setup with EBS Storage and Persistent Port-Forward
   hosts: all
   become: true
   tasks:
+    # 1. Install Docker and dependencies
     - name: Update apt and install dependencies
       apt:
         name: [curl, wget, apt-transport-https, conntrack, socat]
@@ -21,6 +22,28 @@
     - name: Reset connection to apply group changes
       meta: reset_connection
 
+
+    # 2. Prepare EBS Volume for MySQL Storage
+    - name: Format the EBS volume (AWS usually maps sdh to xvdh)
+      filesystem:
+        fstype: ext4
+        dev: /dev/xvdh
+
+    - name: Create mount directory for Database
+      file:
+        path: /mnt/vprofile-db
+        state: directory
+        mode: '0777'
+
+    - name: Mount the EBS volume
+      mount:
+        path: /mnt/vprofile-db
+        src: /dev/xvdh
+        fstype: ext4
+        state: mounted
+
+
+    # 3. Minikube Installation and Setup
     - name: Download Minikube
       get_url:
         url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -43,15 +66,19 @@
       become: false
       command: minikube addons enable ingress
 
+
+    # 4. Deploy Kubernetes Manifests
     - name: Transfer Kubernetes manifest files
       copy:
         src: ../kubernetes/
         dest: "/home/{{ ansible_user }}/kubernetes/"
         owner: "{{ ansible_user }}"
 
-    - name: Apply Kubernetes manifests
+    - name: Apply Kubernetes manifests (Strict Order for Storage)
       become: false
       shell: |
+        kubectl apply -f /home/{{ ansible_user }}/kubernetes/db/db-pv.yaml
+        kubectl apply -f /home/{{ ansible_user }}/kubernetes/db/db-pvc.yaml
         kubectl apply -f /home/{{ ansible_user }}/kubernetes/db/
         kubectl apply -f /home/{{ ansible_user }}/kubernetes/mq/
         kubectl apply -f /home/{{ ansible_user }}/kubernetes/cache/
@@ -60,7 +87,9 @@
       args:
         executable: /bin/bash
 
-    - name: Create K8s Port-Forward Service
+
+    # 5. Port-Forward Service to Expose Ingress Controller
+    - name: Create K8s Port-Forward Systemd Service
       copy:
         dest: /etc/systemd/system/k8s-proxy.service
         content: |
