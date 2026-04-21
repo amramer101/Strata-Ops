@@ -49,14 +49,10 @@ spec:
                 key: password
 
         volumeMounts:
-        - name: vprodb-data
+        - name: mysql-storage
           mountPath: /var/lib/mysql
 
-  volumeClaimTemplates:
-  - metadata:
-      name: vprodb-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi
+      volumes:
+         - name: mysql-storage
+           persistentVolumeClaim:
+               claimName: mysql-pvc ## The name of the PVC that will be used to claim the PV for the MySQL server
