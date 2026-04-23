@@ -525,6 +525,6 @@ http://<ec2-public-ip>
 
 **Provisioned · Automated · Orchestrated · Persistent**
 
-*by [Amr Medhat Amer](https://github.com/amrmamer) — Cloud DevSecOps*
+*by [Amr Medhat Amer](https://github.com/amramer101) — Cloud DevSecOps*
 
 </div>
