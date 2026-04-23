@@ -83,15 +83,15 @@
     # 4. Deploy Kubernetes Manifests (Helmed Application)
     - name: Transfer Kubernetes manifest files
       copy:
-        src: ../eprofile-chart/*
+        src: ../eprofile-chart/
         dest: "/home/{{ ansible_user }}/kubernetes/"
         owner: "{{ ansible_user }}"
+        mode: '0755'
 
-    - name: Apply Kubernetes manifests (Strict Order for Storage)
+    - name: Apply Kubernetes Manifests with Helm
       become: false
       shell: |
-        kubectl apply -f /home/{{ ansible_user }}/kubernetes/db/
- 
+        helm upgrade --install vprofile-db /home/{{ ansible_user }}/kubernetes/ --namespace default 
       args:
         executable: /bin/bash
 
