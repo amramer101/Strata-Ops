@@ -91,7 +91,7 @@
     - name: Apply Kubernetes Manifests with Helm
       become: false
       shell: |
-        helm upgrade --install vprofile-db /home/{{ ansible_user }}/kubernetes/ --namespace default 
+        helm upgrade --install eprofile-chart /home/{{ ansible_user }}/kubernetes/ --namespace default 
       args:
         executable: /bin/bash
 
