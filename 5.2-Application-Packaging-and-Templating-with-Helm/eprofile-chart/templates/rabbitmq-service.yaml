@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vprormq-service ## The name of the service that will be used to base the connection string for the application to connect to the RabbitMQ server
+spec:
+  ports:
+    - port: 5672
+      targetPort: 5672
+  selector:
+    app: vprormq-pod ## The selector that will be used to match the service to the deployment of the RabbitMQ server

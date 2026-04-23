@@ -1,4 +1,4 @@
-# ☸️ Phase 5 — Self-Managed Kubernetes on EC2
+# ☸️ Phase 5.1 — Self-Managed Kubernetes on EC2
 
 > *From containers to orchestration — running a real K8s workload on bare EC2 with full IaC automation.*
 

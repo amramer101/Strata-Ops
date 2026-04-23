@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vprodb-service ## The name of the service that will be used to base the connection string for the application to connect to the MySQL server
+spec:
+  ports:
+    - port: 3306
+      targetPort: mysql-port
+  selector:
+    app: vprodb-statefulset ## The selector that will be used to match the service to the deployment of the MySQL server

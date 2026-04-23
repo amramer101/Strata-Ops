@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vprocache-deployment ## The name of the deployment that will be used to base the connection string for the application to connect to the Memcached server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vprocache-pod ## The selector that will be used to match the deployment to the service of the Memcached server
+  template:
+    metadata:
+      labels:
+        app: vprocache-pod ## The label that will be used to match the deployment to the service of the Memcached server
+    spec:
+      containers:
+      - name: vprocache01
+        image: memcached
+        ports:
+        - containerPort: 11211
