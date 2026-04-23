@@ -28,7 +28,7 @@ spec:
 
         env:
         - name: RABBITMQ_HOSTNAME
-          value: vprormq-service
+          value: {{ .Values.rmq.serviceName }}
 
         - name: RABBITMQ_USER
           valueFrom:
@@ -44,11 +44,11 @@ spec:
 
 
         - name: MEMCACHED_HOSTNAME
-          value: vprocache-service
+          value: {{ .Values.memcached.serviceName }}
 
 
         - name: RDS_HOSTNAME
-          value: vprodb-service 
+          value: {{ .Values.db.serviceName }}
 
         - name: RDS_USERNAME
           valueFrom:

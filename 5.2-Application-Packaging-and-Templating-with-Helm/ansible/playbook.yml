@@ -1,0 +1,122 @@
+- name: Full K8s Setup with EBS Storage and Persistent Port-Forward
+  hosts: all
+  become: true
+  tasks:
+    # 1. Install Docker and dependencies
+    - name: Update apt and install dependencies
+      apt:
+        name: [curl, wget, apt-transport-https, conntrack, socat]
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Add user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Reset connection to apply group changes
+      meta: reset_connection
+
+    ## Install Helm
+    - name: Install helm if not exists
+      unarchive:
+        src: https://get.helm.sh/helm-v3.11.0-linux-amd64.tar.gz
+        dest: /usr/local/bin
+        extra_opts: "--strip-components=1"
+        owner: root
+        group: root
+        mode: 0755
+        remote_src: true
+      args:
+        creates: /usr/local/bin/helm
+
+
+    # 2. Prepare EBS Volume for MySQL Storage
+    - name: Format the EBS volume (AWS usually maps sdh to xvdh)
+      filesystem:
+        fstype: ext4
+        dev: /dev/nvme1n1
+
+    - name: Create mount directory for Database
+      file:
+        path: /mnt/vprofile-db
+        state: directory
+        mode: '0777'
+
+    - name: Mount the EBS volume
+      mount:
+        path: /mnt/vprofile-db
+        src: /dev/nvme1n1
+        fstype: ext4
+        state: mounted
+
+
+    # 3. Minikube Installation and Setup
+    - name: Download Minikube
+      get_url:
+        url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+        dest: /usr/local/bin/minikube
+        mode: '0755'
+
+    - name: Download kubectl
+      get_url:
+        url: "https://dl.k8s.io/release/v1.28.0/bin/linux/amd64/kubectl"
+        dest: /usr/local/bin/kubectl
+        mode: '0755'
+
+    - name: Start Minikube
+      become: false
+      command: minikube start --driver=docker
+      register: start_out
+      changed_when: "'Starting' in start_out.stdout"
+
+    - name: Enable Minikube Ingress Addon
+      become: false
+      command: minikube addons enable ingress
+
+
+    # 4. Deploy Kubernetes Manifests (Helmed Application)
+    - name: Transfer Kubernetes manifest files
+      copy:
+        src: ../eprofile-chart/*
+        dest: "/home/{{ ansible_user }}/kubernetes/"
+        owner: "{{ ansible_user }}"
+
+    - name: Apply Kubernetes manifests (Strict Order for Storage)
+      become: false
+      shell: |
+        kubectl apply -f /home/{{ ansible_user }}/kubernetes/db/
+ 
+      args:
+        executable: /bin/bash
+
+
+    # 5. Port-Forward Service to Expose Ingress Controller
+    - name: Create K8s Port-Forward Systemd Service
+      copy:
+        dest: /etc/systemd/system/k8s-proxy.service
+        content: |
+          [Unit]
+          Description=K8s Port Forwarding for Ingress
+          After=network.target
+
+          [Service]
+          ExecStart=/usr/local/bin/kubectl --kubeconfig=/home/{{ ansible_user }}/.kube/config port-forward --address 0.0.0.0 -n ingress-nginx svc/ingress-nginx-controller 80:80
+          Restart=always
+          RestartSec=5
+          User=root
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Start and Enable K8s Proxy Service
+      systemd:
+        name: k8s-proxy
+        state: started
+        enabled: yes
+        daemon_reload: yes
