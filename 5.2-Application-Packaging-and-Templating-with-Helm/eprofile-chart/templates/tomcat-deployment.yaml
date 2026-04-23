@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: vproapp-deployment ## The name of the deployment that will be used to base the connection string for the application to connect to the Tomcat server
 spec:
-  replicas: 1
+  replicas: {{ .Values.app.replicaCount }}
   selector:
     matchLabels:
       app: vproapp-pod ## The selector that will be used to match the deployment to the service of the application
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: vproapp-container
-        image: amrmamer/vprofileapp
+        image: "{{ .Values.app.image }}:{{ .Values.app.tag }}" ## The image and tag of the application that will be used to create the container
         ports:
         - containerPort: 8080
 
@@ -65,4 +65,4 @@ spec:
       initContainers:
         - name: wait-for-services
           image: busybox:1.28
-          command: ['sh', '-c', "until nc -zvw1 vprodb-service 3306 && nc -zvw1 vprormq-service 5672 && nc -zvw1 vprocache-service 11211; do echo 'Waiting for backend...'; sleep 2; done;"]              
+          command: ['sh', '-c', "until nc -zvw1 {{ .Values.db.serviceName }} 3306 && nc -zvw1 {{ .Values.rmq.serviceName }} 5672 && nc -zvw1 {{ .Values.memcached.serviceName }} 11211; do echo 'Waiting for backend...'; sleep 2; done;"]              

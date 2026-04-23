@@ -4,7 +4,7 @@ metadata:
   name: mysql-pv
 spec:
   capacity:
-    storage: 2Gi
+    storage: {{ .Values.db.storage }} ## The storage capacity of the Persistent Volume that will be used to store the data of the MySQL server
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce

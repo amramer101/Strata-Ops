@@ -8,4 +8,4 @@ spec:
   storageClassName: manual ## same as the storageClassName defined in the PV
   resources:
     requests:
-      storage: 2Gi
+      storage: {{ .Values.db.storage }} ## The storage capacity of the Persistent Volume Claim that will be used to claim the PV for the MySQL server

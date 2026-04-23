@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vprormq-deployment
+  name: vprormq-deployment ## The name of the deployment that will be used to base the connection string for the application to connect to the RabbitMQ server
 spec:
-  replicas: 1
+  replicas: {{ .Values.rmq.replicaCount }} 
   selector:
     matchLabels:
-      app: vprormq-pod
+      app: vprormq-pod ## The selector that will be used to match the deployment to the service of the RabbitMQ server
   template:
     metadata:
       labels:
-        app: vprormq-pod
+        app: vprormq-pod ## The label that will be used to match the deployment to the service of the RabbitMQ server
     spec:
       containers:
       - name: vprormq-container
-        image: rabbitmq:3-management 
+        image: {{ .Values.rmq.image }}:{{ .Values.rmq.tag }} ## The image and tag of the RabbitMQ server that will be used to create the container 
         ports:
         - containerPort: 5672
         env:
