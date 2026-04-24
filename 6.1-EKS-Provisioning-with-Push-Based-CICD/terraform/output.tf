@@ -1,10 +1,6 @@
 
 ## Outputs for the created resources
 
-output "alb_endpoint" {
-  value = module.alb.dns_name
-}
-
 ### RDS Endpoint
 
 output "rds_endpoint" {

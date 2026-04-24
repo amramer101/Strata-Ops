@@ -33,27 +33,4 @@ resource "aws_ssm_parameter" "ecr_registry" {
   value = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com"
 }
 
-resource "aws_ssm_parameter" "ecs_cluster_name" {
-  name  = "/strata-ops/pipeline/ecs-cluster"
-  type  = "String"
-  value = aws_ecs_cluster.tomcat_cluster.name
-}
 
-resource "aws_ssm_parameter" "ecs_service_name" {
-  name  = "/strata-ops/pipeline/ecs-service"
-  type  = "String"
-  value = aws_ecs_service.tomcat_service.name
-}
-
-resource "aws_ssm_parameter" "ecs_task_family" {
-  name  = "/strata-ops/pipeline/ecs-task-family"
-  type  = "String"
-  value = aws_ecs_task_definition.tomcat_definition.family
-}
-
-
-resource "aws_ssm_parameter" "datadog_api_key" {
-  name  = "/strata-ops/datadog-api-key"
-  type  = "SecureString"
-  value = var.datadog_api_key
-}

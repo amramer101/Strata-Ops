@@ -7,33 +7,7 @@ locals {
   my_public_ip_cidr = "${chomp(data.http.my_public_ip.response_body)}/32"
 }
 
-####---------------------------------------------------------------------------------------------
 
-### Security Group for the ECS
-
-resource "aws_security_group" "ECS-SG" {
-  name        = "ECS-SG"
-  description = "Allow 80 inbound traffic from Frontend and all outbound traffic"
-  vpc_id      = module.vpc.vpc_id
-
-  tags = {
-    Name = "ECS-SG"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "allow_80_from_frontend" {
-  security_group_id            = aws_security_group.ECS-SG.id
-  referenced_security_group_id = module.alb.security_group_id
-  from_port                    = 8080
-  ip_protocol                  = "tcp"
-  to_port                      = 8080
-}
-
-resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4_tomcat" {
-  security_group_id = aws_security_group.ECS-SG.id
-  cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = "-1" # semantically equivalent to all ports
-}
 
 ####---------------------------------------------------------------------------------------------
 
