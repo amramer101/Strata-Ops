@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline for Docker Image with Trivy Scans & ECS Deployment (Phase 4.2)
 
 on:
   push:
