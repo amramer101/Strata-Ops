@@ -30,7 +30,7 @@ resource "aws_ssm_parameter" "rds_username" {
 resource "aws_ssm_parameter" "rabbitmq_endpoint" {
   name  = "/strata/rabbitmq_endpoint"
   type  = "String"
-  value = aws_mq_broker.RabbitMQ.instances[0].endpoints[0] 
+  value = aws_mq_broker.RabbitMQ.instances[0].endpoints[0]
 }
 
 #### RabbitMQ Password
@@ -60,7 +60,7 @@ resource "aws_ssm_parameter" "memcached_endpoint" {
   value = aws_elasticache_cluster.ElastiCache.cache_nodes[0].address
 }
 
-###### -------------------  ECR Repository in SSM ------------------- #####
+#### -------------------  ECR Repository in SSM ------------------- #####
 
 resource "aws_ssm_parameter" "ecr_repository_name" {
   name  = "/strata/ecr_repository_name"

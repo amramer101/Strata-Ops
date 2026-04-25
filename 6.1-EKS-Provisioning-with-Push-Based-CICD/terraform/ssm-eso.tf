@@ -20,7 +20,7 @@ module "eso_irsa_role" {
   oidc_providers = {
     main = {
       provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:eso-service-account"] 
+      namespace_service_accounts = ["kube-system:eso-service-account"]
     }
   }
 
@@ -42,18 +42,18 @@ resource "helm_release" "external_secrets" {
 
   depends_on = [module.eks]
 
-  set {
-    name  = "serviceAccount.create"
-    value = "true"
-  }
-  
-  set {
-    name  = "serviceAccount.name"
-    value = "eso-service-account"
-  }
-
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = module.eso_irsa_role.iam_role_arn
-  }
+  set = [
+    {
+      name  = "serviceAccount.create"
+      value = "true"
+    },
+    {
+      name  = "serviceAccount.name"
+      value = "eso-service-account"
+    },
+    {
+      name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value = module.eso_irsa_role.iam_role_arn
+    }
+  ]
 }
