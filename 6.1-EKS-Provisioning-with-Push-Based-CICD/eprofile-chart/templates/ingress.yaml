@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: vpro-ingress
   annotations:
-    # 1. (الـ ALB Controller)
+    # 1. (ALB Controller)
     kubernetes.io/ingress.class: alb
     
     # 2.Expose the ALB to the internet
