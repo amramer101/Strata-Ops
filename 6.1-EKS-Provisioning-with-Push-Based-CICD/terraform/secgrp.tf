@@ -26,7 +26,7 @@ resource "aws_security_group" "Data-SG" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_3306_from_tomcat-SG" {
   security_group_id            = aws_security_group.Data-SG.id
-  referenced_security_group_id = aws_security_group.ECS-SG.id
+  referenced_security_group_id = module.eks.eks_managed_node_groups["strata_nodes"].security_group_id
   from_port                    = 3306
   ip_protocol                  = "tcp"
   to_port                      = 3306
@@ -34,7 +34,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_3306_from_tomcat-SG" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_11211_from_tomcat-SG" {
   security_group_id            = aws_security_group.Data-SG.id
-  referenced_security_group_id = aws_security_group.ECS-SG.id
+  referenced_security_group_id = module.eks.eks_managed_node_groups["strata_nodes"].security_group_id
   from_port                    = 11211
   ip_protocol                  = "tcp"
   to_port                      = 11211
@@ -42,7 +42,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_11211_from_tomcat-SG" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_5671_from_tomcat-SG" {
   security_group_id            = aws_security_group.Data-SG.id
-  referenced_security_group_id = aws_security_group.ECS-SG.id
+  referenced_security_group_id = module.eks.eks_managed_node_groups["strata_nodes"].security_group_id
   from_port                    = 5671
   ip_protocol                  = "tcp"
   to_port                      = 5671

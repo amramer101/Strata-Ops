@@ -8,7 +8,6 @@ module "vpc" {
   private_subnets = var.Private_Subnet_CIDR
   public_subnets  = var.Public_Subnet_CIDR
 
-
   enable_nat_gateway      = true
   single_nat_gateway      = true
   enable_vpn_gateway      = false
@@ -19,11 +18,16 @@ module "vpc" {
   enable_dhcp_options              = true
   dhcp_options_domain_name_servers = ["AmazonProvidedDNS"]
 
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = 1
+  }
 
   tags = {
-    Terraform   = "true"
     Environment = "dev"
+    Project     = "Strata-Ops"
   }
 }
-
-

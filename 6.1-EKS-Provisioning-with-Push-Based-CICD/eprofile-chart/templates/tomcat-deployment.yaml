@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vproapp-deployment ## The name of the deployment that will be used to base the connection string for the application to connect to the Tomcat server
+spec:
+  replicas: {{ .Values.app.replicaCount }}
+  selector:
+    matchLabels:
+      app: vproapp-pod ## The selector that will be used to match the deployment to the service of the application
+  template:
+    metadata:
+      labels:
+        app: vproapp-pod ## The label that will be used to match the deployment to the service of the application
+    spec:
+      containers:
+      - name: vproapp-container
+        image: "{{ .Values.app.image }}:{{ .Values.app.tag }}" ## The image and tag of the application that will be used to create the container
+        ports:
+        - containerPort: 8080
+
+        resources:
+          requests:
+            memory: "512Mi"   
+            cpu: "250m"     
+          limits:
+            memory: "1Gi"     
+            cpu: "500m"    
+
+        env:
+        - name: RABBITMQ_HOSTNAME
+          value: {{ .Values.rmq.serviceName }}
+
+        - name: RABBITMQ_USER
+          valueFrom:
+            secretKeyRef:
+              name: rmq-secrets
+              key: username
+
+        - name: RABBITMQ_PASS
+          valueFrom:
+            secretKeyRef:
+              name: rmq-secrets
+              key: password
+
+
+        - name: MEMCACHED_HOSTNAME
+          value: {{ .Values.memcached.serviceName }}
+
+
+        - name: RDS_HOSTNAME
+          value: {{ .Values.db.serviceName }}
+
+        - name: RDS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: username
+
+        - name: RDS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: password
+
+      initContainers:
+        - name: wait-for-services
+          image: busybox:1.28
+          command: ['sh', '-c', "until nc -zvw1 {{ .Values.db.serviceName }} 3306 && nc -zvw1 {{ .Values.rmq.serviceName }} 5672 && nc -zvw1 {{ .Values.memcached.serviceName }} 11211; do echo 'Waiting for backend...'; sleep 2; done;"]              

@@ -1,4 +1,4 @@
-resource "aws_key_pair" "EC2_Key_Pair" {
-  key_name   = "EC2_Key_Pair"
+resource "aws_key_pair" "bastion_key" {
+  key_name   = "bastion_key"
   public_key = file(var.pub_key_path)
 }

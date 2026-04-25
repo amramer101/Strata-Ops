@@ -25,7 +25,7 @@ resource "aws_instance" "bastion" {
   instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.Bastion-SG.id]
   subnet_id              = module.vpc.public_subnets[0]
-  key_name               = aws_key_pair.EC2_Key_Pair.key_name
+  key_name               = aws_key_pair.bastion_key.key_name
   count                  = 1
 
   tags = {

@@ -37,11 +37,11 @@ variable "AWS_Zone-c" {
 ## Key Variables
 
 variable "pub_key_path" {
-  default = "docker-githubActions.pub"
+  default = "bastion-key.pub"
 }
 
 variable "priv_key_path" {
-  default = "docker-githubActions"
+  default = "bastion-key"
 }
 
 ## DataBase Services Variables
@@ -63,7 +63,6 @@ variable "rmq_user" {
 
 
 ## Bastion Host Variables
-
 variable "bastion_host_username" {
   default = "ubuntu"
 }
