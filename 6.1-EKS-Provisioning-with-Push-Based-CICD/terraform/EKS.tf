@@ -55,4 +55,6 @@ module "eks" {
     Environment = "dev"
     Project     = "Strata-Ops"
   }
+  
+  depends_on = [ aws_db_instance.RDS, aws_mq_broker.RabbitMQ, aws_elasticache_cluster.ElastiCache ]
 }
