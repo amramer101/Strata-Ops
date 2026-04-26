@@ -49,6 +49,10 @@ resource "helm_release" "alb_controller" {
     {
       name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
       value = module.alb_irsa_role.iam_role_arn
+    },
+    {
+      name  = "vpcId"
+      value = module.vpc.vpc_id # تأكد إن السطر ده موجود ومكتوب صح
     }
   ]
 }
