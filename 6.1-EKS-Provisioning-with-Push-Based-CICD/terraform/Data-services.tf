@@ -50,6 +50,7 @@ resource "aws_elasticache_cluster" "ElastiCache" {
   cluster_id           = "elasticache"
   engine               = "memcached"
   node_type            = "cache.t3.micro"
+  engine_version       = "1.6.22"
   num_cache_nodes      = 1
   subnet_group_name    = aws_elasticache_subnet_group.ElastiCache_subnet_group.name
   security_group_ids   = [aws_security_group.Data-SG.id]

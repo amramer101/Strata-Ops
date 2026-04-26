@@ -101,3 +101,10 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4_Bastion" {
   ip_protocol       = "-1" # semantically equivalent to all ports
 }
 
+
+resource "aws_vpc_security_group_ingress_rule" "nodes_ingress_self" {
+  description                  = "Allow nodes to communicate with each other"
+  security_group_id            = module.eks.node_security_group_id
+  referenced_security_group_id = module.eks.node_security_group_id
+  ip_protocol                  = "-1" # All protocols
+}
