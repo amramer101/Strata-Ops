@@ -57,37 +57,36 @@ spec:
             secretKeyRef:
               name: vpro-app-secrets
               key: cache_host
-
-      # لاحظ initContainers على نفس مستوى containers
+    
       initContainers:
-            - name: wait-for-services
-              image: busybox:1.28
-              env:
-              - name: RDS_HOSTNAME
-                valueFrom:
-                  secretKeyRef:
-                    name: vpro-app-secrets
-                    key: db_host
-              - name: RABBITMQ_HOSTNAME
-                valueFrom:
-                  secretKeyRef:
-                    name: vpro-app-secrets
-                    key: rmq_host
-              - name: MEMCACHED_HOSTNAME
-                valueFrom:
-                  secretKeyRef:
-                    name: vpro-app-secrets
-                    key: cache_host      
-              command:
-              - "sh"
-              - "-c"
-              - >
-                echo "RDS: $RDS_HOSTNAME";
-                echo "RMQ: $RABBITMQ_HOSTNAME";
-                echo "MEM: $MEMCACHED_HOSTNAME";
-                RMQ_CLEAN=$(echo $RABBITMQ_HOSTNAME | cut -d/ -f3 | cut -d: -f1);
-                echo "Cleaned RMQ: $RMQ_CLEAN";
-                until nc -zvw1 $RDS_HOSTNAME 3306 && nc -zvw1 $RMQ_CLEAN 5671 && nc -zvw1 $MEMCACHED_HOSTNAME 11211; do
-                  echo 'Waiting for external services...';
-                  sleep 2;
-                done;
+      - name: wait-for-services
+        image: busybox:1.28
+        env:
+        - name: RDS_HOSTNAME
+          valueFrom:
+            secretKeyRef:
+              name: vpro-app-secrets
+              key: db_host
+        - name: RABBITMQ_HOSTNAME
+          valueFrom:
+            secretKeyRef:
+              name: vpro-app-secrets
+              key: rmq_host
+        - name: MEMCACHED_HOSTNAME
+          valueFrom:
+            secretKeyRef:
+              name: vpro-app-secrets
+              key: cache_host      
+        command:
+        - "sh"
+        - "-c"
+        - >
+          echo "RDS: $RDS_HOSTNAME";
+          echo "RMQ: $RABBITMQ_HOSTNAME";
+          echo "MEM: $MEMCACHED_HOSTNAME";
+          RMQ_CLEAN=$(echo $RABBITMQ_HOSTNAME | cut -d/ -f3 | cut -d: -f1);
+          echo "Cleaned RMQ: $RMQ_CLEAN";
+          until nc -zvw1 $RDS_HOSTNAME 3306 && nc -zvw1 $RMQ_CLEAN 5671 && nc -zvw1 $MEMCACHED_HOSTNAME 11211; do
+            echo 'Waiting for external services...';
+            sleep 2;
+          done;

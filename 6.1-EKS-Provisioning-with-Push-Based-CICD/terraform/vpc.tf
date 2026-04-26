@@ -19,12 +19,12 @@ module "vpc" {
   dhcp_options_domain_name_servers = ["AmazonProvidedDNS"]
 
   public_subnet_tags = {
-    "kubernetes.io/role/elb" = 1
+    "kubernetes.io/role/elb"                   = 1
     "kubernetes.io/cluster/strata-eks-cluster" = "shared"
   }
 
   private_subnet_tags = {
-    "kubernetes.io/role/internal-elb" = 1
+    "kubernetes.io/role/internal-elb"          = 1
     "kubernetes.io/cluster/strata-eks-cluster" = "shared"
   }
 

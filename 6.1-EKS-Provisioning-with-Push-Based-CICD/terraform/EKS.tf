@@ -1,9 +1,9 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 21.0"
+  version = "21.18.0"
 
   name               = "strata-eks-cluster"
-  kubernetes_version = "1.30"              
+  kubernetes_version = "1.30"
 
   endpoint_public_access  = true
   endpoint_private_access = true
@@ -25,24 +25,19 @@ module "eks" {
     }
   }
 
-  # شلنا بلوك الـ additional_rules من هنا عشان نمنع الـ Duplicate
-
   eks_managed_node_groups = {
     strata_nodes = {
       instance_types = ["t3.medium"]
       ami_type       = "AL2023_x86_64_STANDARD"
-      
+
       min_size     = 1
       max_size     = 3
       desired_size = 2
-      subnet_ids   = module.vpc.public_subnets
 
-      key_name = aws_key_pair.bastion_key.key_name
-      use_custom_launch_template = false
-      remote_access = {
-        ec2_ssh_key               = aws_key_pair.bastion_key.key_name
-        source_security_group_ids = [aws_security_group.Bastion-SG.id]
-      }
+      # إجابة سؤالك بخصوص البابليك والبرايفت موجودة في السطر ده
+      subnet_ids = module.vpc.public_subnets
+
+      # تم حذف key_name و بلوك remote_access بالكامل
 
       iam_role_additional_policies = {
         AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
@@ -55,6 +50,6 @@ module "eks" {
     Environment = "dev"
     Project     = "Strata-Ops"
   }
-  
-  depends_on = [ aws_db_instance.RDS, aws_mq_broker.RabbitMQ, aws_elasticache_cluster.ElastiCache ]
+
+  depends_on = [aws_db_instance.RDS, aws_mq_broker.RabbitMQ, aws_elasticache_cluster.ElastiCache]
 }
