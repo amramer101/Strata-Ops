@@ -1,12 +1,12 @@
-name: CI/CD Pipeline for Docker Image with Trivy Scans & ECS Deployment (Phase 4.2)
+name: CI/CD Pipeline for EKS
 
 on:
   push:
     branches: [main]
     paths:
       - 'src/**'
-      - 'Dockerfile-with-Datadog'
-      - '.github/workflows/4.2-Docker-ECS-CICD.yml'
+      - '6.1-EKS-Provisioning-with-Push-Based-CICD/eprofile-chart/'
+      - '.github/workflows/6.1-EKS-CICD.yml'
 env:
   AWS_REGION: eu-central-1
   CONTAINER_NAME: vproapp
@@ -25,9 +25,7 @@ jobs:
 
       ecr_registry: ${{ steps.ssm.outputs.ecr_registry }}
       ecr_repo: ${{ steps.ssm.outputs.ecr_repo }}
-      ecs_cluster: ${{ steps.ssm.outputs.ecs_cluster }}
-      ecs_service: ${{ steps.ssm.outputs.ecs_service }}
-      ecs_task_family: ${{ steps.ssm.outputs.ecs_task_family }}
+
 
     steps:
       - name: Configure AWS Credentials
@@ -42,24 +40,14 @@ jobs:
         run: |
 
           echo "ecr_registry=$(aws ssm get-parameter \
-            --name '/strata-ops/pipeline/ecr-registry' \
+            --name '/strata/ecr_registry' \
             --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
 
           echo "ecr_repo=$(aws ssm get-parameter \
-            --name '/strata-ops/pipeline/ecr-repo' \
+            --name '/strata/ecr_repository_name' \
             --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
 
-          echo "ecs_cluster=$(aws ssm get-parameter \
-            --name '/strata-ops/pipeline/ecs-cluster' \
-            --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
 
-          echo "ecs_service=$(aws ssm get-parameter \
-            --name '/strata-ops/pipeline/ecs-service' \
-            --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
-
-          echo "ecs_task_family=$(aws ssm get-parameter \
-            --name '/strata-ops/pipeline/ecs-task-family' \
-            --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
 
   # ----------------------- JOB 2 - Trivy Scan Source Code & Config ------------------------
   scan-code:

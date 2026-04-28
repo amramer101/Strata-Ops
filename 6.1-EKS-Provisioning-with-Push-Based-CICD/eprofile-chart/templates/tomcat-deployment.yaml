@@ -12,7 +12,6 @@ spec:
       labels:
         app: vproapp-pod
     spec:
-      # دي الكونتينرز الأساسية
       containers:
       - name: vproapp-container
         image: "{{ .Values.app.image }}:{{ .Values.app.tag }}"

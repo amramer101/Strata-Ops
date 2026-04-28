@@ -30,3 +30,9 @@ output "ALB" {
   description = "The DNS name of the ALB"
   value       = helm_release.alb_controller.status[0].load_balancer[0].ingress[0].hostname  
 }
+
+## GitHub Actions OIDC Role ARN
+output "github_role_arn" {
+  value       = aws_iam_role.github_actions.arn
+  description = "The ARN of the IAM Role for GitHub Actions (Use this in your YAML)"
+}
