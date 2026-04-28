@@ -24,3 +24,9 @@ output "bastion_ip" {
   description = "The public IP of the Bastion host"
   value       = aws_instance.bastion[0].public_ip
 }
+
+## ALB DNS Name
+output "ALB" {
+  description = "The DNS name of the ALB"
+  value       = helm_release.alb_controller.status[0].load_balancer[0].ingress[0].hostname  
+}

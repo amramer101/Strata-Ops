@@ -29,7 +29,7 @@ module "eso_irsa_role" {
   }
 }
 
-# ==============================================================================
+# -------------------------------------------------------------------------------------
 
 # 2. ESO: Helm Release
 
@@ -40,7 +40,7 @@ resource "helm_release" "external_secrets" {
   namespace  = "kube-system"
   version    = "0.9.9"
 
-  depends_on = [module.eks]
+  depends_on = [module.eks, helm_release.alb_controller]
 
   set = [
     {

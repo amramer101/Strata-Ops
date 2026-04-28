@@ -34,10 +34,8 @@ module "eks" {
       max_size     = 3
       desired_size = 2
 
-      # إجابة سؤالك بخصوص البابليك والبرايفت موجودة في السطر ده
-      subnet_ids = module.vpc.public_subnets
+      subnet_ids = module.vpc.private_subnets
 
-      # تم حذف key_name و بلوك remote_access بالكامل
 
       iam_role_additional_policies = {
         AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
@@ -50,6 +48,6 @@ module "eks" {
     Environment = "dev"
     Project     = "Strata-Ops"
   }
-
-  depends_on = [aws_db_instance.RDS, aws_mq_broker.RabbitMQ, aws_elasticache_cluster.ElastiCache]
 }
+
+

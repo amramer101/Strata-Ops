@@ -22,7 +22,7 @@ provider "aws" {
 ## AWS Provider Data Sources Region
 data "aws_region" "current" {}
 
-
+data "aws_partition" "current" {}
 ## AWS Provider Data Sources Account ID
 data "aws_caller_identity" "current" {}
 

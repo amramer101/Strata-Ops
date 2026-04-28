@@ -25,10 +25,14 @@ module "alb_irsa_role" {
   }
 }
 
+## Install AWS Load Balancer Controller using Helm ---------------------------------------
+
 resource "helm_release" "alb_controller" {
   name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
+  wait    = true
+  timeout = 600
   namespace  = "kube-system"
 
   depends_on = [module.eks]
@@ -52,7 +56,7 @@ resource "helm_release" "alb_controller" {
     },
     {
       name  = "vpcId"
-      value = module.vpc.vpc_id # تأكد إن السطر ده موجود ومكتوب صح
+      value = module.vpc.vpc_id
     }
   ]
 }
