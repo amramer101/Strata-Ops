@@ -1,0 +1,137 @@
+direction down
+textSize large
+iconSize large
+
+// ===== THEME & COLORS =====
+theme dark
+
+// ===== LAYER 1: CI/CD (TOP) =====
+group "🚀 CI/CD Pipeline Layer" as cicd {
+  direction down
+  fill: linear-gradient(180deg, #1a1a2e, #16213e)
+  stroke: #0f3460
+  strokeWidth: 3
+  borderRadius: 15
+  padding: 30
+
+  DevSecOps [icon: user-shield, label: "DevSecOps Engineer", shape: person, color: #e94560]
+  
+  GitHub [icon: github, label: "GitHub Repository\n(main branch)", color: #24292f, textColor: white, stroke: #ffffff, strokeWidth: 2]
+
+  group "GitHub Actions Workflow" as pipeline {
+    direction right
+    fill: rgba(255, 255, 255, 0.1)
+    stroke: #e94560
+    strokeWidth: 2
+    borderRadius: 10
+    padding: 20
+    
+    Job1 [icon: shield-check, label: "Job 1: Security\n(Checkov + Kube-score)", color: #ff6b6b, textColor: white]
+    Job2 [icon: docker, label: "Job 2: Build & Scan\n(Docker + Trivy + ECR)", color: #4ecdc4, textColor: white]
+    Job3 [icon: helm, label: "Job 3: Deploy\n(Helm to EKS)", color: #ffe66d, textColor: #333333]
+  }
+}
+
+DevSecOps > GitHub: "git push"
+GitHub > Job1
+Job1 > Job2
+Job2 > Job3
+
+
+// ===== LAYER 2: AWS CLOUD (BOTTOM) =====
+group "☁️ AWS Cloud (eu-central-1)" as aws {
+  direction down
+  fill: linear-gradient(180deg, #232526, #414345)
+  stroke: #ff9900
+  strokeWidth: 3
+  borderRadius: 15
+  padding: 30
+  marginTop: 50
+
+  // Global Services Row
+  group "Global Services" as global {
+    direction right
+    fill: rgba(255, 153, 0, 0.1)
+    borderRadius: 10
+    padding: 15
+    
+    OIDC [icon: aws-iam, label: "IAM OIDC Provider\n(Trust Role)", color: #d32f2f, textColor: white]
+    SSM  [icon: aws-parameter-store, label: "SSM Params\n(/strata/*)", color: #555555, textColor: white]
+    S3   [icon: aws-s3, label: "S3 State\n(Terraform)", color: #4caf50, textColor: white]
+    ECR  [icon: aws-ecr, label: "Amazon ECR\n(Images)", color: #ff9900, textColor: white]
+  }
+
+  // VPC Container
+  group "VPC: Strata-Ops (10.0.0.0/16)" as vpc {
+    direction right
+    fill: rgba(33, 150, 243, 0.15)
+    stroke: #2196f3
+    strokeWidth: 2
+    borderRadius: 12
+    padding: 20
+    label: "Network Isolation"
+
+    // Public Subnet
+    group "Public Subnet" as public {
+      direction down
+      fill: rgba(255, 193, 7, 0.1)
+      stroke: #ffc107
+      borderRadius: 8
+      padding: 15
+      
+      IGW [icon: aws-internet-gateway, label: "Internet Gateway", color: #0288d1]
+      ALB [icon: aws-elb, label: "ALB (Public)\nPort :80", color: #ff9800, textColor: white]
+      NAT [icon: aws-nat-gateway, label: "NAT Gateway\n(Egress)", color: #fbc02d]
+      Bastion [icon: aws-ec2, label: "Bastion Host", color: #78909c, textColor: white]
+    }
+
+    // Private Subnet
+    group "Private Subnet" as private {
+      direction down
+      fill: rgba(33, 150, 243, 0.1)
+      stroke: #2196f3
+      borderRadius: 8
+      padding: 15
+
+      Controllers [icon: kubernetes, label: "K8s Controllers\n(ALB Ctrl + ESO)", color: #326ce5, textColor: white]
+      
+      group "EKS Cluster (Pods)" as eks {
+        direction right
+        fill: rgba(52, 152, 219, 0.2)
+        borderRadius: 8
+        padding: 15
+        
+        Pod1 [icon: java, label: "App Pod 1\n(Tomcat)", color: #e74c3c, textColor: white]
+        Pod2 [icon: java, label: "App Pod 2\n(Tomcat)", color: #e74c3c, textColor: white]
+      }
+
+      DataTier [icon: aws-rds, label: "Data Tier\n(RDS + Cache + MQ)", color: #d84315, textColor: white]
+    }
+  }
+}
+
+// ===== CONNECTIONS =====
+
+// CI/CD to AWS
+Job3 > OIDC: "Assume Role (STS)"
+Job2 > ECR: "Push Image (SHA)"
+Controllers > OIDC: "IRSA Auth"
+
+// Data Flow
+Pod1 > ECR: "Pull Image"
+Pod2 > ECR: "Pull Image"
+Job3 > Controllers: "helm upgrade"
+Controllers > SSM: "Get Secrets"
+Controllers > Pod1: "Inject Env"
+Controllers > Pod2: "Inject Env"
+
+// Traffic
+EndUser [icon: user, label: "End User", shape: person, color: #00bcd4]
+EndUser > ALB: "HTTP :80"
+ALB > Pod1: "Route :8080"
+ALB > Pod2: "Route :8080"
+
+// Internal
+Pod1 > DataTier: "DB/Cache/MQ"
+Pod2 > DataTier: "DB/Cache/MQ"
+Bastion > DataTier: "Init Schema"

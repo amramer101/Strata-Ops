@@ -1,16 +1,18 @@
-# 🌋 Strata-Ops
+# 🌋 Strata-Ops: Master README
 
 <div align="center">
 
-### *A Complete DevOps Engineering Journey — From Bare Metal to Cloud-Native*
+### *A Complete DevOps Engineering Journey — From Bare Metal to Kubernetes on EKS*
 
-> One application. Five deployment strategies. Production-grade engineering at every layer.
+> One application. Six deployment evolutions. Production-grade engineering at every layer.
 
 [![Java](https://img.shields.io/badge/Java-Maven-ED8B00?style=for-the-badge&logo=openjdk)](https://openjdk.org/)
 [![AWS](https://img.shields.io/badge/AWS-Cloud-FF9900?style=for-the-badge&logo=amazon-aws)](https://aws.amazon.com/)
 [![Terraform](https://img.shields.io/badge/Terraform-IaC-623CE4?style=for-the-badge&logo=terraform)](https://www.terraform.io/)
 [![Docker](https://img.shields.io/badge/Docker-Containers-2496ED?style=for-the-badge&logo=docker)](https://www.docker.com/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-EKS_+_Minikube-326CE5?style=for-the-badge&logo=kubernetes)](https://kubernetes.io/)
 [![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI%2FCD-2088FF?style=for-the-badge&logo=github-actions)](https://github.com/features/actions)
+[![Helm](https://img.shields.io/badge/Helm-Package_Manager-0F1689?style=for-the-badge&logo=helm)](https://helm.sh/)
 [![Datadog](https://img.shields.io/badge/Datadog-Observability-632CA6?style=for-the-badge&logo=datadog)](https://www.datadoghq.com/)
 
 **Built by [Amr Medhat Amer](https://github.com/amramer101) — Cloud & DevSecOps Engineer**
@@ -21,11 +23,15 @@
 
 ## What Is Strata-Ops?
 
-**Strata-Ops** is a production-grade DevOps engineering project that takes a 5-tier Java application through five distinct deployment evolutions — each one more automated, more scalable, and more observable than the last.
+**Strata-Ops** is a production-grade DevOps engineering portfolio that takes a 5-tier Java application through **six distinct deployment evolutions** — each one more automated, more scalable, and more observable than the last.
 
-Like geological strata, every layer is built on top of the previous one. You cannot understand the cloud without understanding the metal. You cannot automate what you have not done manually. You cannot containerize what you have not first deployed on VMs.
+Like geological strata, every layer is built on top of the previous one:
+- You cannot understand the cloud without understanding the metal
+- You cannot automate what you have not done manually
+- You cannot containerize what you have not first deployed on VMs
+- You cannot orchestrate what you have not first containerized
 
-This is not a tutorial. This is an engineering portfolio.
+This is not a tutorial. This is an **engineering portfolio** demonstrating mastery across the full DevOps spectrum.
 
 ---
 
@@ -55,45 +61,58 @@ A production-grade **5-tier Java web application** running consistently across a
 
 ---
 
-## The Journey: Five Evolutionary Layers
+## The Journey: Six Evolutionary Layers
 
 ```
-                    🌋 THE SUMMIT
-          ┌───────────────────────────────┐
-          │  Phase 4.2 — ECS Fargate      │
-          │  Docker + GitHub Actions +    │
-          │  Terraform + Datadog APM      │
-          │  Serverless · GitOps · Observed│
-          └──────────────┬────────────────┘
-                         │
-          ┌──────────────▼────────────────┐
-          │  Phase 4.1 — Docker Compose   │
-          │  Containers + Ansible +       │
-          │  EC2 Single Host Deployment   │
-          │  Containerized · Automated    │
-          └──────────────┬────────────────┘
-                         │
-          ┌──────────────▼────────────────┐
-          │  Phase 3 — Cloud-Native PaaS  │
-          │  Beanstalk + CodePipeline +   │
-          │  SonarCloud + TruffleHog      │
-          │  Managed · Secure · CI/CD     │
-          └──────────────┬────────────────┘
-                         │
-          ┌──────────────▼────────────────┐
-          │  Phase 2 — AWS Lift & Shift   │
-          │  EC2 + Terraform + Jenkins +  │
-          │  Prometheus + Grafana         │
-          │  Cloud · Automated · Observed │
-          └──────────────┬────────────────┘
-                         │
-          ┌──────────────▼────────────────┐
-          │  Phase 1 — Local Foundation   │
-          │  VirtualBox + Vagrant         │
-          │  Manual then Automated        │
-          │  Understanding from scratch   │
-          └───────────────────────────────┘
-                    🌋 THE CORE
+                        🚀 THE SUMMIT
+              ┌───────────────────────────┐
+              │  Phase 6.1 — EKS + GitOps │
+              │  Managed K8s + OIDC Auth  │
+              │  Helm Deploy + Push CI/CD │
+              └──────────────┬────────────┘
+                             │
+              ┌──────────────▼────────────┐
+              │  Phase 5.2 — Helm Charts  │
+              │  Templated K8s Manifests  │
+              │  values.yaml = Single Src │
+              └──────────────┬────────────┘
+                             │
+              ┌──────────────▼────────────┐
+              │  Phase 5.1 — Self-Mgr K8s │
+              │  Minikube on EC2 + Ansible│
+              │  PV/PVC → EBS Storage     │
+              └──────────────┬────────────┘
+                             │
+              ┌──────────────▼────────────┐
+              │  Phase 4.2 — ECS Fargate  │
+              │  Serverless + Datadog APM │
+              │  Trivy Scan + GitOps      │
+              └──────────────┬────────────┘
+                             │
+              ┌──────────────▼────────────┐
+              │  Phase 4.1 — Docker Compose│
+              │  Containers + Ansible     │
+              │  Single EC2 Deployment    │
+              └──────────────┬────────────┘
+                             │
+              ┌──────────────▼────────────┐
+              │  Phase 3 — Cloud-Native   │
+              │  Beanstalk + CodePipeline │
+              │  3-Layer Security Scanning│
+              └──────────────┬────────────┘
+                             │
+              ┌──────────────▼────────────┐
+              │  Phase 2 — AWS Lift&Shift │
+              │  EC2 + Jenkins + Grafana  │
+              │  Full Observability Stack │
+              └──────────────┬────────────┘
+                             │
+              ┌──────────────▼────────────┐
+              │  Phase 1 — Local Foundation│
+              │  VirtualBox + Vagrant     │
+              │  Manual → Automated       │
+              └───────────────────────────┘
+                        🌋 THE CORE
 ```
 
 ---
