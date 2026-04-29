@@ -12,7 +12,7 @@ on:
 
 env:
   AWS_REGION: eu-central-1
-  ROLE_TO_ASSUME: ${{ vars.AWS_OIDC_ROLE_ARN }} ## Update with the ARN of the IAM Role created for GitHub Actions
+  ROLE_TO_ASSUME: arn:aws:iam::279064251683:role/GitHubActions-EKS-Role ## Update with the ARN of the IAM Role created for GitHub Actions
   ECR_REPOSITORY: vproapp              
   EKS_CLUSTER_NAME: strata-ops-cluster 
   HELM_CHART_PATH: 6.1-EKS-Provisioning-with-Push-Based-CICD/eprofile-chart
