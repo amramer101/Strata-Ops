@@ -1,4 +1,4 @@
-# 🚀 Strata-Ops: The Ultimate DevSecOps Evolution Journey
+# Strata-Ops: The Ultimate DevSecOps Evolution Journey
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Stage](https://img.shields.io/badge/Stage-Production%20Ready-brightgreen)](https://github.com/amramer101/Strata-Ops)
