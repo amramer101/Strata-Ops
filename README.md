@@ -133,11 +133,6 @@ This repository represents more than just code migration; it is an evolution of 
 - **Outcome:** A functioning local application ready for cloud migration
 - **Setup Time:** 45-60 minutes
 
-### 📸 Architecture Diagram
-<div align="center">
-  <img src="media/Lift-shift/local-arch.png" alt="Phase 1 Architecture" width="600"/>
-  <p><i>Figure 1: Basic Local Virtualized 5-Tier Architecture</i></p>
-</div>
 
 ### 🔗 Resources
 - **[📖 Full Phase 1 Documentation →](1-Local-Foundation/README.md)**
@@ -174,8 +169,8 @@ vagrant up
 
 ### 📸 Architecture Diagram
 <div align="center">
-  <img src="media/Lift-shift/lift-shift-arch.png" alt="Phase 2 Architecture" width="600"/>
-  <p><i>Figure 2: Lift & Shift Architecture on EC2 with RDS and Jenkins</i></p>
+  <img src="/media/Lift-shift/digram.png" alt="Phase 1 Architecture" width="600"/>
+  <p><i>Figure 1: Basic Local Virtualized 5-Tier Architecture</i></p>
 </div>
 
 ### 🔗 Resources
@@ -213,7 +208,7 @@ terraform apply
 
 ### 📸 Architecture Diagram
 <div align="center">
-  <img src="media/cloud-native/cloud-native-arch.png" alt="Phase 3 Architecture" width="600"/>
+  <img src="/media/cloud-native/architecture-diagram.png" alt="Phase 3 Architecture" width="600"/>
   <p><i>Figure 3: Fully Managed PaaS Architecture with CodePipeline</i></p>
 </div>
 
@@ -243,7 +238,7 @@ terraform apply
 
 ### 📸 Architecture Diagram
 <div align="center">
-  <img src="media/Docker-compose/docker-compose-arch.png" alt="Phase 4.1 Architecture" width="600"/>
+  <img src="/media/Docker-compose/The-Big-Picture-Infrastructure-App-Architecture.png" alt="Phase 4.1 Architecture" width="600"/>
   <p><i>Figure 4: Local Containerized Architecture with Ansible Configuration</i></p>
 </div>
 
@@ -276,8 +271,8 @@ terraform apply
 - **Manual Steps:** Automated end-to-end
 
 ### 📸 Architecture Diagram
-<div align="center">
-  <img src="media/Docker-ECS/End-to-End_DevSecOps_CICD_Pipeline.png" alt="Phase 4.2 Architecture" width="600"/>
+<div align="center"> 
+  <img src="/media/Docker-ECS/diagram.png" alt="Phase 4.2 Architecture" width="600"/>
   <p><i>Figure 5: End-to-End DevSecOps Pipeline from Code to Fargate</i></p>
 </div>
 
