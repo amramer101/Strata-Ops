@@ -25,11 +25,6 @@ output "bastion_ip" {
   value       = aws_instance.bastion[0].public_ip
 }
 
-## ALB DNS Name
-output "ALB" {
-  description = "The DNS name of the ALB"
-  value       = helm_release.alb_controller.status[0].load_balancer[0].ingress[0].hostname  
-}
 
 ## GitHub Actions OIDC Role ARN
 output "github_role_arn" {
