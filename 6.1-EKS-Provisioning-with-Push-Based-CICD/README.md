@@ -2,7 +2,17 @@
 
 > *Kubernetes at scale. OIDC authentication. GitOps delivery. Enterprise-grade container orchestration.*
 
-**Directory:** `6.1-EKS-Provisioning-with-Push-Based-CICD/`
+<div align="center">
+
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions)](https://github.com/features/actions)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-EKS_1.29-326CE5?style=for-the-badge&logo=kubernetes)](https://aws.amazon.com/eks/)
+[![AWS](https://img.shields.io/badge/AWS-EKS_%2B_ECR_%2B_ALB-FF9900?style=for-the-badge&logo=amazon-aws)](https://aws.amazon.com/)
+[![Terraform](https://img.shields.io/badge/Terraform-IaC-623CE4?style=for-the-badge&logo=terraform)](https://www.terraform.io/)
+[![Helm](https://img.shields.io/badge/Helm-K8s_Package_Manager-0F1689?style=for-the-badge&logo=helm)](https://helm.sh/)
+[![Trivy](https://img.shields.io/badge/Trivy-Security_Scanning-1904DA?style=for-the-badge)](https://trivy.dev/)
+[![Checkov](https://img.shields.io/badge/Checkov-IaC_Security-3E5C8A?style=for-the-badge)](https://www.checkov.io/)
+
+</div>
 
 ---
 
