@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "github_assume_role" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:amramer101/strata-ops:*"]
+      values   = ["repo:amramer101/*"]
     }
 
     condition {
