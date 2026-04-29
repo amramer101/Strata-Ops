@@ -1,7 +1,7 @@
 # ====== Application Variables (Production Version) ======
 app:
-  image: "amrmamer/vprofileapp"
-  tag: "latest"
+  image: "" ## The image will be set dynamically in the GitHub Actions workflow during deployment
+  tag: "" ## The tag will be set dynamically in the GitHub Actions workflow during deployment
   replicaCount: 2
   serviceName: "vproapp-service"
   

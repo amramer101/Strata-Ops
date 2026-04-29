@@ -33,6 +33,7 @@ jobs:
       steps:
         - name: Checkout code
           uses: actions/checkout@v4
+          
         - name: Run Checkov for Terraform & Helm
           uses: bridgecrewio/checkov-action@master
           with:
@@ -46,6 +47,7 @@ jobs:
             wget https://github.com/zegl/kube-score/releases/download/v1.17.0/kube-score_1.17.0_linux_amd64 -O kube-score
             chmod +x kube-score
             sudo mv kube-score /usr/local/bin/
+
         - name: Run Kube-score on Helm Templates
           run: |
             helm template 6.1-EKS-Provisioning-with-Push-Based-CICD/eprofile-chart/ | kube-score score - 

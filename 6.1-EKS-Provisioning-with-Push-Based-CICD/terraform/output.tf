@@ -34,5 +34,5 @@ output "ALB" {
 ## GitHub Actions OIDC Role ARN
 output "github_role_arn" {
   value       = aws_iam_role.github_actions.arn
-  description = "The ARN of the IAM Role for GitHub Actions (Use this in your لGitHub Actions workflow to assume the role)"
+  description = "The ARN of the IAM Role for GitHub Actions (Use this in your GitHub Actions workflow to assume the role)"
 }
