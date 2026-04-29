@@ -14,20 +14,20 @@
 
 ## 📑 Table of Contents
 
-1. [🌍 Project Overview](#-project-overview)
-2. [🗺️ The Journey Through 6 Phases](#-the-journey-through-6-phases)
-3. [📊 Project Roadmap & Evolution](#-project-roadmap--evolution)
-4. [🏗️ Phase 1: Local Foundation](#-phase-1-local-foundation)
-5. [☁️ Phase 2: AWS Lift & Shift](#-phase-2-aws-lift--shift)
-6. [🌩️ Phase 3: Cloud-Native PaaS](#-phase-3-cloud-native-paas)
-7. [🐳 Phase 4.1: Containerization & Ansible](#-phase-41-containerization--ansible)
-8. [⚡ Phase 4.2: Serverless Containers (ECS Fargate)](#-phase-42-serverless-containers-ecs-fargate)
-9. [🎮 Phase 5.1: Self-Managed Kubernetes](#-phase-51-self-managed-kubernetes-on-ec2)
-10. [📦 Phase 5.2: Helm Packaging & Templating](#-phase-52-helm-packaging--templating)
-11. [🚀 Phase 6.1: Production EKS with GitOps](#-phase-61-production-eks-with-gitops--oidc)
-12. [📈 Performance & Cost Comparison](#-performance--cost-comparison)
-13. [🛡️ Best Practices & Lessons Learned](#-best-practices--lessons-learned)
-14. [📂 Repository Structure](#-repository-structure)
+1. [Project Overview](#-project-overview)
+2. [The Journey Through 6 Phases](#-the-journey-through-6-phases)
+3. [Project Roadmap & Evolution](#-project-roadmap--evolution)
+4. [Phase 1: Local Foundation](#-phase-1-local-foundation)
+5. [Phase 2: AWS Lift & Shift](#-phase-2-aws-lift--shift)
+6. [Phase 3: Cloud-Native PaaS](#-phase-3-cloud-native-paas)
+7. [Phase 4.1: Containerization & Ansible](#-phase-41-containerization--ansible)
+8. [Phase 4.2: Serverless Containers (ECS Fargate)](#-phase-42-serverless-containers-ecs-fargate)
+9. [Phase 5.1: Self-Managed Kubernetes](#-phase-51-self-managed-kubernetes-on-ec2)
+10. [Phase 5.2: Helm Packaging & Templating](#-phase-52-helm-packaging--templating)
+11. [Phase 6.1: Production EKS with GitOps](#-phase-61-production-eks-with-gitops--oidc)
+12. [Performance & Cost Comparison](#-performance--cost-comparison)
+13. [Best Practices & Lessons Learned](#-best-practices--lessons-learned)
+14. [Repository Structure](#-repository-structure)
 
 ---
 
@@ -37,12 +37,12 @@
 
 ### What Makes This Different?
 
-- 🎓 **Educational Foundation**: Every phase is self-contained and builds on previous knowledge
-- 🏭 **Production-Ready Code**: Not theory—actual, deployable infrastructure
-- 📚 **Complete Documentation**: Screenshots, diagrams, and step-by-step guides
-- 🔐 **Security-First**: DevSecOps practices integrated throughout
-- 🔄 **Reproducible**: Infrastructure as Code for 100% consistency
-- ⚡ **Real Metrics**: Deployment time, cost analysis, and performance data
+- **Educational Foundation**: Every phase is self-contained and builds on previous knowledge
+- **Production-Ready Code**: Not theory—actual, deployable infrastructure
+- **Complete Documentation**: Screenshots, diagrams, and step-by-step guides
+- **Security-First**: DevSecOps practices integrated throughout
+- **Reproducible**: Infrastructure as Code for 100% consistency
+- **Real Metrics**: Deployment time, cost analysis, and performance data
 
 ### The Application: VProfile (5-Tier Java Application)
 
