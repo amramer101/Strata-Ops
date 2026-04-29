@@ -5,146 +5,90 @@ on:
     branches: [main]
     paths:
       - 'src/**'
-      - '6.1-EKS-Provisioning-with-Push-Based-CICD/eprofile-chart/'
       - '.github/workflows/6.1-EKS-CICD.yml'
+      - '6.1-EKS-Provisioning-with-Push-Based-CICD/eprofile-chart/**'
+      - 'Dockerfile'
+  workflow_dispatch: ## Allows manual triggering from GitHub Actions UI
+
 env:
   AWS_REGION: eu-central-1
-  CONTAINER_NAME: vproapp
+  ROLE_TO_ASSUME: ${{ vars.AWS_OIDC_ROLE_ARN }} ## Update with the ARN of the IAM Role created for GitHub Actions
+  ECR_REPOSITORY: vproapp              
+  EKS_CLUSTER_NAME: strata-ops-cluster 
+  HELM_CHART_PATH: 6.1-EKS-Provisioning-with-Push-Based-CICD/eprofile-chart
 
 permissions:
   contents: read
   security-events: write
+  id-token: write ## Required for OIDC authentication
 
 jobs:
-  #-------------------- JOB 1 - Get SSM Parameters ---------------------------
-  get-params:
-    name: Get Pipeline Parameters from SSM
+
+  # ----------------------- JOB 1 - Scan Source Code With Checkov and Kube-Score  ------------------------
+  security-scan:
+      name: Infrastructure & Manifest Security Scan
+      runs-on: ubuntu-latest
+      
+      ## For Terraform and Helm security scanning, we will use Checkov. For Kubernetes manifest scanning, we will use Kube-score.
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        - name: Run Checkov for Terraform & Helm
+          uses: bridgecrewio/checkov-action@master
+          with:
+            directory: 6.1-EKS-Provisioning-with-Push-Based-CICD/
+            framework: terraform,helm
+            soft_fail: true 
+            output_format: cli
+
+        - name: Install Kube-score
+          run: |
+            wget https://github.com/zegl/kube-score/releases/download/v1.17.0/kube-score_1.17.0_linux_amd64 -O kube-score
+            chmod +x kube-score
+            sudo mv kube-score /usr/local/bin/
+        - name: Run Kube-score on Helm Templates
+          run: |
+            helm template 6.1-EKS-Provisioning-with-Push-Based-CICD/eprofile-chart/ | kube-score score - 
+
+# --------------------- JOB 2 - Build, Scan & Push to ECR -------------------------
+
+  build-scan-push:
+    name: Docker Build, Scan and Push
     runs-on: ubuntu-latest
+    needs: security-scan
 
     outputs:
-
-      ecr_registry: ${{ steps.ssm.outputs.ecr_registry }}
-      ecr_repo: ${{ steps.ssm.outputs.ecr_repo }}
-
+      registry: ${{ steps.login-ecr.outputs.registry }}
 
     steps:
-      - name: Configure AWS Credentials
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} ## From Github Actions Secrets
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Get Parameters from SSM
-        id: ssm
-        run: |
-
-          echo "ecr_registry=$(aws ssm get-parameter \
-            --name '/strata/ecr_registry' \
-            --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
-
-          echo "ecr_repo=$(aws ssm get-parameter \
-            --name '/strata/ecr_repository_name' \
-            --query 'Parameter.Value' --output text)" >> $GITHUB_OUTPUT
-
-
-
-  # ----------------------- JOB 2 - Trivy Scan Source Code & Config ------------------------
-  scan-code:
-    name: Trivy - Scan Code & Config
-    runs-on: ubuntu-latest
-    needs: get-params
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Trivy - Filesystem Scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: .
-          format: sarif
-          output: trivy-fs-results.sarif
-          severity: CRITICAL,HIGH
-          exit-code: 0
-
-      - name: Trivy - Config Scan (Dockerfile + Terraform)
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: config
-          scan-ref: .
-          format: sarif
-          output: trivy-config-results.sarif
-          severity: CRITICAL,HIGH
-          exit-code: 0
-
-      - name: Upload Filesystem Scan Results
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: trivy-fs-results.sarif
-          category: trivy-filesystem
-
-      - name: Upload Config Scan Results
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: trivy-config-results.sarif
-          category: trivy-config
-
-  # --------------------- JOB 3 - Build Docker Image --------------------------------------
-  build-image:
-    name: Docker Build
-    runs-on: ubuntu-latest
-    needs: [get-params, scan-code]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build Docker Image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }} 
         run: |
-          docker build -t \
-            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }} -f Dockerfile-with-Datadog .
-
-      - name: Save Docker Image
-        run: |
-          docker save \
-            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }} \
-            -o image.tar
-
-      - name: Upload Image as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-image
-          path: image.tar
-          retention-days: 1
-
-  # --------------------------- JOB 4 - Trivy Scan Docker Image ------------------------------------
-  scan-image:
-    name: Trivy - Scan Docker Image
-    runs-on: ubuntu-latest
-    needs: [get-params, build-image]
-
-    steps:
-      - name: Download Image Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: docker-image
-
-      - name: Load Docker Image
-        run: docker load -i image.tar
+          docker build -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }} .
 
       - name: Trivy - Image Scan
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: image
-          image-ref: ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }}
+          image-ref: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
           format: sarif
           output: trivy-image-results.sarif
           severity: CRITICAL,HIGH
-          exit-code: 0
+          exit-code: 1
 
       - name: Upload Image Scan Results
         uses: github/codeql-action/upload-sarif@v3
@@ -153,78 +97,42 @@ jobs:
           sarif_file: trivy-image-results.sarif
           category: trivy-image
 
-  #-------------------------- JOB 5 - Push to ECR --------------------------------------------
-  push-ecr:
-    name: Push to ECR
+      - name: Push Docker Image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }} 
+        run: |
+          docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+
+
+# --------------------- JOB 3 - Deploy to EKS via Helm -------------------------
+  deploy-to-eks:
+    name: Helm Deploy to EKS
     runs-on: ubuntu-latest
-    needs: [get-params, scan-image]
+    needs: build-scan-push
 
     steps:
-      - name: Configure AWS Credentials
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to ECR
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Download Image Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: docker-image
-
-      - name: Load Docker Image
-        run: docker load -i image.tar
-
-      - name: Push to ECR
+      - name: Update KubeConfig
         run: |
-          docker push \
-            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }}
+          aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
-          docker tag \
-            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }} \
-            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:latest
-
-          docker push \
-            ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:latest
-
-  #------------------------------------------ JOB 6 - Deploy to ECS -------------------------------------
-  deploy:
-    name: Deploy to ECS
-    runs-on: ubuntu-latest
-    needs: [get-params, push-ecr]
-    environment: production
-
-    steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Setup Helm
+        uses: azure/setup-helm@v4.2.0
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          version: v3.14.0
 
-      - name: Download Current Task Definition
+      - name: Deploy Application with Helm
         run: |
-          aws ecs describe-task-definition \
-            --task-definition ${{ needs.get-params.outputs.ecs_task_family }} \
-            --query taskDefinition \
-            --region ${{ env.AWS_REGION }} \
-            > task-definition.json
-
-      - name: Update Image in Task Definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ needs.get-params.outputs.ecr_registry }}/${{ needs.get-params.outputs.ecr_repo }}:${{ github.sha }}
-
-      - name: Deploy to ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ needs.get-params.outputs.ecs_service }}
-          cluster: ${{ needs.get-params.outputs.ecs_cluster }}
-          wait-for-service-stability: true
+            helm upgrade --install vproapp ${{ env.HELM_CHART_PATH }} \
+              --namespace default \
+              --set app.image=${{ needs.build-scan-push.outputs.registry }}/${{ env.ECR_REPOSITORY }} \
+              --set app.tag=${{ github.sha }} \
+              --wait --timeout 5m
