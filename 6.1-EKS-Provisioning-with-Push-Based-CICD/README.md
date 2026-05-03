@@ -26,7 +26,7 @@ A production-grade **Amazon EKS cluster** with a complete **GitHub Actions CI/CD
 
 <div align="center">
 
-![Strata-Ops EKS Architecture](../media/EKS/strata_ops_architecture.png) 
+![Strata-Ops EKS Architecture](../media/EKS/strata_ops_architecture.svg) 
 *Complete EKS architecture — GitHub Actions pipeline with OIDC authentication, ECR for container registry, EKS cluster with worker nodes, ALB Ingress Controller for external access, and the 5-tier application running as Kubernetes pods*
 
 </div>
