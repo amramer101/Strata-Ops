@@ -1,940 +1,777 @@
-# Strata-Ops: The Ultimate DevSecOps Evolution Journey
+# 🌋 Strata-Ops — From Cloud-Native EKS to the First Line of Code
+
+<div align="center">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Stage](https://img.shields.io/badge/Stage-Production%20Ready-brightgreen)](https://github.com/amramer101/Strata-Ops)
 [![Terraform](https://img.shields.io/badge/Terraform-v1.6+-623CE4?logo=terraform&logoColor=white)](https://www.terraform.io/)
 [![Kubernetes](https://img.shields.io/badge/K8s-v1.29-326CE5?logo=kubernetes&logoColor=white)](https://kubernetes.io/)
 [![AWS](https://img.shields.io/badge/AWS-EKS%2FECR%2FRDS-FF9900?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
-[![Security](https://img.shields.io/badge/Security-DevSecOps%20Shift--Left-red?logo=owasp)](https://owasp.org/)
-[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions)](https://github.com/features/actions)
+[![DevSecOps](https://img.shields.io/badge/Security-DevSecOps%20Shift--Left-DC143C?logo=owasp)](https://owasp.org/)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions%20%7C%20Jenkins%20%7C%20CodePipeline-2088FF?logo=github-actions)](https://github.com/features/actions)
+[![Helm](https://img.shields.io/badge/Helm-v3.11-0F1689?logo=helm&logoColor=white)](https://helm.sh/)
+[![Docker](https://img.shields.io/badge/Docker-Multi--Stage-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 
-> **🎯 Mission:** Document a complete engineering transformation of the `VProfile` application—evolving from a simple local virtualized environment to a **production-grade, cloud-native Kubernetes architecture on AWS EKS**, implementing **GitOps**, **Zero-Trust Security**, **OIDC Authentication**, and **Infrastructure as Code (IaC)**.
+</div>
+
+---
+
+> **Strata-Ops** is a complete, production-grade DevSecOps engineering journey — documenting the full transformation of a 5-tier Java application from a local Vagrant setup into a hardened, auto-scaling Kubernetes platform on AWS EKS, with GitOps delivery, OIDC authentication, multi-layer security scanning, and zero manual steps.
+>
+> Like the geological layers of the Earth, each phase builds on the previous one. This README reads **top-down** — starting from the most advanced production system and descending through every architectural layer to the original foundation.
 
 ---
 
 ## 📑 Table of Contents
 
-1. [Project Overview](#-project-overview)
-2. [The Journey Through 6 Phases](#-the-journey-through-6-phases)
-3. [Project Roadmap & Evolution](#-project-roadmap--evolution)
-4. [Phase 1: Local Foundation](#-phase-1-local-foundation)
-5. [Phase 2: AWS Lift & Shift](#-phase-2-aws-lift--shift)
-6. [Phase 3: Cloud-Native PaaS](#-phase-3-cloud-native-paas)
-7. [Phase 4.1: Containerization & Ansible](#-phase-41-containerization--ansible)
-8. [Phase 4.2: Serverless Containers (ECS Fargate)](#-phase-42-serverless-containers-ecs-fargate)
-9. [Phase 5.1: Self-Managed Kubernetes](#-phase-51-self-managed-kubernetes-on-ec2)
-10. [Phase 5.2: Helm Packaging & Templating](#-phase-52-helm-packaging--templating)
-11. [Phase 6.1: Production EKS with GitOps](#-phase-61-production-eks-with-gitops--oidc)
-12. [Performance & Cost Comparison](#-performance--cost-comparison)
-13. [Best Practices & Lessons Learned](#-best-practices--lessons-learned)
+1. [What is Strata-Ops?](#-what-is-strata-ops)
+2. [The Application — VProfile](#-the-application--vprofile)
+3. [The Geological Model — Phase Overview](#-the-geological-model--phase-overview)
+4. [DevSecOps at Every Layer](#-devsecops-at-every-layer)
+5. [Phase 6.1 — Production EKS + GitOps + OIDC](#-phase-61--production-eks--gitops--oidc)
+6. [Phase 5.2 — Helm Packaging & Templating](#-phase-52--helm-packaging--templating)
+7. [Phase 5.1 — Self-Managed Kubernetes on EC2](#-phase-51--self-managed-kubernetes-on-ec2)
+8. [Phase 4.2 — ECS Fargate + Datadog APM](#-phase-42--ecs-fargate--datadog-apm)
+9. [Phase 4.1 — Docker Compose + Ansible](#-phase-41--docker-compose--ansible)
+10. [Phase 3 — AWS Cloud-Native PaaS + DevSecOps](#-phase-3--aws-cloud-native-paas--devsecops)
+11. [Phase 2 — AWS Lift & Shift + CI/CD + Monitoring](#-phase-2--aws-lift--shift--cicd--monitoring)
+12. [Phase 1 — Local Foundation](#-phase-1--local-foundation)
+13. [Evolution Metrics](#-evolution-metrics)
 14. [Repository Structure](#-repository-structure)
 
 ---
 
-## 🌍 Project Overview
+## 🌍 What is Strata-Ops?
 
-**Strata-Ops** is more than just a repository—it's a **comprehensive DevOps learning journey** documented through six progressive phases of infrastructure evolution.
+**Strata-Ops** is not a tutorial. It is a fully deployable, living architecture portfolio — every phase is real infrastructure code you can `terraform apply` and `git push` to production today.
 
-### What Makes This Different?
+### What makes it stand out
 
-- **Educational Foundation**: Every phase is self-contained and builds on previous knowledge
-- **Production-Ready Code**: Not theory—actual, deployable infrastructure
-- **Complete Documentation**: Screenshots, diagrams, and step-by-step guides
-- **Security-First**: DevSecOps practices integrated throughout
-- **Reproducible**: Infrastructure as Code for 100% consistency
-- **Real Metrics**: Deployment time, cost analysis, and performance data
+- **8 complete phases**, each fully self-contained and production-deployable
+- **Zero hardcoded credentials** across the entire repository — SSM, OIDC, and Secrets Manager handle everything
+- **Shift-left DevSecOps** integrated from Phase 2 onward: SAST, container scanning, IaC security, dependency CVE analysis
+- **Three CI/CD systems** covered in depth: Jenkins with JCasC, AWS CodePipeline, and GitHub Actions with OIDC
+- **Full observability stack** per phase: Prometheus/Grafana → CloudWatch → Datadog APM with distributed tracing and JVM metrics
+- **Infrastructure as Code throughout** — Terraform provisions every AWS resource, Ansible handles configuration, Helm packages every Kubernetes workload
 
-### The Application: VProfile (5-Tier Java Application)
+---
+
+## ☕ The Application — VProfile
+
+A 5-tier Java application that runs consistently across every phase, from local VMs to managed EKS:
 
 ```
-┌─────────────────────────────────────────────────┐
-│              🌐 Nginx (Web Tier)                │
-│             Reverse Proxy • Port 80              │
-└──────────────────┬──────────────────────────────┘
-                   │
-┌──────────────────▼──────────────────────────────┐
-│           ☕ Tomcat (App Tier)                   │
-│     Java Application Server • Port 8080          │
-└──┬────────────┬──────────────┬──────────────────┘
-   │            │              │
-   ▼            ▼              ▼
-┌─────┐    ┌─────────┐    ┌──────┐
-│MySQL│    │Memcached│    │RabbitMQ│
-│ DB  │    │ Cache   │    │ Queue  │
-└─────┘    └─────────┘    └──────┘
+┌──────────────────────────────────────────────┐
+│           🌐 Nginx  (Web / Reverse Proxy)    │  :80
+└──────────────────────┬───────────────────────┘
+                       │
+┌──────────────────────▼───────────────────────┐
+│           ☕ Tomcat  (Java Application)       │  :8080
+└────────┬─────────────┬──────────────┬─────────┘
+         │             │              │
+    ┌────▼────┐   ┌────▼────┐   ┌────▼────┐
+    │  MySQL  │   │Memcached│   │RabbitMQ │
+    │  :3306  │   │  :11211 │   │  :5672  │
+    └─────────┘   └─────────┘   └─────────┘
 ```
 
-**Services:**
-- **Tomcat**: Java application server running VProfile
-- **MySQL**: Relational database (user accounts, profiles)
-- **Memcached**: In-memory caching layer
-- **RabbitMQ**: Message broker for async operations
-- **Nginx**: Reverse proxy and frontend gateway
+The same application is deployed in every phase — what evolves is **how** it is provisioned, secured, deployed, and observed.
 
 ---
 
-## 🗺️ The Journey Through 6 Phases
+## 🗺️ The Geological Model — Phase Overview
 
-This project is structured as a **layered geological model** where each phase represents a deeper understanding of infrastructure engineering:
+The project is structured like the Earth's layers: the deepest layer is the foundation you must understand first, but the **outermost layer — Phase 6.1 — is where engineering excellence lives**.
 
 ```
-           🌍 Surface
-             │
-       ┌─────▼─────┐
-       │  Phase 6   │ ← Production EKS with GitOps (CURRENT)
-       ├───────────┤
-       │  Phase 5   │ ← Kubernetes Mastery
-       ├───────────┤
-       │  Phase 4   │ ← Containerization & Orchestration
-       ├───────────┤
-       │  Phase 3   │ ← Cloud-Native Services
-       ├───────────┤
-       │  Phase 2   │ ← AWS Infrastructure
-       ├───────────┤
-       │  Phase 1   │ ← Local Foundation
-       └───────────┘
+  ══════════════════════════════════════════════
+  🌍  Phase 6.1  │  EKS + GitOps + OIDC         ← The Surface — Production Grade
+  ──────────────────────────────────────────────
+  🪨  Phase 5.2  │  Helm Packaging               ← Upper Crust
+  ──────────────────────────────────────────────
+  🪨  Phase 5.1  │  Self-Managed Kubernetes      ← Mid Crust
+  ──────────────────────────────────────────────
+  🔥  Phase 4.2  │  ECS Fargate + Datadog APM    ← Lower Crust
+  ──────────────────────────────────────────────
+  🔥  Phase 4.1  │  Docker Compose + Ansible     ← Upper Mantle
+  ──────────────────────────────────────────────
+  🌋  Phase 3    │  AWS Cloud-Native + CodePipeline  ← Lower Mantle
+  ──────────────────────────────────────────────
+  ⚙️   Phase 2    │  AWS Lift & Shift + Jenkins   ← Outer Core
+  ──────────────────────────────────────────────
+  ⛏️   Phase 1    │  Local VMs (Vagrant)          ← Inner Core — The Foundation
+  ══════════════════════════════════════════════
 ```
 
-Each phase adds complexity, introduces new technologies, and builds on the previous layer's understanding.
+| Phase | Platform | CI/CD | Security | Observability | Deploy Time |
+|:------|:---------|:------|:---------|:--------------|:------------|
+| **6.1** | AWS EKS | GitHub Actions + OIDC | Checkov + Kube-score + Trivy | CloudWatch | **~3 min** |
+| **5.2** | Minikube + Helm | Ansible | Helm RBAC + b64enc Secrets | Metrics Server | ~10 min |
+| **5.1** | Self-Managed K8s | Ansible | Network Policies + initContainers | Metrics Server | ~25 min |
+| **4.2** | ECS Fargate | GitHub Actions | Trivy + SARIF | Datadog APM | ~8 min |
+| **4.1** | Docker Compose on EC2 | Ansible | Container Linting | Docker Stats | ~12 min |
+| **3** | Elastic Beanstalk | AWS CodePipeline | TruffleHog + tfsec + SonarCloud | CloudWatch | ~15 min |
+| **2** | EC2 (IaaS) | Jenkins + JCasC | OWASP + SAST + Quality Gates | Prometheus + Grafana | ~20 min |
+| **1** | VirtualBox / Vagrant | Manual | SSH Keys | Log Files | 45–60 min |
 
 ---
 
-## 📊 Project Roadmap & Evolution
+## 🔐 DevSecOps at Every Layer
 
-This repository represents more than just code migration; it is an evolution of **Engineering Mindset**:
+Security is not an afterthought in Strata-Ops — it is **architecturally enforced** at each phase as a hard gate before deployment.
 
-| Phase | Platform | Deployment Strategy | Security Posture | Observability | Status | Time | Key Learning |
-| :--- | :--- | :--- | :--- | :--- | :---: | :---: | :--- |
-| **1** | VirtualBox (Local) | Manual SSH/SCP | Basic SSH Keys | Log Files | ✅ | 45m | Fundamentals |
-| **2** | AWS EC2 (IaaS) | Jenkins Pipeline | Security Groups | Prometheus/Grafana | ✅ | 20m | Infrastructure as Code |
-| **3** | Elastic Beanstalk (PaaS) | AWS CodePipeline | WAF + Secrets Mgr | CloudWatch | ✅ | 15m | Managed Services |
-| **4.1** | Docker Compose | Ansible Playbooks | Container Linting | Docker Stats | ✅ | 12m | Containerization |
-| **4.2** | AWS ECS Fargate | GitHub Actions | Trivy + Checkov | Datadog APM | ✅ | 8m | DevSecOps CI/CD |
-| **5.1** | Self-Managed K8s | Kubeadm (Manual) | Network Policies | Metrics Server | ✅ | 25m | Kubernetes Internals |
-| **5.2** | Kubernetes (Helm) | Helm Charts | RBAC + Secrets | Prometheus Stack | ✅ | 10m | Helm Templating |
-| **6.1** | **AWS EKS (Prod)** | **GitOps (OIDC)** | **IRSA + Immutable Tags** | **CloudWatch + X-Ray** | ✅ **Live** | **3m** | **Production Enterprise** |
-
----
-
-## 🏗️ Phase 1: Local Foundation
-
-**Goal:** Establish a baseline local environment to understand the 3-Tier Architecture components.
-
-### What You'll Learn
-- ✅ Multi-tier application architecture principles
-- ✅ Manual service provisioning and configuration
-- ✅ Network connectivity and firewall rules
-- ✅ Database initialization and schema management
-- ✅ Foundation for all future automation
-
-### Key Highlights
-- **Infrastructure:** 3-5 VMs (App, DB, LB, Cache, Queue) via Vagrant & VirtualBox
-- **Challenge:** Manually managing version compatibility (Java, Tomcat, MySQL)
-- **Outcome:** A functioning local application ready for cloud migration
-- **Setup Time:** 45-60 minutes
-
-
-### 🔗 Resources
-- **[📖 Full Phase 1 Documentation →](1-Local-Foundation/README.md)**
-- **Manual Setup:** [1.1-Local-Setup-Manual/README.md](1.1-Local-Setup-Manual/README.md)
-- **Automated Setup:** [1.2-Local-Setup-Automated-Vagrand/README.md](1.2-Local-Setup-Automated-Vagrand/README.md)
-
-### Quick Start
-```bash
-cd 1-Local-Foundation
-vagrant up
-# Then manually configure each service (see documentation)
+```
+Phase 2  ──►  OWASP Dependency Check  +  SonarQube SAST  +  Quality Gate (abort on fail)
+Phase 3  ──►  TruffleHog (secrets scan)  +  tfsec (IaC scan)  +  SonarCloud (24k lines)
+Phase 4.2 ──► Trivy FS Scan  +  Trivy Config Scan  +  Trivy Image Scan  +  SARIF → GitHub Security
+Phase 6.1 ──► Checkov (Terraform + Helm)  +  Kube-score (manifests)  +  Trivy (image)  +  OIDC Auth
 ```
 
+**Zero long-lived credentials anywhere:**
+- Phase 2–3: AWS SSM Parameter Store with least-privilege IAM Instance Profiles
+- Phase 4.2–6.1: GitHub Actions OIDC — temporary tokens per job, zero stored keys
+
+**Secret management progression:**
+- Phase 2: `random_password` → SSM SecureString → EC2 user-data polling loop
+- Phase 3: SSM auto-generated on `terraform apply`, injected at pipeline runtime
+- Phase 4.2: SSM + ECS task environment injection
+- Phase 6.1: OIDC + IRSA (IAM Roles for Service Accounts) — per-pod permissions
+
 ---
 
-## ☁️ Phase 2: AWS Lift & Shift
+## 🚀 Phase 6.1 — Production EKS + GitOps + OIDC
 
-**Goal:** Migrate to AWS IaaS while automating infrastructure provisioning (IaC).
+> *The pinnacle of the journey. One `git push` triggers a 3-job pipeline that scans infrastructure, builds and scans the container, and deploys to a multi-AZ EKS cluster — with zero stored AWS credentials, zero manual steps, and full GitHub Security integration.*
 
-### What You'll Learn
-- ✅ Infrastructure as Code fundamentals (Terraform)
-- ✅ AWS networking (VPC, subnets, security groups)
-- ✅ EC2 auto-scaling and elastic load balancing
-- ✅ Managed database services (RDS)
-- ✅ CI/CD with Jenkins
-- ✅ Observability with Prometheus & Grafana
+**📖 [Full Phase 6.1 Documentation →](6.1-EKS-Provisioning-with-Push-Based-CICD/README.md)**
 
-### Key Highlights
-- **Infrastructure:** EC2 instances within an Auto Scaling Group managed by Terraform
-- **Database:** Migration to Amazon RDS (MySQL) for managed backups and HA
-- **CI/CD:** Jenkins Pipeline for automated WAR building and deployment
-- **Observability:** Grafana and Prometheus for real-time metric visualization
-- **Deployment Time:** 20 minutes (improvement: 55% ⬇️)
+### Architecture
 
-### 📸 Architecture Diagram
 <div align="center">
-  <img src="/media/Lift-shift/digram.png" alt="Phase 1 Architecture" width="600"/>
-  <p><i>Figure 1: Basic Local Virtualized 5-Tier Architecture</i></p>
+  <img src="media/EKS/strata_ops_architecture.svg" alt="EKS Architecture" width="750"/>
+  <p><i>Production EKS architecture — GitHub Actions OIDC pipeline, ECR, EKS cluster with ALB Ingress Controller, and the full 5-tier application stack</i></p>
 </div>
 
-### 🔗 Resources
-- **[📖 Full Phase 2 Documentation →](2-AWS-Lift-And-Shift/README.md)**
-- **[Terraform Code →](2-AWS-Lift-And-Shift/terraform/)**
-- **[Jenkins Configuration →](2-AWS-Lift-And-Shift/jenkins/)**
+### The 3-Job GitHub Actions Pipeline
 
-### Quick Start
-```bash
-cd 2-AWS-Lift-And-Shift
-terraform init
-terraform plan
-terraform apply
+```
+git push → main
+     │
+     ▼
+┌──────────────────────────────────────────────────────┐
+│  JOB 1 — Infrastructure & Manifest Security Scan     │
+│  ├── Checkov  → scans Terraform + Helm charts        │
+│  └── Kube-score → validates K8s manifest best practices│
+└─────────────────────────┬────────────────────────────┘
+                          ▼
+┌──────────────────────────────────────────────────────┐
+│  JOB 2 — Build, Scan & Push to ECR                  │
+│  ├── AWS credentials via OIDC (no stored keys)       │
+│  ├── Multi-stage Docker build                        │
+│  ├── Trivy image scan → SARIF → GitHub Security tab  │
+│  └── Push image tagged with git SHA (immutable)      │
+└─────────────────────────┬────────────────────────────┘
+                          ▼
+┌──────────────────────────────────────────────────────┐
+│  JOB 3 — Helm Deploy to EKS                          │
+│  ├── OIDC → aws eks update-kubeconfig                │
+│  ├── helm upgrade --install vproapp                  │
+│  └── Wait for deployment stability (5m timeout)      │
+└──────────────────────────────────────────────────────┘
 ```
 
----
-
-## 🌩️ Phase 3: Cloud-Native PaaS
-
-**Goal:** Reduce operational overhead by leveraging AWS Platform-as-a-Service.
-
-### What You'll Learn
-- ✅ Managed application platforms (Elastic Beanstalk)
-- ✅ Pipeline automation (AWS CodePipeline)
-- ✅ Security services (WAF, Secrets Manager)
-- ✅ Reduced operational complexity
-- ✅ Infrastructure abstraction and scaling
-
-### Key Highlights
-- **Platform:** AWS Elastic Beanstalk for abstracted application hosting
-- **CI/CD:** AWS CodePipeline for seamless integration with source control
-- **Security:** Integration of AWS WAF and Secrets Manager for credential management
-- **Benefit:** Focus shifts entirely to code development rather than server management
-- **Deployment Time:** 15 minutes (improvement: 67% ⬇️)
-
-### 📸 Architecture Diagram
-<div align="center">
-  <img src="/media/cloud-native/architecture-diagram.png" alt="Phase 3 Architecture" width="600"/>
-  <p><i>Figure 3: Fully Managed PaaS Architecture with CodePipeline</i></p>
-</div>
-
-### 🔗 Resources
-- **[📖 Full Phase 3 Documentation →](3-Cloud-Native-PaaS/README.md)**
-- **[CloudFormation Templates →](3-Cloud-Native-PaaS/cloudformation/)**
-
----
-
-## 🐳 Phase 4.1: Containerization & Ansible
-
-**Goal:** Decouple applications from infrastructure using Docker and ensure environment consistency.
-
-### What You'll Learn
-- ✅ Docker fundamentals and multi-stage builds
-- ✅ Container networking and volumes
-- ✅ Docker Compose for local orchestration
-- ✅ Infrastructure provisioning with Ansible
-- ✅ Configuration management best practices
-
-### Key Highlights
-- **Technology:** Docker Compose for multi-container orchestration locally
-- **Configuration:** Ansible playbooks for automated server provisioning
-- **Benefit:** Elimination of "It works on my machine" issues
-- **Deployment Time:** 12 minutes
-- **Manual Steps:** Reduced significantly
-
-### 📸 Architecture Diagram
-<div align="center">
-  <img src="/media/Docker-compose/The-Big-Picture-Infrastructure-App-Architecture.png" alt="Phase 4.1 Architecture" width="600"/>
-  <p><i>Figure 4: Local Containerized Architecture with Ansible Configuration</i></p>
-</div>
-
-### 🔗 Resources
-- **[📖 Full Phase 4.1 Documentation →](4.1-Docker-Compose-Ansible/README.md)**
-- **[Dockerfile →](4.1-Docker-Compose-Ansible/Dockerfile)**
-- **[Docker Compose File →](4.1-Docker-Compose-Ansible/docker-compose.yml)**
-- **[Ansible Playbooks →](4.1-Docker-Compose-Ansible/ansible/)**
-
----
-
-## ⚡ Phase 4.2: Serverless Containers (ECS Fargate)
-
-**Goal:** Run containers without managing servers, integrated with a modern CI/CD pipeline.
-
-### What You'll Learn
-- ✅ AWS ECS and Fargate serverless containers
-- ✅ Container registries (ECR)
-- ✅ Advanced CI/CD with GitHub Actions
-- ✅ DevSecOps best practices (shift-left security)
-- ✅ Container security scanning (Trivy, Checkov)
-- ✅ Distributed tracing (Datadog APM)
-
-### Key Highlights
-- **Platform:** AWS ECS Fargate (Serverless Compute)
-- **CI/CD:** GitHub Actions with integrated security scanning (Trivy, Checkov)
-- **Observability:** Datadog APM integration for distributed tracing
-- **Security:** Container linting and vulnerability scanning
-- **Deployment Time:** 8 minutes (improvement: 60% ⬇️)
-- **Manual Steps:** Automated end-to-end
-
-### 📸 Architecture Diagram
-<div align="center"> 
-  <img src="/media/Docker-ECS/diagram.png" alt="Phase 4.2 Architecture" width="600"/>
-  <p><i>Figure 5: End-to-End DevSecOps Pipeline from Code to Fargate</i></p>
-</div>
-
-### 🔗 Resources
-- **[📖 Full Phase 4.2 Documentation →](4.2-ECS-Fargate-GitHub-Actions/README.md)**
-- **[Terraform Code →](4.2-ECS-Fargate-GitHub-Actions/terraform/)**
-- **[GitHub Actions Workflow →](.github/workflows/4.2-ECS-CICD.yml)**
-
----
-
-## 🎮 Phase 5.1: Self-Managed Kubernetes on EC2
-
-**Goal:** Deep dive into Kubernetes internals by building a cluster from scratch.
-
-### What You'll Learn
-- ✅ Kubernetes architecture and components
-- ✅ Control plane and worker node setup
-- ✅ CNI (Container Network Interface) setup
-- ✅ Etcd, kubelet, and API server configuration
-- ✅ High availability and disaster recovery
-- ✅ Production troubleshooting at scale
-
-### Key Highlights
-- **Implementation:** Manual cluster creation using `kubeadm` on EC2 instances
-- **Networking:** Calico CNI for pod networking and MetalLB for LoadBalancing services
-- **Control:** Manual management of Control Plane, Etcd, and Worker Nodes
-- **Key Learning:** Understanding the complexities of upgrades, HA, and networking
-- **Deployment Time:** 25 minutes
-- **Complexity:** High (but invaluable for K8s understanding)
-
-### 📸 Architecture Diagram
-<div align="center">
-  <img src="media/k8s/strata_ops_k8s_architecture (1).png" alt="Phase 5.1 Architecture" width="600"/>
-  <p><i>Figure 6: Self-Managed Kubernetes Architecture with Networking Components</i></p>
-</div>
-
-### 🔗 Resources
-- **[📖 Full Phase 5.1 Documentation →](5.1-Self-Managed-Kubernetes-on-EC2/README.md)**
-- **[Terraform Code →](5.1-Self-Managed-Kubernetes-on-EC2/terraform/)**
-- **[Kubeadm Setup Scripts →](5.1-Self-Managed-Kubernetes-on-EC2/scripts/)**
-
----
-
-## 📦 Phase 5.2: Helm Packaging & Templating
-
-**Goal:** Standardize and simplify complex Kubernetes deployments using Package Management.
-
-### What You'll Learn
-- ✅ Helm v3 as the Kubernetes Package Manager
-- ✅ Chart creation and templating
-- ✅ Values management across environments
-- ✅ Dependency management
-- ✅ Release versioning and rollbacks
-- ✅ Helm best practices and patterns
-
-### Key Highlights
-- **Tool:** Helm v3 as the Kubernetes Package Manager
-- **Features:**
-  - Reusable templates for multiple environments (Dev/Prod)
-  - Dependency management for databases, caches, and message queues
-  - Versioned releases with built-in rollback capabilities
-- **Benefit:** "Write once, deploy anywhere" consistency and speed
-- **Deployment Time:** 10 minutes
-- **Reusability:** 100% across environments
-
-### 📸 Architecture Integration
-*(Helm integrates into the Phase 5.1 architecture to manage the application lifecycle)*
-
-### 🔗 Resources
-- **[📖 Full Phase 5.2 Documentation →](5.2-Application-Packaging-and-Templating-with-Helm/README.md)**
-- **[Helm Chart →](5.2-Application-Packaging-and-Templating-with-Helm/eprofile-chart/)**
-
----
-
-## 🚀 Phase 6.1: Production EKS with GitOps & OIDC
-
-**Goal:** The ultimate production-ready environment: Secure, Scalable, and Fully Automated.
-
-This phase represents the **pinnacle of the project**, integrating global best practices for enterprise-grade Kubernetes deployments.
-
-### 🔑 Key Features
-
-1. **✅ OIDC Authentication:** Securely link GitHub Actions to AWS IAM without long-lived keys
-2. **✅ IRSA (IAM Roles for Service Accounts):** Granular, least-privilege permissions per Pod
-3. **✅ Multi-Layer Security:** Checkov (IaC), Kube-score (Manifests), Trivy (Images)
-4. **✅ Immutable Tags:** Prevent image tag overwrites in ECR to ensure integrity
-5. **✅ Advanced Ingress:** AWS Load Balancer Controller for automatic ALB provisioning
-6. **✅ Secrets Management:** Automatic sync of AWS SSM parameters to K8s Secrets via External Secrets Operator
-
-### 🏛️ High-Level Architecture
-
-The complete flow from Developer to End User, showcasing the integration of AWS services and Kubernetes components.
-
-<div align="center">
-  <img src="media/EKS/strata_ops_architecture.png" alt="EKS High-Level Architecture" width="700"/>
-  <p><i>Figure 7: Comprehensive Production Architecture on AWS EKS</i></p>
-</div>
-
-### 🔐 OIDC & IAM Authentication Flow
-
-How GitHub Actions securely assumes an AWS IAM Role without storing secrets.
-
-<div align="center">
-  <img src="media/EKS/aws-alb-provisioned.png" alt="OIDC Authentication Flow" width="600"/>
-  <p><i>Figure 8: OIDC Provider Trust Relationship and IAM Role Assumption</i></p>
-</div>
-
-### 🛡️ Image Security: Immutable Tags
-
-Preventing malicious overwrites of container images in the registry.
-
-<div align="center">
-  <img src="media/EKS/aws-ecr-immutable-image-tags.jpg.png" alt="ECR Immutable Tags" width="600"/>
-  <p><i>Figure 9: Enabling Immutable Tags in ECR for Supply Chain Security</i></p>
-</div>
-
-### 🏗️ Cluster Readiness
-
-Verification of Control Plane health and Node Group status before deployment.
-
-<div align="center">
-  <img src="media/EKS/aws-eks-cluster-ready.png" alt="Cluster Ready Status" width="600"/>
-  <p><i>Figure 10: Healthy Control Plane and Ready Worker Nodes</i></p>
-</div>
-
-### 🔄 CI/CD Pipeline Success
-
-The successful execution of the 3-stage GitHub Actions pipeline.
-
-<div align="center">
-  <img src="media/EKS/github-actions-pipeline-success.png" alt="Pipeline Success" width="600"/>
-  <p><i>Figure 11: Green Build Status After Passing All Security Gates</i></p>
-</div>
-
-### 🕵️ Advanced Security Scanning (SARIF)
-
-Integration of security findings directly into the GitHub Security tab.
-
-<div align="center">
-  <img src="media/EKS/github-advanced-security-sarif.png" alt="Security Scan Results" width="600"/>
-  <p><i>Figure 12: Vulnerability Reports via SARIF in GitHub Advanced Security</i></p>
-</div>
-
-### 🚦 Ingress & Traffic Routing
-
-Automatic provisioning of the Application Load Balancer by the K8s Controller.
-
-<div align="center">
-  <img src="media/EKS/kubectl-pods-ingress-status.png" alt="Ingress Controller Status" width="600"/>
-  <p><i>Figure 13: ALB Controller Provisioning and Ingress Resource Status</i></p>
-</div>
-
-### 🌐 Application Live on EKS
-
-The moment of truth: Accessing the application via the public internet.
-
-<div align="center">
-  <img src="media/EKS/vprofile-app-live-on-eks.png" alt="Application Live" width="600"/>
-  <p><i>Figure 14: VProfile Application Successfully Running on EKS</i></p>
-</div>
-
-### 🔑 Login Verification
-
-Testing authentication flows and database connectivity.
-
-<div align="center">
-  <img src="media/EKS/login-vprofile-app-live-on-eks.png" alt="Login Test" width="600"/>
-  <p><i>Figure 15: Successful User Authentication via RDS Backend</i></p>
-</div>
-
-### ⚡ Caching Layer Performance
-
-Verifying Memcached integration for session and data caching.
-
-<div align="center">
-  <img src="media/EKS/cache-vprofile-app-live-on-eks.png" alt="Cache Test" width="600"/>
-  <p><i>Figure 16: Memcached Integration and Performance Verification</i></p>
-</div>
-
-### 💾 Data Consistency Check
-
-Ensuring end-to-end data integrity across the application stack.
-
-<div align="center">
-  <img src="media/EKS/data-from-cache-vprofile-app-live-on-eks.png" alt="Data Consistency" width="600"/>
-  <p><i>Figure 17: End-to-End Data Retrieval and Consistency Check</i></p>
-</div>
-
-### 📊 Phase 6.1 Metrics
-
-| Metric | Value |
-|--------|-------|
-| **EKS Version** | 1.29 |
-| **Node Group Size** | 2-4 nodes (auto-scaling) |
-| **Pipeline Jobs** | 3 (Security → Build → Deploy) |
-| **Security Scanners** | 3 (Checkov, Kube-score, Trivy) |
-| **Deployment Time** | ~3 minutes (end-to-end) |
-| **Manual Steps** | 0 (Full GitOps) |
-| **Hardcoded Credentials** | 0 (OIDC-based) |
-| **Containers Deployed** | 5 (App, DB, Cache, Queue, Web) |
-
-### 🔗 Resources
-- **[📖 Full Phase 6.1 Documentation & Commands →](6.1-EKS-Provisioning-with-Push-Based-CICD/README.md)**
-- **[Terraform Configuration →](6.1-EKS-Provisioning-with-Push-Based-CICD/terraform/)**
-- **[Helm Chart →](6.1-EKS-Provisioning-with-Push-Based-CICD/eprofile-chart/)**
-- **[GitHub Actions Workflow →](.github/workflows/6.1-EKS-CICD.yml)**
-
-### Quick Start
-```bash
-cd 6.1-EKS-Provisioning-with-Push-Based-CICD
-
-# 1. Provision EKS cluster
-terraform init
-terraform plan
-terraform apply
-
-# 2. Configure kubectl
-aws eks update-kubeconfig --name strata-eks-cluster --region eu-central-1
-
-# 3. Deploy application via Helm
-helm upgrade --install vproapp ./eprofile-chart --wait
-
-# 4. Verify deployment
-kubectl get pods
-kubectl get ingress
-```
-
----
-
-## 📈 Performance & Cost Comparison
-
-How did key metrics evolve across the phases?
-
-### ⏱️ Deployment Time Evolution
-
-| Phase | Deployment Time | Improvement | Key Factor |
-| :--- | :--- | :--- | :--- |
-| **Phase 1** (Local Manual) | 45-60 mins | - | Manual everything |
-| **Phase 2** (Jenkins EC2) | ~20 mins | 55% ⬇️ | Infrastructure automation |
-| **Phase 3** (CodePipeline) | ~15 mins | 67% ⬇️ | Managed services |
-| **Phase 4.1** (Docker Compose) | ~12 mins | 73% ⬇️ | Containerization |
-| **Phase 4.2** (ECS Fargate) | ~8 mins | 82% ⬇️ | Serverless compute |
-| **Phase 5.1** (Self-Managed K8s) | ~25 mins | High complexity | Learning overhead |
-| **Phase 5.2** (Helm) | ~10 mins | 78% ⬇️ | Template-based |
-| **Phase 6.1** (EKS GitOps) | **~3 mins** | **93% ⬇️** | **Full automation + push** |
-
-### 🔒 Manual Steps Reduction
-
-| Phase | Manual Steps | Automation Level | Dependency |
-| :--- | :--- | :--- | :--- |
-| Phase 1 | 15+ Steps | Fully Manual | 0% |
-| Phase 2 | 8 Steps | Semi-Automated | 40% |
-| Phase 3 | 5 Steps | Mostly Automated | 70% |
-| Phase 4.1 | 6 Steps | Docker-driven | 60% |
-| Phase 4.2 | 2 Steps | CI/CD-driven | 95% |
-| Phase 5.1 | 8 Steps | Complex Manual | 50% |
-| Phase 5.2 | 2 Steps | Helm-templated | 90% |
-| **Phase 6.1** | **0 Steps** | **Full GitOps** | **100%** |
-
-### 💰 Monthly Cost Estimate (Dev Environment)
-*Costs are approximate based on `eu-central-1` region.*
-
-| Phase | Monthly Cost | Components | Notes |
-| :--- | :--- | :--- | :--- |
-| Phase 1 | $0 | Local resources | Development only |
-| Phase 2 | ~$60/mo | EC2 (fixed) | Always running |
-| Phase 3 | ~$45/mo | Elastic Beanstalk | Managed, still expensive |
-| Phase 4.1 | $0 | Local Docker | Development only |
-| Phase 4.2 | ~$35/mo | Fargate + ECR | Pay-per-use |
-| Phase 5.1 | ~$50/mo | EC2 nodes | Still manual overhead |
-| Phase 5.2 | ~$50/mo | EC2 nodes | No cost reduction |
-| **Phase 6.1** | **~$75/mo** | **EKS ($72 + nodes)** | **Production-grade, scales better** |
-
-**Cost Analysis:**
-- ✅ EKS is higher in cost but includes managed control plane ($72), CloudWatch logs, and auto-scaling capabilities
-- ✅ Better for production due to HA, security features (IRSA, OIDC), and multi-AZ distribution
-- ✅ Fargate is most cost-efficient for simple workloads, but lacks Kubernetes portability
-- ✅ Self-managed K8s requires significant ops overhead (not reflected in compute cost)
-
----
-
-## 🛡️ Best Practices & Lessons Learned
-
-### 1. Infrastructure as Code (IaC)
-
-✅ **State Locking:** Always use Terraform State Locking (e.g., via S3 + DynamoDB) to prevent concurrent modification conflicts.
-
-```hcl
-terraform {
-  backend "s3" {
-    bucket         = "strata-ops-terraform-state"
-    key            = "prod/terraform.tfstate"
-    region         = "eu-central-1"
-    encrypt        = true
-    dynamodb_table = "terraform-locks"
+### OIDC — Zero Long-Lived Credentials
+
+```json
+{
+  "Condition": {
+    "StringEquals": {
+      "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+    },
+    "StringLike": {
+      "token.actions.githubusercontent.com:sub": "repo:amramer101/Strata-Ops:*"
+    }
   }
 }
 ```
 
-✅ **Modularity:** Break code into reusable modules (Network, DB, App, K8s) for maintainability.
+GitHub Actions requests temporary STS credentials per job. No `AWS_ACCESS_KEY_ID` stored anywhere. Credentials expire the moment the job completes.
 
-```
-terraform/
-├── modules/
-│   ├── networking/
-│   ├── eks/
-│   ├── ecr/
-│   └── rds/
-└── main.tf
-```
+### Key Highlights
+
+| Feature | Detail |
+|---------|--------|
+| **EKS Version** | 1.29, multi-AZ control plane |
+| **Security Scanners** | 3 — Checkov, Kube-score, Trivy |
+| **Image Tagging** | Git SHA (immutable in ECR) |
+| **Ingress** | AWS ALB Ingress Controller (IP target type) |
+| **Autoscaling** | Node group: 2–4 nodes (Cluster Autoscaler) |
+| **Manual Steps** | **0** — full GitOps |
+| **Hardcoded Credentials** | **0** — OIDC + IRSA |
+| **Deployment Time** | **~3 minutes end-to-end** |
 
 ---
 
-### 2. Security (DevSecOps)
+## ⎈ Phase 5.2 — Helm Packaging & Templating
 
-✅ **Shift Left:** Scan for vulnerabilities early:
-- **Checkov** (IaC scanning) — Detect misconfigurations before infrastructure exists
-- **Kube-score** (K8s manifests) — Validate security best practices in YAML
-- **Trivy** (Container images) — Scan for CVEs before pushing to registry
+> *Same Kubernetes cluster, zero hardcoding. The entire 5-tier application is packaged into a single Helm chart with all configuration centralized in one `values.yaml`.*
 
-✅ **Least Privilege:** Use IRSA (IAM Roles for Service Accounts) in EKS to grant permissions only to specific Pods, not the whole node.
+**📖 [Full Phase 5.2 Documentation →](5.2-Application-Packaging-and-Templating-with-Helm/README.md)**
+
+### What Changed from Phase 5.1
+
+```
+Phase 5.1 → kubectl apply -f kubernetes/        (12 static YAML files, hardcoded values)
+Phase 5.2 → helm upgrade --install eprofile     (1 chart, 1 values.yaml, full templating)
+```
+
+### Helm Secrets — Automatic Encoding
+
+The `echo -n | base64` corruption bug that broke MySQL auth in Phase 5.1 is eliminated entirely:
 
 ```yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: vproapp
-  annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/vproapp-role
+# templates/db-secrets.yaml
+data:
+  root-password: {{ .Values.db.rootPassword | b64enc | quote }}
+  username:      {{ .Values.db.username     | b64enc | quote }}
+  password:      {{ .Values.db.password     | b64enc | quote }}
 ```
 
-✅ **No Hardcoded Secrets:** Never commit secrets. Use:
-- **AWS Secrets Manager** with External Secrets Operator
-- **AWS Parameter Store** with automatic K8s Secret sync
-- **GitHub Secrets** for CI/CD credentials (encrypted at rest)
+Plain text in `values.yaml`, correctly encoded at render time — no manual base64, no newline corruption.
+
+### Chart Structure
+
+```
+eprofile-chart/
+├── Chart.yaml
+├── values.yaml          ← single source of truth
+└── templates/
+    ├── db-pv.yaml  /  db-pvc.yaml  /  db-secrets.yaml  /  db-statefulset.yaml
+    ├── rabbitmq-deployment.yaml  /  rabbitmq-service.yaml
+    ├── memcached-deployment.yaml  /  memcached-service.yaml
+    ├── tomcat-deployment.yaml  /  tomcat-service.yaml
+    └── ingress.yaml
+```
 
 ---
 
-### 3. Kubernetes Orchestration
+## ☸️ Phase 5.1 — Self-Managed Kubernetes on EC2
 
-✅ **Managed > Self-Managed:** Use EKS for production to avoid the heavy lift of managing the Control Plane.
+> *No EKS. No managed control plane. A real Kubernetes cluster running on a single EC2 instance — fully provisioned by Terraform, fully configured by Ansible, with persistent MySQL storage backed by a real EBS volume.*
 
-| Aspect | Self-Managed (Phase 5.1) | EKS (Phase 6.1) |
-|--------|----------------------|-----------------|
-| Control Plane | You manage | AWS manages |
-| Updates | Manual, risky | Automated, rolling |
-| High Availability | Complex setup | Built-in |
-| Cost | Higher ops overhead | Higher compute cost |
-| Learning | Invaluable | Production-ready |
+**📖 [Full Phase 5.1 Documentation →](5.1-Self-Managed-Kubernetes-on-EC2/README.md)**
 
-✅ **Helm is Mandatory:** Avoid raw `kubectl apply` in production. Use Helm for:
-- Versioning and release management
-- Built-in rollback capabilities
-- Environment-specific values (dev/prod)
-- Dependency management
+### Architecture
 
-✅ **Resource Limits:** Always define `requests` and `limits` for CPU/RAM to prevent resource starvation.
+<div align="center">
+  <img src="media/k8s/strata_ops_k8s_architecture (1).png" alt="Self-Managed K8s Architecture" width="750"/>
+  <p><i>Full self-managed Kubernetes architecture — IaC layer, EC2 + EBS, Minikube cluster, all K8s workloads, and persistent storage chain</i></p>
+</div>
+
+### The Automation Flow
+
+```
+terraform apply  →  EC2 + EBS + VPC + SG + auto-generates ansible/inventory.ini
+        │
+        ▼
+ansible-playbook  →  Docker → Minikube → kubectl → all manifests → systemd port-forward service
+        │
+        ▼
+kubectl get pods  →  All 4 pods Running 1/1, 0 restarts
+```
+
+### The Full EBS → PV → PVC → MySQL Storage Chain
+
+```
+EBS Volume (2GiB) attached as /dev/sdh
+  └── Nitro NVMe rename → /dev/nvme1n1
+       └── Ansible formats + mounts → /mnt/vprofile-db
+            └── K8s PersistentVolume (storageClass: manual, Retain policy)
+                 └── PVC → MySQL StatefulSet → /var/lib/mysql
+```
+
+### Engineering Challenges Solved
+
+| Problem | Root Cause | Solution |
+|---------|-----------|----------|
+| EBS not found | Nitro NVMe renames `/dev/sdh` → `nvme1n1` | Hardcoded correct kernel name |
+| MySQL auth failure | `echo \| base64` appends `\n` | Always `echo -n` |
+| Docker group not applying | Group change needs new session | `meta: reset_connection` in Ansible |
+| Port-forward dies on disconnect | Foreground process | Registered as systemd service |
+| App crashes before DB ready | Race condition | `initContainers` with `nc` probes |
+| Ansible runs twice, reformats EBS | Not idempotent | `filesystem` module handles it natively |
+
+---
+
+## 🐳 Phase 4.2 — ECS Fargate + Datadog APM
+
+> *Containerized. Serverless. Fully observed. The application runs on ECS Fargate with a 6-stage GitHub Actions pipeline — Trivy scanning at both code and image level, GitHub Advanced Security integration, and Datadog APM with distributed tracing, JVM metrics, and log routing via Firelens.*
+
+**📖 [Full Phase 4.2 Documentation →](4.2-Docker-Cloud-Native-Serverless-with-Datadog/README.md)**
+
+### Architecture
+
+<div align="center">
+  <img src="media/Docker-ECS/diagram.png" alt="ECS Fargate Architecture" width="750"/>
+  <p><i>ECS Fargate architecture — VPC, ALB, private subnets, managed data services, and the full Datadog observability sidecar pattern</i></p>
+</div>
+
+### The CI/CD Pipeline
+
+<div align="center">
+  <img src="media/Docker-ECS/End-to-End_DevSecOps_CICD_Pipeline.png" alt="ECS DevSecOps Pipeline" width="750"/>
+  <p><i>6-stage GitHub Actions pipeline — 8m 45s from git push to live ECS deployment with full security scanning</i></p>
+</div>
+
+### Pipeline Stages
+
+```
+git push → main
+  │
+  ├── 1. Get SSM Params         15s  ← ECR, ECS names pulled at runtime (zero hardcoding)
+  ├── 2. Trivy Code + Config    1m11s ← FS scan + Dockerfile/Terraform misconfiguration scan
+  ├── 3. Docker Build           1m44s ← Multi-stage (Maven → Tomcat + Datadog Java agent)
+  ├── 4. Trivy Image Scan       54s  ← Full image layer CVE scan → SARIF → GitHub Security
+  ├── 5. Push to ECR            45s  ← Tagged with git SHA + latest
+  └── 6. Deploy to ECS          3m26s ← Force new deployment + wait-for-service-stability
+```
+
+### Three Trivy Scan Types
+
+```
+Scan 1: trivy fs .              → pom.xml, Maven dependencies, Java CVEs
+Scan 2: trivy config .          → Dockerfile misconfigs, Terraform security issues
+Scan 3: trivy image <ecr-image> → OS packages, all image layers
+```
+All results → SARIF → GitHub Advanced Security tab with full CVE traceability.
+
+### ECS Task — 3 Sidecar Containers
+
+```
+ECS Fargate Task (1024 CPU / 2048 MB)
+├── datadog-log-router  (64 CPU / 128 MB)   ← Fluent Bit: routes stdout → Datadog Logs
+├── datadog-agent       (256 CPU / 512 MB)  ← Collects infrastructure metrics + APM traces
+└── vproapp             (512 CPU / 1024 MB) ← Tomcat + Datadog Java agent (unix socket APM)
+```
+
+Shared `dd-sockets` volume allows APM traces to flow via unix socket — faster and more reliable than network.
+
+### Observability Stack
+
+| Signal | Tool | What is Captured |
+|--------|------|-----------------|
+| **APM Traces** | Datadog Agent (unix socket) | Every HTTP request end-to-end, p95 latency, error rate |
+| **JVM Metrics** | Datadog Java Agent | Heap, Non-Heap, GC Old/New Gen, Thread count, Classes loaded |
+| **Logs** | Firelens (Fluent Bit) | Structured container stdout → Datadog Logs Explorer |
+| **Infrastructure** | Datadog Agent | CPU, Memory, Network per container |
+
+---
+
+## 🐋 Phase 4.1 — Docker Compose + Ansible
+
+> *The first containerization layer. Five services, two Docker networks, two persistent volumes — deployed to a fresh AWS EC2 instance with zero manual SSH. Ansible automates everything after Terraform provisions the instance.*
+
+**📖 [Full Phase 4.1 Documentation →](4.1-Docker-Compose-Lift-Shift-with-Ansible/README.md)**
+
+### Architecture
+
+<div align="center">
+  <img src="media/Docker-compose/The-Big-Picture-Infrastructure-App-Architecture.png" alt="Docker Compose Architecture" width="750"/>
+  <p><i>Full infrastructure view — developer machine through Terraform, Ansible automation, and the Docker Compose stack running on EC2</i></p>
+</div>
+
+### The Two-File Strategy
+
+```
+docker-compose.yml       ← Development: builds images from source (requires source code)
+docker-compose.prod.yml  ← Production: pulls pre-built images from Docker Hub ✅
+                                        (Ansible ships this file only — zero source code on server)
+```
+
+### Ansible Playbook — 7 Tasks, Full Automation
 
 ```yaml
-resources:
-  requests:
-    cpu: "100m"
-    memory: "128Mi"
-  limits:
-    cpu: "500m"
-    memory: "512Mi"
+1. Update APT + install dependencies
+2. Add Docker GPG key
+3. Add Docker APT repository
+4. Install docker-ce + docker-compose-plugin
+5. Add ubuntu user to docker group
+6. Copy docker-stack/ folder to EC2
+7. docker compose -f docker-compose.prod.yml up -d
 ```
 
----
+Terraform writes the EC2 IP directly into `ansible/inventory.ini` via `local_file` — zero manual edits between `terraform apply` and `ansible-playbook`.
 
-### 4. CI/CD Engineering
-
-✅ **Ephemeral Runners:** Prefer GitHub Actions runners over persistent Jenkins servers for:
-- Better security (no long-lived infrastructure)
-- Lower cost (pay-per-execution)
-- Easier maintenance (no VM to manage)
-
-✅ **Immutable Artifacts:** Never rebuild the same tag. Use:
-- Git SHA tags for full traceability
-- Semantic versioning for releases
-- Immutable tags in ECR to prevent overwrites
+### Dependency-Aware Health Checks
 
 ```yaml
-- name: Push to ECR
-  run: |
-    docker tag vproapp:${{ github.sha }} $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
-    docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+vproapp:
+  depends_on:
+    vprodb:     { condition: service_healthy }   # mysqladmin ping
+    vprocache01: { condition: service_healthy }  # bash /dev/tcp probe (no nc binary)
+    vpromq01:   { condition: service_healthy }   # rabbitmq-diagnostics ping
 ```
 
-✅ **Secrets Rotation:** Use OIDC for temporary credentials instead of long-lived keys.
+**Notable fix:** Memcached's minimal Alpine image has no `nc` binary. Pure bash TCP probe used instead:
+```yaml
+test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/11211' || exit 1"]
+```
+
+| Metric | Value |
+|--------|-------|
+| EC2 Instances | **1** (vs 5 in Phase 2) |
+| Monthly Cost | **~$20** (1× t2.medium) |
+| Manual SSH Required | **Zero** |
+| Ansible Result | `ok=8 changed=7 failed=0` |
 
 ---
 
-### 5. Observability & Monitoring
+## ☁️ Phase 3 — AWS Cloud-Native PaaS + DevSecOps
 
-✅ **Multi-Layer Observability:**
-- **Metrics**: Prometheus/CloudWatch for infrastructure and application health
-- **Logs**: Centralized logging (CloudWatch Logs, ELK, Datadog)
-- **Traces**: Distributed tracing (X-Ray, Jaeger) for request flows
-- **Alerts**: Automated alerting with SNS/PagerDuty
+> *One `terraform apply`. Elastic Beanstalk, RDS, ElastiCache, Amazon MQ, AWS CodePipeline — and three independent security gates standing between code and production. Zero hardcoded credentials. KMS-encrypted secrets generated at apply time.*
 
-✅ **Key Metrics to Monitor:**
-- Pod restart counts (stability indicator)
-- Node resource utilization (scaling trigger)
-- Application error rates (health indicator)
-- Deployment success rate (pipeline health)
+**📖 [Full Phase 3 Documentation →](3-AWS-Cloud-Native-with-DevSecOps/README.md)**
+
+### Architecture
+
+<div align="center">
+  <img src="media/cloud-native/architecture-diagram.png" alt="Cloud Native Architecture" width="750"/>
+  <p><i>Cloud-native PaaS architecture — CodePipeline with 3 security gates, Elastic Beanstalk auto-scaling group, and all managed data services in private subnets</i></p>
+</div>
+
+### Network Design
+
+<div align="center">
+  <img src="media/cloud-native/Network-design.png" alt="Cloud Native Network Design" width="750"/>
+  <p><i>Eprofile-VPC (10.0.0.0/16) across 3 Availability Zones — 3 public + 3 private subnets, all backend services unreachable from internet</i></p>
+</div>
+
+### Three Security Gates
+
+```
+git push
+    │
+    ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    SECURITY STAGE (CodeBuild)                    │
+│                                                                  │
+│  GATE 1: TruffleHog  ── 507 chunks scanned, 0 verified secrets ✅│
+│                │                                                 │
+│  GATE 2: tfsec ── Scans ./terraform/ for HIGH findings  ⚠️ logged│
+│                │                                                 │
+│  GATE 3: SonarCloud ── 24,000 lines analyzed, Quality Gate API  │
+│                │                                                 │
+└────────────────┼─────────────────────────────────────────────────┘
+                 │ All gates pass
+                 ▼
+    BUILD → DEPLOY (Elastic Beanstalk, 74 seconds)
+```
+
+### AWS CodeArtifact — Private Maven Proxy
+
+All Maven dependencies are proxied through a private CodeArtifact repository — builds are faster and independent of Maven Central availability. Authentication uses short-lived IAM tokens, never stored credentials.
+
+### SSM Secrets Architecture
+
+```
+/strata-ops/mysql-password       ← random_password (Terraform), KMS-encrypted
+/strata-ops/rabbitmq-password    ← random_password (Terraform), KMS-encrypted
+/strata-ops/sonar-token          ← injected at pipeline runtime only
+/strata-ops/sonar-org            ← String
+/strata-ops/sonar-project        ← String
+```
+
+Terraform provisions 67 AWS resources in ~12 minutes. `terraform destroy` removes everything cleanly.
 
 ---
 
-### 6. Cost Optimization
+## ⚙️ Phase 2 — AWS Lift & Shift + CI/CD + Monitoring
 
-✅ **Right-Sizing:**
-- Use Compute Optimizer recommendations
-- Monitor actual vs. requested resources
-- Scale down during non-business hours
+> *The first cloud phase. Ten EC2 instances, a complete Jenkins CI/CD pipeline with security scanning and quality gates, Prometheus + Grafana observability — all provisioned by Terraform and configured by EC2 user-data scripts coordinated through SSM Parameter Store.*
 
-✅ **Spot Instances:** Use AWS Spot Instances for non-critical workloads (up to 70% savings).
+**📖 [Full Phase 2 Documentation →](2-AWS-Lift-Shift-with-CICD-Monitoring/README.md)**
 
-✅ **Reserved Instances:** Purchase RIs for predictable production workloads.
+### Architecture
+
+<div align="center">
+  <img src="media/Lift-shift/digram.png" alt="Lift and Shift Architecture" width="750"/>
+  <p><i>AWS Lift & Shift architecture — 3 independent layers: Application Tier, CI/CD Pipeline, and Observability, wired through Route53 Private DNS and SSM Parameter Store</i></p>
+</div>
+
+### The 7-Stage Jenkins Pipeline
+
+```
+┌────────┐   ┌───────┐   ┌──────┐   ┌──────────────┐
+│  Test  │──▶│ OWASP │──▶│ SAST │──▶│ Quality Gate │
+│ mvn    │   │ Dep.  │   │Sonar │   │  abortPipeline│
+│ test   │   │ Check │   │Qube  │   │  on failure  │
+└────────┘   └───────┘   └──────┘   └──────┬───────┘
+                                            │ PASS only
+                                            ▼
+                           ┌─────────┐  ┌──────────────┐  ┌────────────┐
+                           │ Package │─▶│ Nexus Upload │─▶│ SSH Deploy │──▶ Slack
+                           │ .war    │  │ versioned by │  │ to Tomcat  │
+                           └─────────┘  │  BUILD_ID    │  └────────────┘
+                                        └──────────────┘
+```
+
+**Quality Gate is a hard gate** — `abortPipeline: true` prevents any deployment from code that does not pass SonarQube's quality bar.
+
+### Zero-Touch Jenkins — JCasC
+
+Jenkins is never configured manually. The entire state lives in `jenkins.yaml` committed to Git:
+- Users, credentials, tool installations
+- Pipeline definitions
+- SonarQube and Slack integrations
+- SSH keys fetched from SSM and appended to YAML before start
+
+### SSM Wait Loop — Boot Coordination
+
+```bash
+wait_for_ssm_param() {
+  while true; do
+    VAL=$(aws ssm get-parameter --name "$1" --with-decryption ...)
+    if [[ "$VAL" != "pending" && -n "$VAL" ]]; then echo "$VAL" && break; fi
+    sleep 10
+  done
+}
+NEXUS_PASS=$(wait_for_ssm_param "/strata-ops/nexus-password")
+SONAR_TOK=$(wait_for_ssm_param "/strata-ops/sonar-token")
+```
+
+Jenkins polls SSM until Nexus and SonarQube have written their real values. SSM becomes the coordination bus for the entire boot sequence across 10 instances.
+
+### Private Route53 DNS — Decoupling Layer
+
+All internal services use hostnames, never IP addresses. If the MySQL server is replaced and gets a new IP, only the Route53 A record changes — Tomcat config is untouched.
+
+| DNS Record | Service | Port |
+|-----------|---------|------|
+| `app01.eprofile.in` | Tomcat | 8080 |
+| `db01.eprofile.in` | MySQL | 3306 |
+| `jenkins.eprofile.in` | Jenkins | 8080 |
+| `nexus.eprofile.in` | Nexus | 8081 |
+| `sonarqube.eprofile.in` | SonarQube | 9000 |
+
+### Observability
+
+Prometheus scrapes Node Exporter on port 9100 from all 5 application servers every 15 seconds. The Node Exporter Security Group only accepts traffic from the Prometheus Security Group — no other source can query metrics. Grafana's Prometheus datasource is provisioned automatically on first boot via YAML — no manual "Add datasource" step.
 
 ---
 
-## 📂 Repository Structure
+## 🏠 Phase 1 — Local Foundation
 
-```text
+> *Where it all begins. No automation, no shortcuts — manual provisioning of all 5 services across 5 Vagrant VMs. Understanding every command, every configuration, and every connection by hand is the prerequisite that makes every subsequent phase meaningful.*
+
+- **📖 [Manual Provisioning Documentation →](1.1-Local-Setup-Manual/README.md)**
+- **📖 [Automated Provisioning Documentation →](1.2-Local-Setup-Automated-Vagrand/README.md)**
+
+### Setup Order — The Golden Rule
+
+```
+1️⃣ MySQL (db01)      →  Database foundation
+2️⃣ Memcached (mc01)  →  Caching layer
+3️⃣ RabbitMQ (rmq01)  →  Message broker
+4️⃣ Tomcat (app01)    →  Application server
+5️⃣ Nginx (web01)     →  Frontend gateway (last — depends on everything above)
+```
+
+**The automated Vagrantfile** (`1.2`) runs all 5 provisioning scripts on `vagrant up`, cutting setup from 45–60 minutes to 10–15 minutes while teaching IaC principles.
+
+### What This Phase Teaches
+
+- Service dependencies and initialization order
+- Manual firewall rules and network configuration
+- Database schema initialization
+- Reverse proxy configuration
+- The debugging skills that save you when automation fails
+
+---
+
+## 📈 Evolution Metrics
+
+### Deployment Time — 93% Reduction
+
+```
+Phase 1  (Manual)      ████████████████████████████████████████  45–60 min
+Phase 2  (Jenkins)     ████████████████████                       ~20 min
+Phase 3  (CodePipeline)████████████████                           ~15 min
+Phase 4.1 (Ansible)    ████████████                               ~12 min
+Phase 4.2 (ECS)        ████████                                   ~8 min
+Phase 5.1 (K8s Manual) █████████████████████████                  ~25 min
+Phase 5.2 (Helm)       ██████████                                 ~10 min
+Phase 6.1 (EKS+GitOps) ███                                        ~3 min  ✅
+```
+
+### Manual Steps — From 15+ to Zero
+
+| Phase | Manual Steps | Automation Level |
+|-------|-------------|-----------------|
+| 1 | 15+ | 0% — fully manual |
+| 2 | 8 | ~40% — IaC + scripts |
+| 3 | 5 | ~70% — managed services |
+| 4.1 | 2 | ~85% — Ansible-driven |
+| 4.2 | 2 | ~95% — CI/CD-driven |
+| 5.1 | 4 | ~75% — K8s learning overhead |
+| 5.2 | 2 | ~90% — Helm-templated |
+| **6.1** | **0** | **100% — Full GitOps** |
+
+### Security Posture Progression
+
+| Phase | Secrets | Scanning | Auth |
+|-------|---------|----------|------|
+| 1 | Hardcoded | None | SSH Keys |
+| 2 | SSM SecureString | OWASP + SonarQube | IAM Instance Profile |
+| 3 | SSM + KMS | TruffleHog + tfsec + SonarCloud | IAM + CodeBuild Role |
+| 4.2 | SSM + ECS Secrets | Trivy × 3 + SARIF | GitHub Secrets |
+| **6.1** | **IRSA + OIDC** | **Checkov + Kube-score + Trivy + SARIF** | **OIDC per-job** |
+
+---
+
+## 📁 Repository Structure
+
+```
 Strata-Ops/
 │
-├── README.md                                        # 📍 Master Documentation (This File)
+├── README.md                                              ← You are here
 │
-├── 1-Local-Foundation/                              # Phase 1: VirtualBox & Vagrant Setup
-│   ├── 1.1-Local-Setup-Manual/
-│   │   ├── README.md
-│   │   └── Vagrantfile
-│   │
-│   └── 1.2-Local-Setup-Automated-Vagrand/
-│       ├── README.md
-│       ├── Vagrantfile
-│       ├── mysql.sh
-│       ├── memcache.sh
-│       ├── rabbitmq.sh
-│       ├── tomcat_ubuntu.sh
-│       └── nginx.sh
+├── 1.1-Local-Setup-Manual/
+│   ├── README.md
+│   └── Vagrantfile
 │
-├── 2-AWS-Lift-And-Shift/                            # Phase 2: EC2, Jenkins, Terraform
+├── 1.2-Local-Setup-Automated-Vagrand/
+│   ├── README.md
+│   ├── Vagrantfile
+│   ├── mysql.sh  /  memcache.sh  /  rabbitmq.sh
+│   ├── tomcat_ubuntu.sh  /  nginx.sh
+│   └── application.properties
+│
+├── 2-AWS-Lift-Shift-with-CICD-Monitoring/
+│   ├── README.md
+│   ├── Jenkinsfile
+│   ├── terraform/
+│   │   ├── main.tf  /  vpc.tf  /  secgrp.tf  /  iam.tf  /  ssm.tf
+│   │   └── templates/
+│   └── userdata-EC2/
+│       ├── jenkins.sh  /  jenkins.yaml
+│       ├── nexus.sh  /  sonar.sh
+│       ├── tomcat_ubuntu.sh  /  nginx.sh
+│       ├── mysql.sh  /  rabbitmq.sh  /  memcache.sh
+│       └── setup-prometheus.sh
+│
+├── 3-AWS-Cloud-Native-with-DevSecOps/
+│   ├── README.md
+│   ├── buildspec-build.yml  /  buildspec-sec.yml
+│   └── terraform/
+│       ├── vpc.tf  /  secgrp.tf  /  SSM.tf
+│       ├── Data-services.tf  /  bean-env.tf
+│       ├── CodeArtifact.tf  /  code-build.tf  /  code-pipline.tf
+│       └── cloudwatch.tf
+│
+├── 4.1-Docker-Compose-Lift-Shift-with-Ansible/
 │   ├── README.md
 │   ├── terraform/
-│   │   ├── main.tf
-│   │   ├── vpc.tf
-│   │   ├── security_groups.tf
-│   │   ├── asg.tf
-│   │   ├── rds.tf
-│   │   └── variables.tf
-│   └── jenkins/
-│       └── Jenkinsfile
-│
-├── 3-Cloud-Native-PaaS/                             # Phase 3: Elastic Beanstalk, CodePipeline
-│   ├── README.md
-│   ├── cloudformation/
-│   │   └── beanstalk-template.yaml
-│   └── buildspec.yml
-│
-├── 4.1-Docker-Compose-Ansible/                      # Phase 4.1: Containerization & Ansible
-│   ├── README.md
-│   ├── Dockerfile
-│   ├── docker-compose.yml
 │   ├── ansible/
 │   │   ├── playbook.yml
-│   │   └── roles/
-│   └── .dockerignore
+│   │   └── inventory.ini         ← auto-generated by Terraform
+│   └── docker-stack/
+│       ├── Docker-files/
+│       │   ├── db/Dockerfile
+│       │   ├── nginx/Dockerfile
+│       │   └── tomcat/Dockerfile  ← multi-stage build
+│       ├── docker-compose.yml
+│       └── docker-compose.prod.yml
 │
-├── 4.2-ECS-Fargate-GitHub-Actions/                  # Phase 4.2: Serverless Containers
+├── 4.2-Docker-Cloud-Native-Serverless-with-Datadog/
 │   ├── README.md
+│   ├── Dockerfile-with-Datadog   ← production: includes Datadog Java APM agent
 │   ├── terraform/
-│   │   ├── ecs.tf
-│   │   ├── ecr.tf
-│   │   ├── alb.tf
-│   │   └── variables.tf
+│   │   ├── ECS.tf  /  ALB.tf  /  ECR.tf
+│   │   ├── Data-services.tf  /  IAM.tf  /  SSM.tf
+│   │   └── templates/bastion-init.sh
 │   └── .github/workflows/
-│       └── 4.2-ECS-CICD.yml
+│       └── docker-image.yml
 │
-├── 5.1-Self-Managed-Kubernetes-on-EC2/              # Phase 5.1: Deep Dive K8s
+├── 5.1-Self-Managed-Kubernetes-on-EC2/
 │   ├── README.md
 │   ├── terraform/
-│   │   ├── main.tf
-│   │   ├── security_groups.tf
-│   │   └── variables.tf
-│   ├── scripts/
-│   │   ├── master-setup.sh
-│   │   ├── worker-setup.sh
-│   │   └── network-setup.sh
-│   └── manifests/
-│       └── application.yaml
+│   │   ├── vpc.tf  /  ec2.tf  /  ebs.tf  /  secgrp.tf
+│   ├── ansible/
+│   │   ├── playbook.yml
+│   │   └── inventory.ini         ← auto-generated by Terraform
+│   └── kubernetes/
+│       ├── db/     ← PV, PVC, Secret, StatefulSet, Service
+│       ├── mq/     ← Secret, Deployment, Service
+│       ├── cache/  ← Deployment, Service
+│       ├── app/    ← Deployment (+ initContainers), Service
+│       └── ingress/
 │
-├── 5.2-Application-Packaging-and-Templating-with-Helm/  # Phase 5.2: Helm Charts
+├── 5.2-Application-Packaging-and-Templating-with-Helm/
 │   ├── README.md
+│   ├── terraform/
+│   ├── ansible/
 │   └── eprofile-chart/
-│       ├── Chart.yaml
-│       ├── values.yaml
-│       ├── values-prod.yaml
-│       └── templates/
-│           ├── deployment.yaml
-│           ├── service.yaml
-│           ├── ingress.yaml
-│           ├── configmap.yaml
-│           └── _helpers.tpl
+│       ├── Chart.yaml  /  values.yaml  /  .helmignore
+│       └── templates/  ← 13 templated manifests
 │
-├── 6.1-EKS-Provisioning-with-Push-Based-CICD/       # Phase 6.1: Production EKS
+├── 6.1-EKS-Provisioning-with-Push-Based-CICD/
 │   ├── README.md
 │   ├── terraform/
-│   │   ├── main.tf
-│   │   ├── eks.tf
-│   │   ├── iam.tf
-│   │   ├── ecr.tf
-│   │   ├── alb.tf
-│   │   ├── oidc.tf
-│   │   └── variables.tf
-│   ├── eprofile-chart/
-│   │   ├── Chart.yaml
-│   │   ├── values.yaml
-│   │   └── templates/
-│   │       ├── deployment.yaml
-│   │       ├── service.yaml
-│   │       ├── ingress.yaml
-│   │       ├── configmap.yaml
-│   │       ├── serviceaccount.yaml
-│   │       └── _helpers.tpl
-│   └── scripts/
-│       ├── setup-oidc.sh
-│       └── deploy.sh
+│   │   ├── eks.tf  /  iam.tf  /  oidc.tf
+│   │   ├── ecr.tf  /  alb.tf  /  vpc.tf
+│   │   └── variables.tf  /  output.tf
+│   └── eprofile-chart/
+│       ├── Chart.yaml  /  values.yaml
+│       └── templates/
+│           ├── deployment.yaml  /  service.yaml  /  ingress.yaml
+│           ├── configmap.yaml  /  serviceaccount.yaml
+│           └── _helpers.tpl
 │
 ├── .github/
 │   └── workflows/
 │       ├── 4.2-ECS-CICD.yml
 │       └── 6.1-EKS-CICD.yml
 │
-├── media/                                           # 🖼️ Architecture Diagrams & Screenshots
-│   ├── Lift-shift/
-│   │   ├── local-arch.png
-│   │   └── lift-shift-arch.png
-│   ├── cloud-native/
-│   │   └── cloud-native-arch.png
-│   ├── Docker-compose/
-│   │   └── docker-compose-arch.png
-│   ├── Docker-ECS/
-│   │   └── End-to-End_DevSecOps_CICD_Pipeline.png
-│   ├── k8s/
-│   │   └── strata_ops_k8s_architecture.png
-│   └── EKS/
-│       ├── strata_ops_architecture.png
-│       ├── aws-alb-provisioned.png
-│       ├── aws-ecr-immutable-image-tags.jpg.png
-│       ├── aws-eks-cluster-ready.png
-│       ├── github-actions-pipeline-success.png
-│       ├── github-advanced-security-sarif.png
-│       ├── kubectl-pods-ingress-status.png
-│       ├── vprofile-app-live-on-eks.png
-│       ├── login-vprofile-app-live-on-eks.png
-│       ├── cache-vprofile-app-live-on-eks.png
-│       └── data-from-cache-vprofile-app-live-on-eks.png
-│
-└── .gitignore                                       # Version control exclusions
-
+└── media/
+    ├── Lift-shift/        ← Phase 2 diagrams
+    ├── cloud-native/      ← Phase 3 diagrams
+    ├── Docker-compose/    ← Phase 4.1 diagrams
+    ├── Docker-ECS/        ← Phase 4.2 diagrams
+    ├── k8s/               ← Phase 5.1 diagrams
+    └── EKS/               ← Phase 6.1 diagrams
 ```
 
 ---
 
-## 🎓 What This Demonstrates
+## 🛠️ Technology Stack
 
-### **Infrastructure Engineering**
-- Manual to fully automated provisioning progression
-- Multi-tier VPC design with network isolation
-- Managed vs. self-hosted trade-off analysis
-- Serverless compute with ECS Fargate
-- Managed Kubernetes (EKS) at enterprise scale
-- Infrastructure as Code with Terraform (100% reproducible)
+<div align="center">
 
-### **DevSecOps**
-- Shift-left security with vulnerability scanning before every build
-- Zero hardcoded credentials across all phases using AWS Secrets Manager
-- SARIF integration with GitHub Advanced Security dashboard
-- Multi-layer scanning: IaC (Checkov), Manifests (Kube-score), Images (Trivy)
-- OIDC-based authentication (temporary, rotated credentials)
-- Immutable container image tags for supply chain security
+| Category | Technologies |
+|:---------|:-------------|
+| **Cloud** | AWS (EC2, EKS, ECS Fargate, RDS, ElastiCache, Amazon MQ, Beanstalk, Route53, SSM, ALB) |
+| **IaC** | Terraform (v1.6+), Vagrant |
+| **Configuration** | Ansible, EC2 user-data scripts |
+| **Containers** | Docker (multi-stage builds), Docker Compose |
+| **Orchestration** | Kubernetes (Minikube + EKS v1.29), Helm v3 |
+| **CI/CD** | Jenkins (JCasC), AWS CodePipeline, GitHub Actions |
+| **Security** | Trivy, Checkov, Kube-score, TruffleHog, tfsec, SonarQube, SonarCloud, OWASP |
+| **Auth & Secrets** | OIDC, IRSA, AWS SSM Parameter Store, AWS Secrets Manager |
+| **Observability** | Prometheus, Grafana, CloudWatch, Datadog APM, Fluent Bit / Firelens |
+| **Artifact Management** | Nexus, AWS CodeArtifact, Amazon ECR |
+| **Networking** | VPC, Security Groups, Route53 Private DNS, ALB, NAT Gateway |
+| **Application** | Java (Spring MVC), Tomcat 10, Maven, MySQL, Memcached, RabbitMQ, Nginx |
 
-### **CI/CD Engineering**
-- Jenkins with JCasC (entire state in version control)
-- AWS CodePipeline with quality gates blocking bad code
-- GitHub Actions with runtime SSM parameter fetching
-- Pipeline-owned secrets (never in code)
-- Multi-stage deployments with automatic rollback
-- Health checks and smoke tests before production
-
-### **Observability**
-- Prometheus + Grafana for infrastructure metrics
-- CloudWatch + SNS for managed platform alerts
-- Datadog full-stack with APM traces + JVM metrics + log routing
-- Application-level metrics (response time, error rates, throughput)
-- Infrastructure-level metrics (CPU, memory, disk, network)
-- Distributed tracing across all microservices
-
-### **Container Engineering**
-- Multi-stage Docker builds for optimized images
-- Health-aware container dependency chains
-- Sidecar pattern for observability injection
-- Shared unix socket volumes for inter-container APM communication
-- Container registry best practices (immutable tags, scanning)
-- Network policies and service mesh basics
-
----
-
-## 📖 Getting Started
-
-### New to DevOps?
-Start with **Phase 1** → **Phase 2** → **Phase 3** for foundational understanding.
-
-### Interested in Kubernetes?
-Go **Phase 4.1** → **Phase 5.1** → **Phase 5.2** → **Phase 6.1** for K8s progression.
-
-### Want Production-Ready?
-Jump to **Phase 6.1** (but understand the foundation first).
-
-### Container-First Approach?
-Start **Phase 4.1** → **Phase 4.2** → **Phase 6.1** (skipping traditional infrastructure).
-
----
-
-## 🤝 Contributing
-
-This project is open for:
-- 🐛 Bug reports and fixes
-- 📝 Documentation improvements
-- 🎨 Architecture diagram updates
-- 🔍 Security enhancements
-- ✨ Additional phase implementations (6.2: ArgoCD, Phase 7: Multi-cloud)
-
----
-
-## 📝 License
-
-This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file for details.
+</div>
 
 ---
 
 <div align="center">
 
----
-
-*Each phase is a complete, deployable, production-grade system.*  
-*Each layer builds on everything that came before it.*  
-*This is how infrastructure expertise is built — from the core up.*
-
----
-
-## 🌋 Strata-Ops
-
-**Built layer by layer by [Amr Medhat Amer](https://github.com/amramer101)**
+**🌋 Built layer by layer by [Amr Medhat Amer](https://github.com/amramer101) — Cloud & DevSecOps Engineer**
 
 [![GitHub](https://img.shields.io/badge/GitHub-amramer101%2FStrata--Ops-181717?style=for-the-badge&logo=github)](https://github.com/amramer101/Strata-Ops)
-[![Email](https://img.shields.io/badge/Email-Connect-0078D4?style=for-the-badge&logo=microsoft-outlook)](mailto:your-email@example.com)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/your-profile/)
 
-**Last Updated:** 2026-04-29  
-**Status:** Production Ready ✅
+*One codebase. Eight architectural layers. Zero shortcuts.*
 
 </div>
