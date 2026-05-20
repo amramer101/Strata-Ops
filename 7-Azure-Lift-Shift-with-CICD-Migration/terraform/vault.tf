@@ -42,7 +42,6 @@ resource "azurerm_key_vault_secret" "mysql_password" {
   key_vault_id = azurerm_key_vault.eprofile_kv.id
 }
 
-
 # (RabbitMQ) -----------------------------------------------------------
 
 resource "random_password" "rmq_password" {
