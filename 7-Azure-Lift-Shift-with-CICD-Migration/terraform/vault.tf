@@ -1,7 +1,7 @@
-# 1. جلب بيانات الهوية الحالية للـ Service Principal (عشان الصلاحيات)
+# Service Principal for Terraform to access Azure resources
 data "azurerm_client_config" "current" {}
 
-# 2. إنشاء الـ Azure Key Vault (المخزن الرئيسي للأسيرار)
+# Azure Key Vault
 resource "azurerm_key_vault" "eprofile_kv" {
   name                        = "eprofile-kv-${var.region}-01"
   location                    = var.region
@@ -12,7 +12,7 @@ resource "azurerm_key_vault" "eprofile_kv" {
   soft_delete_retention_days  = 7
   purge_protection_enabled    = false
 
-  # الـ Access Policy اللي بتسمح للتيرافورم نفسه بإدارة الأسرار جوه الفولت
+  # Access Policy
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
@@ -24,7 +24,6 @@ resource "azurerm_key_vault" "eprofile_kv" {
 }
 
 # (MySQL / Database) -----------------------------------------------------------
-
 
 resource "random_password" "db_password" {
   length  = 8

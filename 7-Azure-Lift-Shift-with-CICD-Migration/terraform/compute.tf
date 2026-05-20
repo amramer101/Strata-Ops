@@ -50,6 +50,7 @@ resource "azurerm_linux_virtual_machine" "nginx_vm" {
 }
 
 # =======================================================
+
 # Application Server (Private)
 resource "azurerm_network_interface" "app_nic" {
   name                = "app-nic"
@@ -91,6 +92,10 @@ resource "azurerm_linux_virtual_machine" "app_vm" {
 
   # User Script
   custom_data = filebase64("${path.module}/userdata-VMs/tomcat_ubuntu.sh")
+  
+  identity {
+    type = "SystemAssigned"
+  }
 }
 
 # =======================================================

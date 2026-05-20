@@ -15,7 +15,6 @@ variable "resource_group_name" {
 }
 
 ## username variable for MySQL and RabbitMQ
-
 variable "admin_username" {
   default = "adminuser"
 }
