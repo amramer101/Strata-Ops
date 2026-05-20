@@ -1,5 +1,6 @@
 module "avm-res-network-virtualnetwork" {
   source = "Azure/avm-res-network-virtualnetwork/azurerm"
+  version = "0.14.0"
 
   address_space = ["10.0.0.0/16"]
   location      = var.region

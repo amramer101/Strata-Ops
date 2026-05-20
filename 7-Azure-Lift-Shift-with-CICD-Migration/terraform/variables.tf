@@ -6,9 +6,9 @@ variable "tenant_id" {}
 
 ## Region variable
 variable "region" {
-    default = "spaincentral"
+  default = "spaincentral"
 }
 
 variable "resource_group_name" {
-    default = "eprofile-resource-group" 
+  default = "eprofile-resource-group"
 }
