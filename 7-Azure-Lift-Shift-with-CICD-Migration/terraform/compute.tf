@@ -153,6 +153,11 @@ resource "azurerm_linux_virtual_machine" "db_vm" {
     version   = "latest"
   }
 
+  # Managed Identity
+  identity {
+    type = "SystemAssigned"
+  }
+
   # User Script
   custom_data = filebase64("${path.module}/userdata-VMs/mysql.sh")
 }
@@ -237,6 +242,11 @@ resource "azurerm_linux_virtual_machine" "rabbitmq_vm" {
     version   = "latest"
   }
 
+  # Managed Identity
+  identity {
+    type = "SystemAssigned"
+  }
+  
   # User Script
   custom_data = filebase64("${path.module}/userdata-VMs/rabbitmq.sh")
 }
