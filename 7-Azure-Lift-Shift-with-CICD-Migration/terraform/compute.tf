@@ -49,6 +49,12 @@ resource "azurerm_linux_virtual_machine" "nginx_vm" {
   custom_data = filebase64("${path.module}/userdata-VMs/nginx.sh")
 }
 
+# ASG for Nginx
+resource "azurerm_network_interface_application_security_group_association" "nginx_asg_link" {
+  network_interface_id          = azurerm_network_interface.nginx_nic.id
+  application_security_group_id = azurerm_application_security_group.nginx_asg.id
+}
+
 # =======================================================
 
 # Application Server (Private)
@@ -92,10 +98,17 @@ resource "azurerm_linux_virtual_machine" "app_vm" {
 
   # User Script
   custom_data = filebase64("${path.module}/userdata-VMs/tomcat_ubuntu.sh")
-  
+
+  # Managed Identity
   identity {
     type = "SystemAssigned"
   }
+}
+
+# ASG for App Server
+resource "azurerm_network_interface_application_security_group_association" "app_asg_link" {
+  network_interface_id          = azurerm_network_interface.app_nic.id
+  application_security_group_id = azurerm_application_security_group.app_asg.id
 }
 
 # =======================================================

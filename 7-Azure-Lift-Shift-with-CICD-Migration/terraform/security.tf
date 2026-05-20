@@ -54,6 +54,12 @@ resource "azurerm_network_security_group" "nginx_sg" {
   }
 }
 
+# Associate Nginx SG with its Subnet
+resource "azurerm_subnet_network_security_group_association" "nginx_nsg_assoc" {
+  subnet_id                 = module.avm-res-network-virtualnetwork.subnets["subnet1"].id
+  network_security_group_id = azurerm_network_security_group.nginx_sg.id
+}
+
 # ====================================================================
 
 # Application SG
@@ -89,6 +95,12 @@ resource "azurerm_network_security_group" "app_sg" {
   }
 }
 
+# Associate App SG with its Subnet
+resource "azurerm_subnet_network_security_group_association" "app_nsg_assoc" {
+  subnet_id                 = module.avm-res-network-virtualnetwork.subnets["subnet2"].id
+  network_security_group_id = azurerm_network_security_group.app_sg.id
+}
+
 # ====================================================================
 
 # Backend SG 
@@ -122,4 +134,10 @@ resource "azurerm_network_security_group" "backend_sg" {
     source_application_security_group_ids = [azurerm_application_security_group.app_asg.id]
     destination_address_prefix            = "*"
   }
+}
+
+# Associate Backend SG with its Subnet
+resource "azurerm_subnet_network_security_group_association" "backend_nsg_assoc" {
+  subnet_id                 = module.avm-res-network-virtualnetwork.subnets["subnet3"].id
+  network_security_group_id = azurerm_network_security_group.backend_sg.id
 }
