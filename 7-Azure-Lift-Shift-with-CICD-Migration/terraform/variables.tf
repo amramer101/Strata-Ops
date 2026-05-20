@@ -9,6 +9,13 @@ variable "region" {
   default = "spaincentral"
 }
 
+## Resource Group Name variable
 variable "resource_group_name" {
   default = "eprofile-resource-group"
+}
+
+## username variable for MySQL and RabbitMQ
+
+variable "admin_username" {
+  default = "adminuser"
 }
