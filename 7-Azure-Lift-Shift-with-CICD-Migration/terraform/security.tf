@@ -13,20 +13,20 @@ locals {
 resource "azurerm_application_security_group" "nginx_asg" {
   name                = "nginx-asg"
   location            = var.region
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.eprofile_rg.name
 }
 
 resource "azurerm_application_security_group" "app_asg" {
   name                = "app-asg"
   location            = var.region
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.eprofile_rg.name
 }
 
 # Nginx SG
 resource "azurerm_network_security_group" "nginx_sg" {
   name                = "nginx-sg"
   location            = var.region
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.eprofile_rg.name
 
   security_rule {
     name                       = "Allow-SSH-From-MyIP"
@@ -66,7 +66,7 @@ resource "azurerm_subnet_network_security_group_association" "nginx_nsg_assoc" {
 resource "azurerm_network_security_group" "app_sg" {
   name                = "app-sg"
   location            = var.region
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.eprofile_rg.name
 
   # SSH 
   security_rule {
@@ -107,7 +107,7 @@ resource "azurerm_subnet_network_security_group_association" "app_nsg_assoc" {
 resource "azurerm_network_security_group" "backend_sg" {
   name                = "backend-sg"
   location            = var.region
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.eprofile_rg.name
 
   # SSH
   security_rule {

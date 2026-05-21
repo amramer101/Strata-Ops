@@ -4,6 +4,7 @@ resource "azurerm_public_ip" "nginx_pip" {
   location            = var.region
   resource_group_name = azurerm_resource_group.eprofile_rg.name
   allocation_method   = "Static"
+  sku                 = "Standard"
 }
 
 resource "azurerm_network_interface" "nginx_nic" {
