@@ -5,7 +5,7 @@ echo "Starting Tomcat 10 & Java 21 Provisioning..."
 
 apt update -y
 
-# 1. Install Java 21 and AWS CLI
+# 1. Install Java 21
 apt install -y openjdk-21-jdk
 
 # 2. Set JAVA_HOME system-wide
@@ -43,13 +43,13 @@ fi
 # 6. Inject Environment Variables via setenv.sh
 cat > /opt/tomcat10/bin/setenv.sh <<EOF
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-export RDS_HOSTNAME=db01.eprofile.in
+export RDS_HOSTNAME=db.eprofile.local
 export RDS_PORT=3306
 export RDS_DB_NAME=accounts
 export RDS_USERNAME=admin
 export RDS_PASSWORD=${DB_PASS}
-export RABBITMQ_HOSTNAME=rmq01.eprofile.in
-export MEMCACHED_HOSTNAME=mc01.eprofile.in
+export RABBITMQ_HOSTNAME=rabbitmq.eprofile.local
+export MEMCACHED_HOSTNAME=memcached.eprofile.local
 EOF
 
 chmod +x /opt/tomcat10/bin/setenv.sh
@@ -83,70 +83,3 @@ systemctl start tomcat10
 sleep 10
 systemctl is-active tomcat10 && echo "Tomcat 10 is UP!" || echo "Tomcat 10 FAILED!"
 echo "Tomcat 10 Provisioning Completed Successfully!"
-
-
-
-#-------------------------------------------------------------
-# 1. Basic System Setup
-#-------------------------------------------------------------
-echo "===== [1/6] Setting up basic system configuration ====="
-echo "Setting hostname to web01..."
-echo "tomcat" > /etc/hostname
-hostname tomcat
-
-echo "Installing essential utilities (zip, unzip)..."
-apt install -y zip unzip
-
-#-------------------------------------------------------------
-# 2. Install and Configure Node Exporter
-#-------------------------------------------------------------
-echo "===== [2/6] Installing Prometheus Node Exporter ====="
-
-mkdir -p /tmp/exporter
-cd /tmp/exporter
-
-NODE_VERSION="1.10.2"
-echo "Downloading Node Exporter v${NODE_VERSION}..."
-wget -q https://github.com/prometheus/node_exporter/releases/download/v${NODE_VERSION}/node_exporter-${NODE_VERSION}.linux-amd64.tar.gz
-
-echo "Extracting Node Exporter..."
-tar xzf node_exporter-${NODE_VERSION}.linux-amd64.tar.gz
-
-echo "Moving binary to /var/lib/node..."
-mkdir -p /var/lib/node
-mv node_exporter-${NODE_VERSION}.linux-amd64/node_exporter /var/lib/node/
-
-echo "Creating prometheus system user..."
-groupadd --system prometheus || true
-useradd -s /sbin/nologin --system -g prometheus prometheus || true
-
-chown -R prometheus:prometheus /var/lib/node/
-chmod -R 775 /var/lib/node
-
-echo "Creating Node Exporter systemd service..."
-cat <<EOF > /etc/systemd/system/node.service
-[Unit]
-Description=Prometheus Node Exporter
-Documentation=https://prometheus.io/docs/introduction/overview/
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-Type=simple
-User=prometheus
-Group=prometheus
-ExecReload=/bin/kill -HUP \$MAINPID
-ExecStart=/var/lib/node/node_exporter
-SyslogIdentifier=prometheus_node_exporter
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-echo "Enabling and starting Node Exporter..."
-systemctl daemon-reload
-systemctl enable --now node
-systemctl status node --no-pager
-
-echo "Node Exporter setup completed."
