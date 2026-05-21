@@ -69,38 +69,55 @@ jobs:
     needs: build-application
     runs-on: ubuntu-latest
     steps:
-
-      # 1. Download Artifact
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
           name: app-artifact
           path: target/
 
-      # 2. SCP WAR file to Azure VM
+      # Service Principal
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Fetch Secrets from Key Vault (DB creds, VM IPs, SSH keys)
+      - name: Fetch Secrets from Key Vault
+        uses: Azure/get-keyvault-secrets@v1
+        id: kv
+        with:
+          keyvault: "eprofile-kv-weurope-01"
+          secrets: 'tomcat-private-ip, nginx-public-ip, vm-username, vm-ssh-key'
+
+      # SCP the WAR file to the Tomcat VM using the fetched secrets
       - name: SCP WAR file to Azure VM
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.AZURE_VM_IP }}
-          username: ${{ secrets.AZURE_VM_USER }}
-          key: ${{ secrets.AZURE_VM_SSH_KEY }}
+          host: ${{ steps.kv.outputs.tomcat-private-ip }}
+          username: ${{ steps.kv.outputs.vm-username }}
+          key: ${{ steps.kv.outputs.vm-ssh-key }}
+          proxy_host: ${{ steps.kv.outputs.nginx-public-ip }}
+          proxy_username: ${{ steps.kv.outputs.vm-username }}
+          proxy_key: ${{ steps.kv.outputs.vm-ssh-key }}
           source: "target/*.war"
           target: "/tmp/"
           strip_components: 1 
 
+      # SSH into the VM and restart Tomcat to pick up the new WAR
       - name: SSH and Restart Tomcat
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.AZURE_VM_IP }}
-          username: ${{ secrets.AZURE_VM_USER }}
-          key: ${{ secrets.AZURE_VM_SSH_KEY }}
+          host: ${{ steps.kv.outputs.tomcat-private-ip }}
+          username: ${{ steps.kv.outputs.vm-username }}
+          key: ${{ steps.kv.outputs.vm-ssh-key }}
+          proxy_host: ${{ steps.kv.outputs.nginx-public-ip }}
+          proxy_username: ${{ steps.kv.outputs.vm-username }}
+          proxy_key: ${{ steps.kv.outputs.vm-ssh-key }}
           script: |
             echo "Deploying new WAR file to Tomcat..."
             sudo systemctl stop tomcat10 || true
             sudo rm -rf /opt/tomcat10/webapps/ROOT /opt/tomcat10/webapps/ROOT.war
-            
             sudo cp /tmp/*.war /opt/tomcat10/webapps/ROOT.war
-            
             sudo chown tomcat:tomcat /opt/tomcat10/webapps/ROOT.war
             sudo systemctl start tomcat10
-            echo "Deployment Successfully Completed"          
+            echo "Deployment Successfully Completed"
