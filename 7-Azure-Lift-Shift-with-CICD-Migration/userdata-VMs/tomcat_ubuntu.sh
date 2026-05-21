@@ -47,15 +47,15 @@ fi
 # 4. Inject Environment Variables via setenv.sh
 cat > /opt/tomcat10/bin/setenv.sh <<EOF
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-export RDS_HOSTNAME=db.eprofile.local
+export RDS_HOSTNAME=backend.eprofile.local
 export RDS_PORT=3306
 export RDS_DB_NAME=accounts
 export RDS_USERNAME=$DB_USER
 export RDS_PASSWORD=$DB_PASS
-export RABBITMQ_HOSTNAME=rabbitmq.eprofile.local
+export RABBITMQ_HOSTNAME=backend.eprofile.local
 export RABBITMQ_USER=$RMQ_USER
 export RABBITMQ_PASS=$RMQ_PASS
-export MEMCACHED_HOSTNAME=memcached.eprofile.local
+export MEMCACHED_HOSTNAME=backend.eprofile.local
 EOF
 
 chmod +x /opt/tomcat10/bin/setenv.sh
