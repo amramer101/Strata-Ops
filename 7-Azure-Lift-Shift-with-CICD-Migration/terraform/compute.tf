@@ -104,6 +104,10 @@ resource "azurerm_linux_virtual_machine" "app_vm" {
   identity {
     type = "SystemAssigned"
   }
+
+  depends_on = [
+    azurerm_linux_virtual_machine.backend_vm
+  ]
 }
 
 # ASG for App Server
