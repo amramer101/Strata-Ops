@@ -75,7 +75,7 @@ resource "azurerm_linux_virtual_machine" "app_vm" {
   name                = "app-vm"
   resource_group_name = azurerm_resource_group.eprofile_rg.name
   location            = var.region
-  size                = var.vm_size_tomcat
+  size                = var.vm_size
   admin_username      = "adminuser"
 
   network_interface_ids = [azurerm_network_interface.app_nic.id]
@@ -114,10 +114,10 @@ resource "azurerm_network_interface_application_security_group_association" "app
 
 # =======================================================
 
-# Database Server (Private)
+# Backend Server (Private)
 
-resource "azurerm_network_interface" "db_nic" {
-  name                = "db-nic"
+resource "azurerm_network_interface" "backend_nic" {
+  name                = "backend-nic"
   location            = var.region
   resource_group_name = azurerm_resource_group.eprofile_rg.name
 
@@ -128,14 +128,14 @@ resource "azurerm_network_interface" "db_nic" {
   }
 }
 
-resource "azurerm_linux_virtual_machine" "db_vm" {
-  name                = "db-vm"
+resource "azurerm_linux_virtual_machine" "backend_vm" {
+  name                = "backend-vm"
   resource_group_name = azurerm_resource_group.eprofile_rg.name
   location            = var.region
   size                = var.vm_size
   admin_username      = "adminuser"
 
-  network_interface_ids = [azurerm_network_interface.db_nic.id]
+  network_interface_ids = [azurerm_network_interface.backend_nic.id]
 
   admin_ssh_key {
     username   = "adminuser"
@@ -160,94 +160,5 @@ resource "azurerm_linux_virtual_machine" "db_vm" {
   }
 
   # User Script
-  custom_data = filebase64("../userdata-VMs/mysql.sh")
-}
-
-# =======================================================
-
-# Memcached Server (Private)
-resource "azurerm_network_interface" "memcached_nic" {
-  name                = "memcached-nic"
-  location            = var.region
-  resource_group_name = azurerm_resource_group.eprofile_rg.name
-
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = azurerm_subnet.subnet3.id
-    private_ip_address_allocation = "Dynamic"
-  }
-}
-
-resource "azurerm_linux_virtual_machine" "memcached_vm" {
-  name                  = "memcached-vm"
-  resource_group_name   = azurerm_resource_group.eprofile_rg.name
-  location              = var.region
-  size                  = var.vm_size
-  admin_username        = "adminuser"
-  network_interface_ids = [azurerm_network_interface.memcached_nic.id]
-
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("${path.module}/azure_id_rsa.pub")
-  }
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts"
-    version   = "latest"
-  }
-
-  # User Script
-  custom_data = filebase64("../userdata-VMs/memcache.sh")
-}
-
-# =======================================================
-
-# RabbitMQ Server (Private)
-resource "azurerm_network_interface" "rabbitmq_nic" {
-  name                = "rabbitmq-nic"
-  location            = var.region
-  resource_group_name = azurerm_resource_group.eprofile_rg.name
-
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = azurerm_subnet.subnet3.id
-    private_ip_address_allocation = "Dynamic"
-  }
-}
-
-resource "azurerm_linux_virtual_machine" "rabbitmq_vm" {
-  name                  = "rabbitmq-vm"
-  resource_group_name   = azurerm_resource_group.eprofile_rg.name
-  location              = var.region
-  size                  = var.vm_size
-  admin_username        = "adminuser"
-  network_interface_ids = [azurerm_network_interface.rabbitmq_nic.id]
-
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("${path.module}/azure_id_rsa.pub")
-  }
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts"
-    version   = "latest"
-  }
-
-  # Managed Identity
-  identity {
-    type = "SystemAssigned"
-  }
-
-  # User Script
-  custom_data = filebase64("../userdata-VMs/rabbitmq.sh")
+  custom_data = filebase64("../userdata-VMs/backend.sh")
 }
