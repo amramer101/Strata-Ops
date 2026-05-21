@@ -1,311 +1,289 @@
-
-Claude finished the response
-Cache_Verification.png
-Connectivity.png
-DB_Verification.png
-MQ_Verification.png
-Pipeline.png
-Resources.png
-Secrets.png
-amramer101/Strata-Ops
-main
-
-GITHUB
-
-amramer101/Strata-Ops
-main
-
-GITHUB
-
-amramer101/Strata-Ops
-main
-
-GITHUB
-
-عاوز اعمل ريدمي للمشورع دا و يبكون كويس و مش كبير و مفهوش اي ايموجيز لاني هعرضه علي azure migration manager الفكره انا الفمروض عامل ميجريشن منaws g azure اعمل جدول انا نقلت يا لاي و دي المشاكل الي واجعتني و انا حلتها ازاي   
-Challenges & Solutions (قائمة التوثيق)
-1. The .local Domain Conflict (mDNS)
-
-The Problem: عند محاولة عمل ping للدومين backend.eprofile.az (أو أي دومين ينتهي بـ .local سابقاً)، كان النظام يرفض الترجمة ويعطي Temporary failure in name resolution لأن نظام Ubuntu (عن طريق systemd-resolved) كان يعتبر هذا النطاق خاصاً بالـ Multicast DNS للبحث عن أجهزة محلية.
-The Solution: تم تعطيل الـ MulticastDNS في إعدادات النظام (/etc/systemd/resolved.conf) لضمان أن النظام يوجه استعلامات الـ DNS مباشرة إلى الـ Azure Private DNS Resolver.
-Race Condition during Provisioning
-
-The Problem: التيرافورم يقوم بإنشاء السيرفرات بالتوازي، مما أدى إلى قيام الـ App VM (التوم كات) قبل اكتمال تسطيب قاعدة البيانات (MariaDB) على الـ Backend VM بالكامل، فكان التطبيق يفشل في الاتصال (Communications link failure).
-The Solution: تم تطبيق Wait-for-it Pattern باستخدام حلقة انتظار (while ! nc -zv ...) داخل سكربت الـ userdata الخاص بـ App VM للتأكد من أن بورت الداتابيز 3306 مفتوح وجاهز للاستقبال قبل محاولة تشغيل التوم كات.
-Environment Variables Injection in Systemd
-
-The Problem: المتغيرات التي تم تصديرها في setenv.sh (مثل RDS_HOSTNAME) لم تكن تُقرأ بواسطة التطبيق عند تشغيل التوم كات كـ Systemd Service.
-The Solution: تم تحويل تمرير المتغيرات إلى Java System Properties باستخدام متغير CATALINA_OPTS داخل ملف setenv.sh (مثل: -DRDS_HOSTNAME=...) لضمان أن الـ Spring Framework يقرأ هذه الإعدادات بوضوح أثناء الـ Runtime.
-GitHub Actions Connectivity (Private Network)
-
-The Problem: الـ GitHub Runners (سيرفرات سحابية عامة) لم تكن قادرة على الوصول إلى الـ App VM الموجودة داخل شبكة أزور الخاصة (Private Subnet).
-The Solution: تم استخدام الـ nginx-vm (الموجود في Public Subnet) كـ Bastion Host / Proxy في خطوات الـ SCP والـ SSH داخل الـ Pipeline، مما مكن الـ Runners من "القفز" عبر الـ Nginx للوصول للسيرفر الداخلي.
-Secure Credentials Management
-
-The Problem: كان من الضروري تجنب وضع الباسوردات والمفاتيح الحساسة في ملفات الكود أو GitHub Secrets بشكل دائم.
-The Solution: تم دمج Azure Key Vault مع Terraform لإنشاء الـ Secrets أوتوماتيكياً، واستخدام الـ Managed Identity داخل السيرفرات لسحب هذه الـ Secrets أوتوماتيكياً أثناء الـ Provisioning، بالإضافة إلى سحبها بواسطة الـ Pipeline وقت الـ Deployment. اكتبها طبعا بالانجليزيز بشكل منظم كانه ريدي مي قوي و اه دا رقم 7 للشمرع انا عملت ميريشن لرقم 2 منه انا عاوز ريديمي بالانجليزي منظم لرمحلة الازور يبين مهراتي و ادق تافصيلها في ازور , و في الاخر كده عاوز احط الصور دي بشرح و عنوان ليها مناسب بالتريبت بتاعهم الص هما في Strata-Ops/media /Azure/ amramer101 amramer101 add media files to for azure 40d5718 · 1 minute ago Name Last commit message Last commit date .. Cache_Verification.png add media files to for azure 1 minute ago Connectivity.png add media files to for azure 1 minute ago DB_Verification.png add media files to for azure 1 minute ago MQ_Verification.png add media files to for azure 1 minute ago Pipeline.png add media files to for azure 1 minute ago Resources.png add media files to for azure 1 minute ago Secrets.png add media files to for azure 1 minute ago
-Show more
-9:02 PM
-
-Check frontend design skill
-Check frontend design skill
-Now let me create the README as a markdown file:
-
-
-Created a file, read a file
-Created a file, read a file
-Here's your README. A few notes on what I focused on:
-
-Structure decisions:
-
-The AWS → Azure mapping table is the centerpiece — it gives a migration manager an immediate side-by-side comparison without reading prose
-Challenges are written as proper engineering documentation with the exact technical root cause, not just "it didn't work"
-The secrets section has a dedicated table listing all 8 Key Vault secrets by name and purpose, which demonstrates depth of Azure Key Vault understanding
-Image section follows the order: infra → secrets → pipeline → app verification → data layer verification
-Image paths — I used media/Azure/ to match the folder structure you showed (Strata-Ops/media/Azure/). Make sure the README sits at the repo root (or adjust paths accordingly if it goes inside 7-Azure-Lift-Shift-with-CICD-Migration/).
-
-One thing to double-check: the Connectivity.png image shows the login page, which I labeled as "Application Login Page / end-to-end connectivity confirmation." If you'd prefer a different description for that screenshot, just let me know.
-
-
-Readme
-Document · MD 
-
-Want to be notified when Claude responds?
-
-
-
-
-Claude is AI and can make mistakes. Please double-check responses.
-Readme · MD
 # Phase 7 — Azure Lift & Shift with CI/CD Migration
- 
-## Overview
- 
-Phase 7 is a cloud-to-cloud migration of the eProfile application from AWS (Phase 2) to Microsoft Azure. The goal was to replicate the same 3-tier production architecture — Nginx reverse proxy, Tomcat application server, and a backend VM running MariaDB, Memcached, and RabbitMQ — while adopting native Azure services for networking, secrets management, and CI/CD delivery.
- 
-The infrastructure is fully provisioned by Terraform, all sensitive credentials are managed through Azure Key Vault with Managed Identity authentication, and deployments are automated end-to-end via GitHub Actions.
- 
+
+This phase migrates the eProfile application from its AWS EC2 foundation (Phase 2) to Microsoft Azure. The same 3-tier production topology is preserved: an Nginx reverse proxy in a public subnet, a Tomcat application server in a private subnet, and a backend VM running MariaDB, Memcached, and RabbitMQ in a deeper private subnet. Every component — networking, identity, secrets, and deployment — is re-implemented using native Azure services provisioned entirely by Terraform.
+
 ---
- 
+
 ## Architecture
- 
+
 ```
-Internet
-    |
-  nginx-vm  (Public Subnet — nginx-subnet-public 10.0.0.0/24)
-    |   [Nginx reverse proxy + Bastion Host]
-    |
-  app-vm    (Private Subnet — application-subnet-private 10.0.1.0/24)
-    |   [Tomcat 10 + Java 21]
-    |
-  backend-vm (Private Subnet — backend-subnet-private 10.0.2.0/24)
-        [MariaDB 3306 | Memcached 11211 | RabbitMQ 5672]
+                          Internet
+                              |
+               ┌──────────────────────────────┐
+               │  Azure VNet  10.0.0.0/16     │
+               │                              │
+               │  ┌─ nginx-subnet-public ───┐ │
+               │  │  nginx-vm               │ │◄── Static Public IP
+               │  │  Nginx reverse proxy    │ │
+               │  │  Bastion Host           │ │
+               │  └────────────┬────────────┘ │
+               │               │ :8080        │
+               │  ┌─ application-subnet ────┐ │
+               │  │  app-vm                 │ │
+               │  │  Tomcat 10 + Java 21    │ │
+               │  │  Managed Identity       │ │
+               │  └────────────┬────────────┘ │
+               │               │ :3306/:11211/:5672
+               │  ┌─ backend-subnet ────────┐ │
+               │  │  backend-vm             │ │
+               │  │  MariaDB   Memcached    │ │
+               │  │  RabbitMQ  Managed ID   │ │
+               │  └─────────────────────────┘ │
+               │                              │
+               │  NAT Gateway ──► Internet    │
+               └──────────────────────────────┘
+                        │                │
+              Azure Key Vault     Private DNS Zone
+              eprofile-kv-*         eprofile.az
 ```
- 
-Private VMs use a NAT Gateway for outbound internet access. Internal service discovery is handled by an Azure Private DNS Zone (`eprofile.az`) with auto-registered A records for each VM.
- 
+
+Internal service discovery is handled by an Azure Private DNS Zone (`eprofile.az`) with auto-registered A records for each VM. Private VMs reach the internet exclusively through the NAT Gateway — they carry no public IPs.
+
 ---
- 
-## AWS to Azure Service Mapping
- 
-| Layer | AWS (Phase 2) | Azure (Phase 7) | Notes |
+
+## AWS to Azure Migration Map
+
+| Layer | AWS — Phase 2 | Azure — Phase 7 | Notes |
 |---|---|---|---|
-| Compute | EC2 (Ubuntu 22.04) | Azure Linux VMs (Ubuntu 22.04) | Same OS, same userdata pattern |
+| Compute | EC2 Ubuntu 22.04 | Azure Linux VM Ubuntu 22.04 | Same OS, same userdata pattern |
 | Networking | VPC + Subnets + IGW | VNet + Subnets + NAT Gateway | NAT Gateway replaces per-VM public IPs for private subnets |
-| Security Groups | AWS Security Groups (per instance) | NSGs + Application Security Groups | ASGs allow source-based rules without hardcoding IPs |
-| DNS (Internal) | Route53 Private Hosted Zone (`eprofile.in`) | Azure Private DNS Zone (`eprofile.az`) | Same A record pattern; auto-registration enabled |
-| Secrets Management | AWS SSM Parameter Store | Azure Key Vault | Managed Identity replaces IAM Instance Profiles |
-| Identity | IAM Roles + Instance Profiles | System-Assigned Managed Identity | Zero long-lived credentials on VMs |
-| State Backend | S3 | Azure Blob Storage (azurerm backend) | `terraform-rg` / `terraformstateeprofile` |
-| CI/CD | Jenkins (self-hosted EC2) | GitHub Actions | Pipeline defined in `.github/workflows/7-Azure-CICD-Migration.yml` |
-| Secret injection (pipeline) | SSM `get-parameter` in Jenkinsfile | Azure Key Vault action (`get-keyvault-secrets`) | Secrets fetched at runtime per job |
-| Deployment target | Direct SSH from Jenkins EC2 | SCP + SSH via Nginx Bastion proxy | GitHub runners are public; private VM requires a proxy hop |
- 
+| Traffic Rules | Security Groups (per instance) | NSGs + Application Security Groups | ASGs enable source-group rules without hardcoding IP ranges |
+| Internal DNS | Route53 Private Hosted Zone (`eprofile.in`) | Azure Private DNS Zone (`eprofile.az`) | Same A record pattern; auto-registration enabled on VNet link |
+| Secrets | AWS SSM Parameter Store | Azure Key Vault | Managed Identity replaces IAM Instance Profiles |
+| VM Identity | IAM Role + Instance Profile | System-Assigned Managed Identity | Zero long-lived credentials on any VM |
+| IaC State Backend | S3 Bucket | Azure Blob Storage (`azurerm` backend) | `terraform-rg` / `terraformstateeprofile` / `tfstate` container |
+| CI/CD Engine | Jenkins on self-hosted EC2 | GitHub Actions (hosted runners) | Pipeline defined in `.github/workflows/7-Azure-CICD-Migration.yml` |
+| Secret injection (pipeline) | SSM `get-parameter` in Jenkinsfile | `azure/get-keyvault-secrets` Action | Fetched at runtime per job, never stored as GitHub Secrets |
+| Deployment target | Direct SSH from Jenkins EC2 | SCP + SSH via Nginx Bastion proxy | Hosted runners are public; private VM requires a proxy hop |
+
 ---
- 
-## Infrastructure Components
- 
-**Terraform modules provisioned:**
- 
-- VNet (`10.0.0.0/16`) with 3 subnets across public/private tiers
-- 3 Linux VMs: `nginx-vm`, `app-vm` (with Managed Identity), `backend-vm` (with Managed Identity)
-- NAT Gateway with static public IP, associated to both private subnets
-- Azure Private DNS Zone (`eprofile.az`) with A records for `app` and `backend`
-- Azure Key Vault (`eprofile-kv-weurope-01`) with 8 secrets auto-generated at apply time
-- Network Security Groups using Application Security Groups as traffic sources (no hardcoded IPs)
-- Key Vault Access Policies granting `Get`/`List` to both private VMs via Managed Identity
-**Secrets stored in Key Vault (all generated by Terraform):**
- 
-| Secret Name | Purpose |
+
+## Infrastructure
+
+### Virtual Network Design
+
+| Subnet | CIDR | Resources |
+|---|---|---|
+| `nginx-subnet-public` | `10.0.0.0/24` | nginx-vm + NSG + static public IP |
+| `application-subnet-private` | `10.0.1.0/24` | app-vm + NSG + NAT Gateway association |
+| `backend-subnet-private` | `10.0.2.0/24` | backend-vm + NSG + NAT Gateway association |
+
+### Security Groups and Traffic Rules
+
+| NSG | Inbound Rules |
 |---|---|
-| `mysql-username` | MariaDB admin username |
-| `mysql-password` | MariaDB admin password (random, 8 chars) |
-| `rabbitmq-username` | RabbitMQ admin username |
-| `rabbitmq-password` | RabbitMQ admin password (random, 16 chars) |
-| `tomcat-private-ip` | Private IP of app-vm (for CI/CD pipeline) |
-| `nginx-public-ip` | Public IP of nginx-vm (bastion for CI/CD pipeline) |
-| `vm-username` | SSH username for both VMs |
-| `vm-ssh-key` | SSH private key (for GitHub Actions deployment) |
- 
+| `nginx-sg` | SSH from deployer IP, HTTP :80 from anywhere |
+| `app-sg` | SSH from deployer IP, :8080 from `nginx-asg` (Application Security Group) |
+| `backend-sg` | SSH from deployer IP, :3306/:11211/:5672 from `app-asg` |
+
+Application Security Groups are used as traffic sources instead of IP ranges. This means the rule `allow :8080 from nginx-asg` automatically tracks membership — no manual IP updates required when VMs are replaced.
+
+### Azure Key Vault Secrets
+
+All secrets are generated and written to Key Vault by Terraform at `apply` time. No secret is hardcoded in any script, variable file, or repository.
+
+| Secret Name | Value Source | Purpose |
+|---|---|---|
+| `mysql-username` | Terraform variable | MariaDB admin username |
+| `mysql-password` | `random_password` (8 chars) | MariaDB admin password |
+| `rabbitmq-username` | Terraform variable | RabbitMQ admin username |
+| `rabbitmq-password` | `random_password` (16 chars) | RabbitMQ admin password |
+| `tomcat-private-ip` | `app_nic.private_ip_address` | App VM private IP for CI/CD pipeline |
+| `nginx-public-ip` | `nginx_pip.ip_address` | Nginx public IP for CI/CD bastion |
+| `vm-username` | Terraform variable | SSH username used by pipeline |
+| `vm-ssh-key` | Local key file | SSH private key for GitHub Actions deployment |
+
+### Managed Identity Access
+
+Both `app-vm` and `backend-vm` are assigned System-Assigned Managed Identities. Terraform grants each identity a `Get`/`List` access policy on the Key Vault. During provisioning, each VM's userdata script calls the Azure IMDS endpoint to obtain a short-lived bearer token, then retrieves the specific secrets it needs directly from the Key Vault REST API.
+
 ---
- 
+
 ## CI/CD Pipeline
- 
-The GitHub Actions pipeline (`7-Azure-CICD-Migration.yml`) runs on every push to `main` and consists of three sequential jobs:
- 
+
+The GitHub Actions pipeline runs on every push to `main` that touches application source, userdata scripts, or the workflow file itself.
+
 ```
-TruffleHog & Checkov Scans  (26s)
-        |
-    Maven Build              (39s)
-        |
-    Deploy WAR to Azure VM   (1m 14s)
- 
-Total: 1m 21s
+┌─────────────────────────────┐
+│  TruffleHog & Checkov Scans │  26s
+│  Secret scan + IaC scan     │
+└──────────────┬──────────────┘
+               │
+┌──────────────▼──────────────┐
+│  Maven Build                │  39s
+│  JDK 21 + artifact upload   │
+└──────────────┬──────────────┘
+               │
+┌──────────────▼──────────────┐
+│  Deploy WAR to Azure App VM │  1m 14s
+│  KV fetch → SCP → SSH       │
+└─────────────────────────────┘
+
+Total:  1m 21s
 ```
- 
-**Job 1 — Security Scans:**
-- TruffleHog scans the full commit history for verified leaked secrets
-- Checkov performs IaC security scanning on all Terraform files (`soft_fail: false` — pipeline aborts on HIGH findings)
-**Job 2 — Build:**
-- Builds the Java WAR artifact using Maven on JDK 21
-- Uploads the artifact for the deployment job
-**Job 3 — Deploy:**
-- Authenticates to Azure using a Service Principal (`AZURE_CREDENTIALS` secret)
-- Fetches `tomcat-private-ip`, `nginx-public-ip`, `vm-username`, and `vm-ssh-key` from Key Vault at runtime
-- SCPs the WAR file to the private `app-vm` using `nginx-vm` as an SSH proxy
-- SSHs into `app-vm` (again via nginx proxy), stops Tomcat, replaces the WAR, restarts Tomcat
+
+### Job 1 — Security Scans
+
+- **TruffleHog** scans the full commit history (`fetch-depth: 0`) for verified leaked credentials. The pipeline aborts if any verified secret is detected.
+- **Checkov** performs IaC security analysis on all Terraform files (`soft_fail: false`). Any HIGH-severity finding blocks the pipeline before a single line of application code is built.
+
+### Job 2 — Maven Build
+
+- Runs on JDK 21 with Maven dependency caching.
+- Packages the application as a WAR artifact and uploads it for the deploy job.
+
+### Job 3 — Deploy
+
+- Authenticates to Azure using a Service Principal stored as a single `AZURE_CREDENTIALS` GitHub Secret.
+- Fetches `tomcat-private-ip`, `nginx-public-ip`, `vm-username`, and `vm-ssh-key` from Key Vault at runtime using the `azure/get-keyvault-secrets` action.
+- Copies the WAR to `app-vm` via SCP, using `nginx-vm` as an SSH proxy host.
+- SSHs into `app-vm` (again via the nginx proxy), stops Tomcat, swaps the WAR, and restarts the service.
+
 ---
- 
+
 ## Challenges and Solutions
- 
-### 1. The `.az` Domain and mDNS Conflict
- 
-**Problem:** When VMs attempted to resolve `backend.eprofile.az` using `ping` or `dig`, Ubuntu's `systemd-resolved` was intercepting `.local`-adjacent suffixes and routing them to Multicast DNS instead of forwarding the query to the Azure Private DNS Resolver. This resulted in `Temporary failure in name resolution` even though the DNS zone and A records were correctly configured in Azure.
- 
-**Solution:** `MulticastDNS` was explicitly disabled in `/etc/systemd/resolved.conf` on affected VMs. This forced all DNS queries — including for `.az` domains — to be forwarded directly to Azure's internal resolver (`168.63.129.16`), which correctly handled the Private DNS Zone lookup.
- 
+
+### 1. mDNS Conflict with the `.az` Domain
+
+**Problem:** Ubuntu's `systemd-resolved` intercepted DNS queries for `backend.eprofile.az` and attempted to resolve them via Multicast DNS rather than forwarding them to Azure's internal resolver. This produced `Temporary failure in name resolution` despite the Private DNS Zone and A records being correctly provisioned.
+
+**Solution:** `MulticastDNS` was explicitly disabled in `/etc/systemd/resolved.conf`. All DNS queries — including `.az` domains — were then forwarded to Azure's internal resolver at `168.63.129.16`, which correctly handled Private DNS Zone lookups.
+
 ---
- 
-### 2. Race Condition During Provisioning
- 
-**Problem:** Terraform provisions VMs in parallel by default. The `app-vm` (Tomcat) userdata script would execute and attempt to connect to MariaDB before the `backend-vm` had finished installing and configuring the database. This caused Tomcat to fail at startup with `Communications link failure`.
- 
-**Solution:** A wait loop was added to the `app-vm` userdata script using `netcat`:
- 
+
+### 2. Race Condition During VM Provisioning
+
+**Problem:** Terraform provisions VMs in parallel. The `app-vm` userdata script would begin executing and attempt to connect to MariaDB before the `backend-vm` had finished installing and initialising the database. This caused Tomcat to fail at startup with a `Communications link failure`.
+
+**Solution:** A `netcat` wait loop was added to the `app-vm` userdata script:
+
 ```bash
 while ! nc -zv backend.eprofile.az 3306; do
-  echo "Database is not up yet. Sleeping for 10 seconds..."
+  echo "Database not ready. Sleeping 10s..."
   sleep 10
 done
 ```
- 
-Tomcat environment variables are only written and the service only started after the database port becomes reachable. A `depends_on` block in Terraform also ensures `app-vm` is created after `backend-vm`, giving the backend VM a head start.
- 
+
+Tomcat environment variables are only written and the service only started after port 3306 becomes reachable. A `depends_on` block in `compute.tf` additionally ensures `app-vm` is created after `backend-vm`, giving the backend a provisioning head start.
+
 ---
- 
-### 3. Environment Variables Not Propagating to the Application
- 
-**Problem:** Credentials fetched from Key Vault were exported as environment variables inside `setenv.sh`. When Tomcat ran as a `systemd` service under the `tomcat` user, these exported variables were not inherited by the JVM process. The Spring application was reading null values for `RDS_HOSTNAME`, `RDS_PASSWORD`, and similar properties.
- 
-**Solution:** Variables were converted to Java System Properties by passing them through `CATALINA_OPTS` inside `setenv.sh`:
- 
+
+### 3. Environment Variables Not Propagating to the JVM
+
+**Problem:** Credentials fetched from Key Vault were exported as shell environment variables inside `setenv.sh`. When Tomcat ran as a `systemd` service under the `tomcat` user, these exported variables were not inherited by the JVM process. The Spring application read null values for `RDS_HOSTNAME`, `RDS_PASSWORD`, and related properties.
+
+**Solution:** Variables were converted to Java System Properties by injecting them through `CATALINA_OPTS` inside `setenv.sh`:
+
 ```bash
-export CATALINA_OPTS="-DRDS_HOSTNAME=backend.eprofile.az -DRDS_PORT=3306 \
+export CATALINA_OPTS="-DRDS_HOSTNAME=backend.eprofile.az \
+  -DRDS_PORT=3306 -DRDS_DB_NAME=accounts \
   -DRDS_USERNAME=$DB_USER -DRDS_PASSWORD=$DB_PASS \
-  -DRABBITMQ_HOSTNAME=backend.eprofile.az ..."
+  -DRABBITMQ_HOSTNAME=backend.eprofile.az \
+  -DRABBITMQ_USER=$RMQ_USER -DRABBITMQ_PASS=$RMQ_PASS \
+  -DMEMCACHED_HOSTNAME=backend.eprofile.az"
 ```
- 
-Spring's `application.properties` references these as `${RDS_HOSTNAME}`, which correctly resolves System Properties set via `-D` flags regardless of how the process is started.
- 
+
+Spring's `application.properties` references these as `${RDS_HOSTNAME}`, which correctly resolves Java System Properties set via `-D` flags regardless of the process launch method.
+
 ---
- 
-### 4. GitHub Actions Cannot Reach Private VM
- 
-**Problem:** GitHub-hosted runners are public cloud machines with no network path into the Azure Private Subnet where `app-vm` resides. Direct SCP and SSH to the private IP returned connection timeouts.
- 
-**Solution:** The `nginx-vm` (which sits in the public subnet and has a static public IP) was used as an SSH ProxyJump host in both the SCP and SSH pipeline steps:
- 
+
+### 4. GitHub Actions Cannot Reach the Private Application VM
+
+**Problem:** GitHub-hosted runners are public-internet machines with no network path into the Azure private subnet where `app-vm` resides. Direct SCP and SSH connections to the private IP timed out.
+
+**Solution:** The `nginx-vm` (static public IP, public subnet) was used as an SSH ProxyJump host in both the SCP and SSH pipeline steps. The relevant secrets are fetched from Key Vault immediately before each step:
+
 ```yaml
-proxy_host: ${{ steps.kv.outputs.nginx-public-ip }}
+host:           ${{ steps.kv.outputs.tomcat-private-ip }}
+proxy_host:     ${{ steps.kv.outputs.nginx-public-ip }}
 proxy_username: ${{ steps.kv.outputs.vm-username }}
-proxy_key: ${{ steps.kv.outputs.vm-ssh-key }}
-host: ${{ steps.kv.outputs.tomcat-private-ip }}
+proxy_key:      ${{ steps.kv.outputs.vm-ssh-key }}
 ```
- 
-The runner connects to Nginx on the public IP, which then tunnels the connection to the private `app-vm`. No VPN or additional Azure resources were required.
- 
+
+The runner connects to Nginx on the public IP, which transparently tunnels the connection to `app-vm`. No VPN, no Azure Bastion service, and no additional infrastructure were required.
+
 ---
- 
-### 5. Zero-Credential Secret Management Across VMs and Pipeline
- 
-**Problem:** Credentials needed to be available in three different contexts: VM provisioning scripts, the running application (Tomcat), and the GitHub Actions deployment pipeline — without storing any secrets in code, Terraform state (in plaintext), or as permanent GitHub Secrets.
- 
-**Solution:** A three-layer approach was applied:
- 
-- **Terraform** generates all passwords using `random_password` and writes them directly to Azure Key Vault at `terraform apply` time. They never appear in userdata scripts or variable files.
-- **VMs** authenticate to Key Vault using System-Assigned Managed Identity (no stored credentials on disk). Userdata scripts use the IMDS endpoint to fetch a short-lived bearer token, then call the Key Vault REST API to retrieve secrets.
-- **GitHub Actions pipeline** authenticates to Azure using a Service Principal stored as a single `AZURE_CREDENTIALS` GitHub secret, then uses the official `azure/get-keyvault-secrets` action to pull only the specific secrets needed for that deployment job.
+
+### 5. Zero-Credential Secret Management Across Three Contexts
+
+**Problem:** The same credentials needed to be available during VM provisioning, at application runtime inside Tomcat, and during the GitHub Actions deployment pipeline — without storing any secret in code, in plaintext Terraform state, or as a permanent environment variable.
+
+**Solution:** A three-layer approach was applied across all contexts:
+
+- **Terraform** generates all passwords using `random_password` and writes them directly to Key Vault at `apply` time. They never appear in userdata scripts or `.tfvars` files.
+- **VMs at boot** authenticate using their System-Assigned Managed Identity via the IMDS endpoint. The userdata script exchanges the identity token for a short-lived Key Vault bearer token and fetches only the secrets it needs. No credentials are written to disk.
+- **GitHub Actions pipeline** authenticates to Azure via a single `AZURE_CREDENTIALS` Service Principal secret, then uses the official `azure/get-keyvault-secrets` action to retrieve only the four secrets needed for that specific deployment job. Secrets are scoped to the job and discarded after it completes.
+
 ---
- 
-## Verification Screenshots
- 
-### Azure Resources
- 
-All 20 infrastructure resources provisioned by Terraform inside `eprofile-resource-group`, including VMs, NICs, NSGs, ASGs, Key Vault, NAT Gateway, Private DNS Zone, and public IPs.
- 
-![Azure Resource Group](media/Azure/Resources.png)
- 
+
+## Verification
+
+### Azure Resource Group
+
+All 20 infrastructure resources provisioned by Terraform inside `eprofile-resource-group`, including VMs, NICs, NSGs, ASGs, Key Vault, NAT Gateway, Private DNS Zone, and public IPs — tagged `environment: Dev` and `managed_by: Terraform`.
+
+![Azure Resource Group — 20 resources provisioned by Terraform](../media/Azure/Resources.png)
+
 ---
- 
+
 ### Azure Key Vault Secrets
- 
-Eight secrets auto-generated and stored in `eprofile-kv-weurope-01` during `terraform apply`. All secrets have `Enabled` status with no manual intervention.
- 
-![Key Vault Secrets](media/Azure/Secrets.png)
- 
+
+Eight secrets auto-generated and stored in `eprofile-kv-weurope-01` during `terraform apply`. All secrets show `Enabled` status with no expiration date and no manual intervention required.
+
+![Key Vault Secrets — all 8 secrets enabled](../media/Azure/Secrets.png)
+
 ---
- 
-### GitHub Actions Pipeline
- 
-Successful pipeline run of `7-Azure-CICD-Migration.yml` — all three jobs passed (TruffleHog & Checkov, Maven Build, Deploy WAR to Azure App VM) in 1 minute 21 seconds.
- 
-![CI/CD Pipeline](media/Azure/Pipeline.png)
- 
+
+### GitHub Actions Pipeline — Successful Run
+
+All three jobs passed in 1 minute 21 seconds: TruffleHog & Checkov security scan, Maven build, and WAR deployment to the Azure app VM via the Nginx bastion proxy.
+
+![GitHub Actions pipeline — 3 jobs, 1m 21s total](../media/Azure/Pipeline.png)
+
 ---
- 
-### Application Login Page
- 
-The eProfile application served over HTTP via Nginx reverse proxy on the public IP, confirming end-to-end connectivity through the Nginx → Tomcat → Backend chain.
- 
-![Application Login](media/Azure/Connectivity.png)
- 
+
+### Application Connectivity
+
+The eProfile login page served over HTTP through the Nginx reverse proxy on the public IP. This confirms the full Nginx → Tomcat → Backend chain is operational.
+
+![eProfile application — login page served via Nginx public IP](../media/Azure/Connectivity.png)
+
 ---
- 
+
 ### Database Verification — First Request
- 
-On the first user data request, the application fetches from MariaDB and writes the result to Memcached. The banner confirms the data source is the database.
- 
-![DB Verification](media/Azure/DB_Verification.png)
- 
+
+On the first request for user data, the application queries MariaDB directly and writes the result to Memcached. The page header confirms the data source as the database.
+
+![DB verification — data fetched from MariaDB and inserted into cache](../media/Azure/DB_Verification.png)
+
 ---
- 
+
 ### Cache Verification — Subsequent Request
- 
-On subsequent requests for the same user, the application reads from Memcached rather than the database, confirming the cache layer is functional.
- 
-![Cache Verification](media/Azure/Cache_Verification.png)
- 
+
+On the second request for the same user, the application reads from Memcached rather than the database. The page header confirms the cache layer is serving the response correctly.
+
+![Cache verification — data served from Memcached on repeat request](../media/Azure/Cache_Verification.png)
+
 ---
- 
+
 ### RabbitMQ Verification
- 
-Hitting the `/user/rabbit` endpoint confirms RabbitMQ is running and functional — 6 connections established, 2 channels, 5 exchanges, and 5 queues created.
- 
-![RabbitMQ Verification](media/Azure/MQ_Verification.png)
- 
 
+Hitting the `/user/rabbit` endpoint confirms RabbitMQ is running and fully initialised — 6 connections established, 2 channels, 5 exchanges, and 5 queues created.
 
+![RabbitMQ verification — 6 connections, 5 exchanges, 5 queues](../media/Azure/MQ_Verification.png)
 
+---
 
+## Technology Stack
 
-
+| Category | Technology |
+|---|---|
+| Cloud | Microsoft Azure |
+| Compute | Azure Linux VM (Ubuntu 22.04) |
+| Networking | VNet, NSG, Application Security Groups, NAT Gateway |
+| DNS | Azure Private DNS Zone |
+| Secrets | Azure Key Vault, System-Assigned Managed Identity |
+| IaC | Terraform (azurerm provider 3.116.0, remote state on Azure Blob) |
+| CI/CD | GitHub Actions |
+| Security scanning | TruffleHog (secrets), Checkov (IaC) |
+| Application | Tomcat 10, Java 21, Spring MVC, MariaDB, Memcached, RabbitMQ, Nginx |
