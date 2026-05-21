@@ -53,20 +53,12 @@ while ! nc -zv backend.eprofile.az 3306; do
   sleep 10
 done
 
+# 4. Inject Environment Variables via setenv.sh
 echo "Database is UP! Writing Tomcat environment variables..."
 
-# 4. Inject Environment Variables via setenv.sh
 cat > /opt/tomcat10/bin/setenv.sh <<EOF
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-export RDS_HOSTNAME=backend.eprofile.az
-export RDS_PORT=3306
-export RDS_DB_NAME=accounts
-export RDS_USERNAME=$DB_USER
-export RDS_PASSWORD=$DB_PASS
-export RABBITMQ_HOSTNAME=backend.eprofile.az
-export RABBITMQ_USER=$RMQ_USER
-export RABBITMQ_PASS=$RMQ_PASS
-export MEMCACHED_HOSTNAME=backend.eprofile.az
+export CATALINA_OPTS="-DRDS_HOSTNAME=backend.eprofile.az -DRDS_PORT=3306 -DRDS_DB_NAME=accounts -DRDS_USERNAME=$DB_USER -DRDS_PASSWORD=$DB_PASS -DRABBITMQ_HOSTNAME=backend.eprofile.az -DRABBITMQ_USER=$RMQ_USER -DRABBITMQ_PASS=$RMQ_PASS -DMEMCACHED_HOSTNAME=backend.eprofile.az"
 EOF
 
 chmod +x /opt/tomcat10/bin/setenv.sh
