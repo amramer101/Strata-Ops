@@ -60,3 +60,33 @@ resource "azurerm_key_vault_secret" "rabbitmq_password" {
   value        = random_password.rmq_password.result
   key_vault_id = azurerm_key_vault.eprofile_kv.id
 }
+
+# (GitHub Actions CI/CD Pipeline Requirements) -------------------------
+
+#  Private IP for Tomcat (App VM)
+resource "azurerm_key_vault_secret" "tomcat_private_ip" {
+  name         = "tomcat-private-ip"
+  value        = azurerm_network_interface.app_nic.private_ip_address
+  key_vault_id = azurerm_key_vault.eprofile_kv.id
+}
+
+# Public IP for Nginx (Bastion/Proxy)
+resource "azurerm_key_vault_secret" "nginx_public_ip" {
+  name         = "nginx-public-ip"
+  value        = azurerm_public_ip.nginx_pip.ip_address
+  key_vault_id = azurerm_key_vault.eprofile_kv.id
+}
+
+# VM Username (used for SSH)
+resource "azurerm_key_vault_secret" "pipeline_vm_username" {
+  name         = "vm-username"
+  value        = var.admin_username
+  key_vault_id = azurerm_key_vault.eprofile_kv.id
+}
+
+# SSH Private Key (For GitHub Actions to SSH into the VMs)
+resource "azurerm_key_vault_secret" "pipeline_ssh_key" {
+  name         = "vm-ssh-key"
+  value = file("./azure_id_rsa")
+  key_vault_id = azurerm_key_vault.eprofile_kv.id
+}
