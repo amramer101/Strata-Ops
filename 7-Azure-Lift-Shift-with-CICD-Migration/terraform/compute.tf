@@ -75,7 +75,7 @@ resource "azurerm_linux_virtual_machine" "app_vm" {
   name                = "app-vm"
   resource_group_name = azurerm_resource_group.eprofile_rg.name
   location            = var.region
-  size                = var.vm_size
+  size                = var.vm_size_tomcat
   admin_username      = "adminuser"
 
   network_interface_ids = [azurerm_network_interface.app_nic.id]

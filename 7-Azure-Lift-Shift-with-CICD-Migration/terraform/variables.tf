@@ -20,7 +20,12 @@ variable "admin_username" {
 }
 
 
-## VM size variable
-variable "vm_size" {
+## VM size variable for tomcat VM (2 Core and 4 GB RAM)
+variable "vm_size_tomcat" {
   default = "Standard_B2als_v2"
+}
+
+## VM size variable for Database/nginx/rmq/memcahed VM (1 Core and 2 GB RAM)
+variable "vm_size" {
+  default = "Standard_B1ms"
 }
