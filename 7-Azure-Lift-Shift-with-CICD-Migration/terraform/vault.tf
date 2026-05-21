@@ -3,14 +3,14 @@ data "azurerm_client_config" "current" {}
 
 # Azure Key Vault
 resource "azurerm_key_vault" "eprofile_kv" {
-  name                        = "eprofile-kv-${var.region}-01"
-  location                    = var.region
-  resource_group_name         = azurerm_resource_group.eprofile_rg.name
-  tenant_id                   = data.azurerm_client_config.current.tenant_id
-  sku_name                    = "standard"
-  
-  soft_delete_retention_days  = 7
-  purge_protection_enabled    = false
+  name                = "eprofile-kv-${var.region}-01"
+  location            = var.region
+  resource_group_name = azurerm_resource_group.eprofile_rg.name
+  tenant_id           = data.azurerm_client_config.current.tenant_id
+  sku_name            = "standard"
+
+  soft_delete_retention_days = 7
+  purge_protection_enabled   = false
 
   # Access Policy
   access_policy {

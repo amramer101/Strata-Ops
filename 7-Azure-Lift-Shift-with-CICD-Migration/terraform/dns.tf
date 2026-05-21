@@ -9,10 +9,10 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dns_vnet_link" {
   name                  = "eprofile-dns-vnet-link"
   resource_group_name   = azurerm_resource_group.eprofile_rg.name
   private_dns_zone_name = azurerm_private_dns_zone.eprofile_dns.name
-  virtual_network_id    = module.avm-res-network-virtualnetwork.virtual_network_id
+  virtual_network_id    = azurerm_virtual_network.vnet.id
 
   ## VMs seldom register themselves in the DNS
-  registration_enabled  = true 
+  registration_enabled = true
 }
 
 # ====================================================================

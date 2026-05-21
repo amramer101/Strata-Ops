@@ -25,11 +25,11 @@ resource "azurerm_nat_gateway_public_ip_association" "nat_pip_assoc" {
 
 # Associate NAT Gateway with Subnets (Application and Backend)
 resource "azurerm_subnet_nat_gateway_association" "app_subnet_nat" {
-  subnet_id      = module.avm-res-network-virtualnetwork.subnets["subnet2"].id
+  subnet_id      = azurerm_subnet.subnet2.id
   nat_gateway_id = azurerm_nat_gateway.nat_gw.id
 }
 
 resource "azurerm_subnet_nat_gateway_association" "backend_subnet_nat" {
-  subnet_id      = module.avm-res-network-virtualnetwork.subnets["subnet3"].id
+  subnet_id      = azurerm_subnet.subnet3.id
   nat_gateway_id = azurerm_nat_gateway.nat_gw.id
 }

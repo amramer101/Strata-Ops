@@ -30,7 +30,7 @@ resource "azurerm_linux_virtual_machine" "nginx_vm" {
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("~/.ssh/azure_id_rsa.pub")
+    public_key = file("${path.module}/azure_id_rsa.pub")
   }
 
   os_disk {
@@ -46,7 +46,7 @@ resource "azurerm_linux_virtual_machine" "nginx_vm" {
   }
 
   # User Script
-  custom_data = filebase64("${path.module}/userdata-VMs/nginx.sh")
+  custom_data = filebase64("../userdata-VMs/nginx.sh")
 }
 
 # ASG for Nginx
@@ -81,7 +81,7 @@ resource "azurerm_linux_virtual_machine" "app_vm" {
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("~/.ssh/azure_id_rsa.pub")
+    public_key = file("${path.module}/azure_id_rsa.pub")
   }
 
   os_disk {
@@ -97,7 +97,7 @@ resource "azurerm_linux_virtual_machine" "app_vm" {
   }
 
   # User Script
-  custom_data = filebase64("${path.module}/userdata-VMs/tomcat_ubuntu.sh")
+  custom_data = filebase64("../userdata-VMs/tomcat_ubuntu.sh")
 
   # Managed Identity
   identity {
@@ -131,14 +131,14 @@ resource "azurerm_linux_virtual_machine" "db_vm" {
   name                = "db-vm"
   resource_group_name = azurerm_resource_group.eprofile_rg.name
   location            = var.region
-  size                = "Standard_B1ms" 
+  size                = "Standard_B1ms"
   admin_username      = "adminuser"
 
   network_interface_ids = [azurerm_network_interface.db_nic.id]
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("~/.ssh/azure_id_rsa.pub")
+    public_key = file("${path.module}/azure_id_rsa.pub")
   }
 
   os_disk {
@@ -159,7 +159,7 @@ resource "azurerm_linux_virtual_machine" "db_vm" {
   }
 
   # User Script
-  custom_data = filebase64("${path.module}/userdata-VMs/mysql.sh")
+  custom_data = filebase64("../userdata-VMs/mysql.sh")
 }
 
 # =======================================================
@@ -178,16 +178,16 @@ resource "azurerm_network_interface" "memcached_nic" {
 }
 
 resource "azurerm_linux_virtual_machine" "memcached_vm" {
-  name                = "memcached-vm"
-  resource_group_name = azurerm_resource_group.eprofile_rg.name
-  location            = var.region
-  size                = "Standard_B1ms" 
-  admin_username      = "adminuser"
+  name                  = "memcached-vm"
+  resource_group_name   = azurerm_resource_group.eprofile_rg.name
+  location              = var.region
+  size                  = "Standard_B1ms"
+  admin_username        = "adminuser"
   network_interface_ids = [azurerm_network_interface.memcached_nic.id]
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("~/.ssh/azure_id_rsa.pub")
+    public_key = file("${path.module}/azure_id_rsa.pub")
   }
   os_disk {
     caching              = "ReadWrite"
@@ -201,7 +201,7 @@ resource "azurerm_linux_virtual_machine" "memcached_vm" {
   }
 
   # User Script
-  custom_data = filebase64("${path.module}/userdata-VMs/memcache.sh")
+  custom_data = filebase64("../userdata-VMs/memcache.sh")
 }
 
 # =======================================================
@@ -220,16 +220,16 @@ resource "azurerm_network_interface" "rabbitmq_nic" {
 }
 
 resource "azurerm_linux_virtual_machine" "rabbitmq_vm" {
-  name                = "rabbitmq-vm"
-  resource_group_name = azurerm_resource_group.eprofile_rg.name
-  location            = var.region
-  size                = "Standard_B1ms" 
-  admin_username      = "adminuser"
+  name                  = "rabbitmq-vm"
+  resource_group_name   = azurerm_resource_group.eprofile_rg.name
+  location              = var.region
+  size                  = "Standard_B1ms"
+  admin_username        = "adminuser"
   network_interface_ids = [azurerm_network_interface.rabbitmq_nic.id]
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("~/.ssh/azure_id_rsa.pub")
+    public_key = file("${path.module}/azure_id_rsa.pub")
   }
   os_disk {
     caching              = "ReadWrite"
@@ -246,7 +246,7 @@ resource "azurerm_linux_virtual_machine" "rabbitmq_vm" {
   identity {
     type = "SystemAssigned"
   }
-  
+
   # User Script
-  custom_data = filebase64("${path.module}/userdata-VMs/rabbitmq.sh")
+  custom_data = filebase64("../userdata-VMs/rabbitmq.sh")
 }
