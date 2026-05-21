@@ -3,7 +3,7 @@ data "azurerm_client_config" "current" {}
 
 # Azure Key Vault
 resource "azurerm_key_vault" "eprofile_kv" {
-  name                = "eprofile-kv-spain-01"
+  name                = "eprofile-kv-weurope-01"
   location            = var.region
   resource_group_name = azurerm_resource_group.eprofile_rg.name
   tenant_id           = data.azurerm_client_config.current.tenant_id

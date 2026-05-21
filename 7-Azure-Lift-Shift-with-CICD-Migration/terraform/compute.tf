@@ -25,7 +25,7 @@ resource "azurerm_linux_virtual_machine" "nginx_vm" {
   resource_group_name = azurerm_resource_group.eprofile_rg.name
   location            = var.region
   size                = var.vm_size
-  admin_username      = "adminuser"
+  admin_username      = "adminuser" 
 
   network_interface_ids = [azurerm_network_interface.nginx_nic.id]
 
@@ -77,6 +77,7 @@ resource "azurerm_linux_virtual_machine" "app_vm" {
   location            = var.region
   size                = var.vm_size
   admin_username      = "adminuser"
+  secure_boot_enabled = false
 
   network_interface_ids = [azurerm_network_interface.app_nic.id]
 

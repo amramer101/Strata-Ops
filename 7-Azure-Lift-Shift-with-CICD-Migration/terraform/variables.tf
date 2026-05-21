@@ -6,7 +6,7 @@ variable "tenant_id" {}
 
 ## Region variable
 variable "region" {
-  default = "spaincentral"
+  default = "polandcentral"
 }
 
 ## Resource Group Name variable
@@ -22,5 +22,5 @@ variable "admin_username" {
 
 ## VM size variable
 variable "vm_size" {
-  default = "Standard_B2s"
+  default = "D2s_v3"
 }
