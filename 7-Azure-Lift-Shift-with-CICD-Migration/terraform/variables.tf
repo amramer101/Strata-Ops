@@ -22,5 +22,5 @@ variable "admin_username" {
 
 ## VM size variable
 variable "vm_size" {
-  default = "Standard_B1s"
+  default = "Standard_B2s"
 }
