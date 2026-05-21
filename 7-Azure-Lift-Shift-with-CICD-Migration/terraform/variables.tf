@@ -18,3 +18,9 @@ variable "resource_group_name" {
 variable "admin_username" {
   default = "adminuser"
 }
+
+
+## VM size variable
+variable "vm_size" {
+  default = "Standard_B1s"
+}

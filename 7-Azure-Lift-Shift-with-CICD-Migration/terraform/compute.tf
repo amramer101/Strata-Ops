@@ -23,7 +23,7 @@ resource "azurerm_linux_virtual_machine" "nginx_vm" {
   name                = "nginx-vm"
   resource_group_name = azurerm_resource_group.eprofile_rg.name
   location            = var.region
-  size                = "Standard_B1ms" # 1 vCPU, 2GB RAM
+  size                = var.vm_size
   admin_username      = "adminuser"
 
   network_interface_ids = [azurerm_network_interface.nginx_nic.id]
@@ -74,7 +74,7 @@ resource "azurerm_linux_virtual_machine" "app_vm" {
   name                = "app-vm"
   resource_group_name = azurerm_resource_group.eprofile_rg.name
   location            = var.region
-  size                = "Standard_B1ms" # 1 vCPU, 2GB RAM
+  size                = var.vm_size
   admin_username      = "adminuser"
 
   network_interface_ids = [azurerm_network_interface.app_nic.id]
@@ -131,7 +131,7 @@ resource "azurerm_linux_virtual_machine" "db_vm" {
   name                = "db-vm"
   resource_group_name = azurerm_resource_group.eprofile_rg.name
   location            = var.region
-  size                = "Standard_B1ms"
+  size                = var.vm_size
   admin_username      = "adminuser"
 
   network_interface_ids = [azurerm_network_interface.db_nic.id]
@@ -181,7 +181,7 @@ resource "azurerm_linux_virtual_machine" "memcached_vm" {
   name                  = "memcached-vm"
   resource_group_name   = azurerm_resource_group.eprofile_rg.name
   location              = var.region
-  size                  = "Standard_B1ms"
+  size                  = var.vm_size
   admin_username        = "adminuser"
   network_interface_ids = [azurerm_network_interface.memcached_nic.id]
 
@@ -223,7 +223,7 @@ resource "azurerm_linux_virtual_machine" "rabbitmq_vm" {
   name                  = "rabbitmq-vm"
   resource_group_name   = azurerm_resource_group.eprofile_rg.name
   location              = var.region
-  size                  = "Standard_B1ms"
+  size                  = var.vm_size
   admin_username        = "adminuser"
   network_interface_ids = [azurerm_network_interface.rabbitmq_nic.id]
 

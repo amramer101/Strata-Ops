@@ -22,7 +22,7 @@ systemctl enable mariadb
 
 # Fetch MySQL Credentials from Azure Key Vault
 echo "Fetching Database Credentials from Azure Key Vault..."
-KV_NAME="eprofile-kv-spaincentral-01"
+KV_NAME="eprofile-kv-spain-01"
 
 for i in {1..10}; do
   TOKEN=$(curl -s 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net' -H Metadata:true | jq -r '.access_token')
