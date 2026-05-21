@@ -12,7 +12,7 @@ done
 echo "Network is ready!"
 
 apt update -y
-apt install -y mariadb-server git curl awscli
+apt install -y mariadb-server git curl
 
 echo "Allowing external connections..."
 sed -i 's/^bind-address.*/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
@@ -20,18 +20,23 @@ sed -i 's/^bind-address.*/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-
 systemctl restart mariadb
 systemctl enable mariadb
 
-# Fetch password from SSM
-REGION="eu-central-1"
-echo "Fetching Database Password from AWS SSM..."
+# Fetch password from Azure Key Vault
+echo "Fetching Database Password from Azure Key Vault..."
+apt install -y jq
+KV_NAME="eprofile-kv-spaincentral-01"
+
 for i in {1..10}; do
-  DATABASE_PASS=$(aws ssm get-parameter --name "/strata-ops/mysql-password" \
-    --with-decryption --query "Parameter.Value" --output text --region $REGION 2>/dev/null) && break
-  echo "SSM not ready yet, retrying ($i/10)..." >&2
+  TOKEN=$(curl -s 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net' -H Metadata:true | jq -r '.access_token')
+  if [ "$TOKEN" != "null" ] && [ -n "$TOKEN" ]; then
+    DATABASE_PASS=$(curl -s -H "Authorization: Bearer $TOKEN" "https://${KV_NAME}.vault.azure.net/secrets/mysql-password?api-version=7.1" | jq -r '.value')
+    break
+  fi
+  echo "Key Vault not ready, retrying ($i/10)..." >&2
   sleep 15
 done
 
-if [ -z "$DATABASE_PASS" ]; then
-  echo "ERROR: Could not fetch DB password from SSM"
+if [ -z "$DATABASE_PASS" ] || [ "$DATABASE_PASS" == "null" ]; then
+  echo "ERROR: Could not fetch DB password from Key Vault"
   exit 1
 fi
 

@@ -13,7 +13,7 @@ resource "azurerm_network_interface" "nginx_nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = module.avm-res-network-virtualnetwork.subnets["subnet1"].id
+    subnet_id                     = azurerm_subnet.subnet1.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.nginx_pip.id
   }
@@ -30,7 +30,7 @@ resource "azurerm_linux_virtual_machine" "nginx_vm" {
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("~/.ssh/azure_id_rsa.pub") # مسار مفتاح الـ SSH بتاعك
+    public_key = file("~/.ssh/azure_id_rsa.pub")
   }
 
   os_disk {
@@ -65,7 +65,7 @@ resource "azurerm_network_interface" "app_nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = module.avm-res-network-virtualnetwork.subnets["subnet2"].id
+    subnet_id                     = azurerm_subnet.subnet2.id
     private_ip_address_allocation = "Dynamic"
   }
 }
@@ -122,7 +122,7 @@ resource "azurerm_network_interface" "db_nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = module.avm-res-network-virtualnetwork.subnets["subnet3"].id
+    subnet_id                     = azurerm_subnet.subnet3.id
     private_ip_address_allocation = "Dynamic"
   }
 }
@@ -172,7 +172,7 @@ resource "azurerm_network_interface" "memcached_nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = module.avm-res-network-virtualnetwork.subnets["subnet3"].id
+    subnet_id                     = azurerm_subnet.subnet3.id
     private_ip_address_allocation = "Dynamic"
   }
 }
@@ -214,7 +214,7 @@ resource "azurerm_network_interface" "rabbitmq_nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = module.avm-res-network-virtualnetwork.subnets["subnet3"].id
+    subnet_id                     = azurerm_subnet.subnet3.id
     private_ip_address_allocation = "Dynamic"
   }
 }
