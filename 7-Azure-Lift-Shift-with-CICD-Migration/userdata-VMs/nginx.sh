@@ -7,13 +7,13 @@ apt update -y
 apt install -y nginx dnsutils
 
 # Wait for Tomcat DNS to resolve
-echo "Waiting for app.eprofile.local to resolve..."
-until dig +short app.eprofile.local| grep -q '.'; do
+echo "Waiting for app.eprofile.az to resolve..."
+until dig +short app.eprofile.az| grep -q '.'; do
   echo "DNS not ready yet..." >&2
   sleep 5
 done
 
-TOMCAT_IP=$(dig +short app.eprofile.local | tail -1)
+TOMCAT_IP=$(dig +short app.eprofile.az | tail -1)
 echo "Tomcat IP resolved: $TOMCAT_IP"
 
 # Write nginx config directly to the correct path (NO mv needed)

@@ -44,18 +44,29 @@ if [ -z "$DB_PASS" ] || [ -z "$RMQ_PASS" ]; then
   exit 1
 fi
 
+apt-get install -y netcat
+
+# (Wait Loop)
+echo "Waiting for Backend Database to be fully provisioned and listening..."
+while ! nc -zv backend.eprofile.az 3306; do
+  echo "Database is not up yet. Sleeping for 10 seconds..."
+  sleep 10
+done
+
+echo "Database is UP! Writing Tomcat environment variables..."
+
 # 4. Inject Environment Variables via setenv.sh
 cat > /opt/tomcat10/bin/setenv.sh <<EOF
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-export RDS_HOSTNAME=backend.eprofile.local
+export RDS_HOSTNAME=backend.eprofile.az
 export RDS_PORT=3306
 export RDS_DB_NAME=accounts
 export RDS_USERNAME=$DB_USER
 export RDS_PASSWORD=$DB_PASS
-export RABBITMQ_HOSTNAME=backend.eprofile.local
+export RABBITMQ_HOSTNAME=backend.eprofile.az
 export RABBITMQ_USER=$RMQ_USER
 export RABBITMQ_PASS=$RMQ_PASS
-export MEMCACHED_HOSTNAME=backend.eprofile.local
+export MEMCACHED_HOSTNAME=backend.eprofile.az
 EOF
 
 chmod +x /opt/tomcat10/bin/setenv.sh
